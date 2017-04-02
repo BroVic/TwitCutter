@@ -8,6 +8,7 @@ typedef uint16_t WORD;
 typedef uint32_t DWORD;
 typedef int32_t LONG;
 
+#pragma pack(push, 1)
 struct FibBase
 {
 	WORD wldent;
@@ -497,3 +498,4 @@ struct Fib
 	WORD cswNew;
 	FibRgCswNew fibRgCswNew;
 };
+#pragma pack(pop)
