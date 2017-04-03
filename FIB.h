@@ -1,5 +1,6 @@
 // FIB.h
 // Define data structure for Microsoft Word's .DOC File Information Block
+// Adapted from https://msdn.microsoft.com/en-us/library/office/dd952676(v=office.14).aspx
 
 #include <cstdint>
 
