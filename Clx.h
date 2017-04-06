@@ -1,20 +1,20 @@
 // Clx.h
-// 
+// Define in-memory data structures for use with MS-Word .DOC Clx format
 
 #include <cstdint>
 #include "FIB.h"
 
 struct Sprm
 {
-	BYTE ispmd;
-	// A - fspec
-	// sgc
-	// spra
+	BYTE ispmd : 9;
+	BYTE fspec : 1;
+	BYTE sgc : 3;
+	BYTE spra : 3;
 };
 
 struct Prl
 {
-	WORD sprm;
+	Sprm sprm;
 };
 
 struct FcCompressed
