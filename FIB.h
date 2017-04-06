@@ -53,7 +53,7 @@ struct FibBase
 	WORD reserved4;
 	DWORD reserved5;
 	DWORD reserved6;
-};
+}; // struct FibBase
 
 struct FibRgW97
 {
@@ -71,7 +71,7 @@ struct FibRgW97
 	WORD reserved12;
 	WORD reserved13;
 	WORD lidFE;
-};
+}; // struct FibRgW97
 
 struct FibRgLw97
 {
@@ -97,7 +97,7 @@ struct FibRgLw97
 	DWORD reserved12;
 	DWORD reserved13;
 	DWORD reserved14;
-};
+}; // struct FibRgLw97
 
 union FibRgFcLcb
 {
@@ -289,7 +289,7 @@ union FibRgFcLcb
 		DWORD lcbSttbListNames;
 		DWORD fcSttbfUssr;
 		DWORD lcbSttbfUssr;
-	};
+	}; // struct FibRgFcLcb97
 
 	struct FibRgFcLcb2000
 	{
@@ -324,7 +324,7 @@ union FibRgFcLcb
 		DWORD lcbPgdEdnOld;
 		DWORD fcBkdEdnOld;
 		DWORD lcbBkdEdnOld;
-	};
+	}; // struct FibRgFcLcb2000
 
 	struct FibRgFcLcb2002
 	{
@@ -385,7 +385,7 @@ union FibRgFcLcb
 		DWORD lcbPlcflvcNewXP;
 		DWORD fcPlcflvcMixedXP;
 		DWORD lcbPlcflvcMixedXP;
-	};
+	}; // struct FibRgFcLcb2002
 
 	struct FibRgFcLcb2003
 	{
@@ -446,7 +446,7 @@ union FibRgFcLcb
 		DWORD lcbAfdEdn;
 		DWORD fcAfd;
 		DWORD lcbAfd;
-	};
+	}; // struct FibRgFcLcb2003
 
 	struct FibRgFcLcb2007
 	{
@@ -489,15 +489,16 @@ union FibRgFcLcb
 		DWORD lcbOssTheme;
 		DWORD fcColorSchemeMapping;
 		DWORD lcbColorSchemeMapping;
-	};
-};
+	}; // struct FibRgFcLcb2007
+	
+}; // union FibRgFcLcb
 
 union FibRgCswNewData
 {
 	struct FibRgCswNewData2000
 	{
 		WORD cQuickSavesNew;
-	};
+	}; // struct FibRgCswNewData2000
 
 	struct FibRgCswNewData2007
 	{
@@ -505,14 +506,15 @@ union FibRgCswNewData
 		WORD lidThemeOther;
 		WORD lidThemeFE;
 		WORD lidThemeCS;
-	};
-};
+	}; // struct FibRgCswNewData2007
+	
+}; // union FibRgCswNewData
 
 struct FibRgCswNew
 {
 	WORD nFibNew;
 	FibRgCswNewData rgCswNewData;
-};
+}; // struct FibRgCswNew
 
 struct Fib
 {
@@ -525,7 +527,8 @@ struct Fib
 	FibRgFcLcb fibRgFcLcbBlob;
 	WORD cswNew;
 	FibRgCswNew fibRgCswNew;
-};
+}; // struct Fib
+
 #pragma pack(pop)
 
-}
+} // namespace dtdoc
