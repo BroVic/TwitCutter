@@ -45,6 +45,7 @@ struct FibBase
 	DWORD reserved6;
 };
 
+// TODO: Incorporate remaining bit fields
 struct FibRgW97
 {
 	WORD reserved1;
