@@ -4,6 +4,8 @@
 #include <cstdint>
 #include "FIB.h"
 
+namespace dtdoc {
+
 struct Sprm
 {
 	BYTE ispmd : 9;
@@ -70,3 +72,5 @@ struct Clx
 	Prc *RgPrc;
 	Pcdt Pcdt;
 };
+
+} // namespace dtdoc
