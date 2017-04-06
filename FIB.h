@@ -4,10 +4,11 @@
 
 #include <cstdint>
 
-typedef uint8_t BYTE;
-typedef uint16_t WORD;
-typedef uint32_t DWORD;
-typedef int32_t LONG;
+using BYTE = uint8_t;
+using WORD = uint16_t;
+using DWORD = uint32_t;
+using LONG = int32_t;
+
 /*
 typedef struct _FILETIME
 {
@@ -487,7 +488,6 @@ union FibRgFcLcb
 		DWORD fcColorSchemeMapping;
 		DWORD lcbColorSchemeMapping;
 	};
-
 };
 
 union FibRgCswNewData
@@ -504,9 +504,7 @@ union FibRgCswNewData
 		WORD lidThemeFE;
 		WORD lidThemeCS;
 	};
-
 };
-
 
 struct FibRgCswNew
 {
