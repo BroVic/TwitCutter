@@ -416,6 +416,28 @@ dtdoc::FibRgFcLcb::FibRgFcLcb97::FibRgFcLcb97()
 
 dtdoc::FibRgLw97::FibRgLw97()
 {
+	cbMac = 0x00;
+	reserved1 = 0x00;
+	reserved2 = 0x00;
+	ccpText = 0x00;
+	ccpFtn = 0x00;
+	ccpHdd = 0x00;
+	reserved3 = 0x00;
+	ccpAtn = 0x00;
+	ccpEdn = 0x00;
+	ccpTxbx = 0x00;
+	ccpHdrTxbx = 0x00;
+	reserved4 = 0x00;
+	reserved5 = 0x00;
+	reserved6 = 0x00;
+	reserved7 = 0x00;
+	reserved8 = 0x00;
+	reserved9 = 0x00;
+	reserved10 = 0x00;
+	reserved11 = 0x00;
+	reserved12 = 0x00;
+	reserved13 = 0x00;
+	reserved14 = 0x00;
 }
 
 dtdoc::FibBase::FibBase()
