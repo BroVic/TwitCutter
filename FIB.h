@@ -6,23 +6,16 @@
 #define FIB_H_INCLUDED
 
 #include <cstdint>
-#include <bitset>
 
 #define SET_BYTES 0x00
+#define _SET_BITS_1 0b0
+#define _SET_BITS_3 0b000
+#define _SET_BITS_4 0b0000
 
 using BYTE = uint8_t;
 using WORD = uint16_t;
 using DWORD = uint32_t;
 using LONG = int32_t;
-using BIT1 = std::bitset<1>;
-using BIT3 = std::bitset<3>;
-using BIT4 = std::bitset<4>;
-using BIT5 = std::bitset<5>;
-using BIT9 = std::bitset<9>;
-using BIT13 = std::bitset<13>;
-using BIT15 = std::bitset<15>;
-using BIT30 = std::bitset<30>;
-
 
 namespace dtdoc {
 	/*
@@ -41,28 +34,28 @@ namespace dtdoc {
 		WORD unused;
 		WORD lid;
 		WORD pnNext;
-		BIT1 fDot;
-		BIT1 fGlsy;
-		BIT1 fComplex;
-		BIT1 fHasPic;
-		BIT4 cQuickSaves;
-		BIT1 fEncrypted;
-		BIT1 fWhichTblStm;
-		BIT1 fReadOnlyRecommended;
-		BIT1 fWriteReservation;
-		BIT1 fExtChar;
-		BIT1 fLoadOverride;
-		BIT1 fFarEast;
-		BIT1 fObfuscated;
+		BYTE fDot : 1;
+		BYTE fGlsy : 1;
+		BYTE fComplex : 1;
+		BYTE fHasPic : 1;
+		BYTE cQuickSaves : 4;
+		BYTE fEncrypted : 1;
+		BYTE fWhichTblStm : 1;
+		BYTE fReadOnlyRecommended : 1;
+		BYTE fWriteReservation : 1;
+		BYTE fExtChar : 1;
+		BYTE fLoadOverride : 1;
+		BYTE fFarEast : 1;
+		BYTE fObfuscated : 1;
 		WORD nFibBack;
 		LONG lkey;
 		BYTE envr;
-		BIT1 fMac;
-		BIT1 fEmptySpecial;
-		BIT1 fLoadOverridePage;
-		BIT1 reserved1;
-		BIT1 reserved2;
-		BIT3 fSpare0;
+		BYTE fMac : 1;
+		BYTE fEmptySpecial : 1;
+		BYTE fLoadOverridePage : 1;
+		BYTE reserved1 : 1;
+		BYTE reserved2 : 1;
+		BYTE fSpare0 : 3;
 		WORD reserved3;
 		WORD reserved4;
 		DWORD reserved5;

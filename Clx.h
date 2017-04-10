@@ -11,10 +11,10 @@ namespace dtdoc {
 
 	struct Sprm
 	{
-		BIT9 ispmd;
-		BIT1 fspec;
-		BIT3 sgc;
-		BIT3 spra;
+		WORD ispmd : 9;
+		BYTE fspec : 1;
+		BYTE sgc : 3;
+		BYTE spra : 3;
 	};
 
 	struct Prl
@@ -24,23 +24,23 @@ namespace dtdoc {
 
 	struct FcCompressed
 	{
-		BIT30 fc;
-		BIT1 fCompressed;
-		BIT1 r1;
+		DWORD fc : 30;
+		BYTE fCompressed : 1;
+		BYTE r1 : 1;
 	}; // struct FcCompressed
 
 	struct Prm
 	{
-		BIT1 fComplex;
-		BIT15 data;
+		BYTE fComplex : 1;
+		WORD data : 15;
 	}; // struct Prm
 
 	struct Pcd
 	{
-		BIT1 fNoParaLast;
-		BIT1 fR1;
-		BIT1 fDirty;
-		BIT13 fR2;
+		BYTE fNoParaLast : 1;
+		BYTE fR1 : 1;
+		BYTE fDirty : 1;
+		WORD fR2 : 13;
 		FcCompressed fc;
 		Prm prm;
 	}; // struct Pcd
