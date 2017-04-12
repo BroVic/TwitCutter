@@ -3,8 +3,8 @@
 // Data structure(s) for the OLE Compound File Header
 // (adapted from https://msdn.microsoft.com/en-us/library/dd941946.aspx)
 
-#ifndef _CFH_H_INCLUDED
-#define _CFH_H_INCLUDED
+#ifndef CFH_H_INCLUDED
+#define CFH_H_INCLUDED
 
 #include <cstdint>
 
@@ -52,5 +52,5 @@ struct OLESSHEADER
 }; // struct OLESSHEADER
 #pragma pack(pop)
 
-#endif // !_CFH_H_INCLUDED
+#endif // !CFH_H_INCLUDED
 

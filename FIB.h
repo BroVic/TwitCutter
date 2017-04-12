@@ -6,27 +6,23 @@
 #define FIB_H_INCLUDED
 
 #include <cstdint>
+#include <fstream>
+#include <iostream>
 
-#define SET_BYTES 0x00
-#define _SET_BITS_1 0b0
-#define _SET_BITS_3 0b000
-#define _SET_BITS_4 0b0000
+#define _SET_BYTES 0
+#define _SET_BITS_1 0
+#define _SET_BITS_3 0
+#define _SET_BITS_4 0
 
 using BYTE = uint8_t;
+using CHAR = int8_t;
 using WORD = uint16_t;
 using DWORD = uint32_t;
 using LONG = int32_t;
 
-namespace dtdoc {
-	/*
-	typedef struct _FILETIME
-	{
-		DWORD dwLowDateTime;
-		DWORD dwHighDateTime;
-	} FILETIME, *PFILETIME, *LPFILETIME;
-	*/
-
 #pragma pack(push, 1)
+struct Fib
+{
 	struct FibBase
 	{
 		WORD wIdent;
@@ -48,22 +44,27 @@ namespace dtdoc {
 		BYTE fFarEast : 1;
 		BYTE fObfuscated : 1;
 		WORD nFibBack;
-		LONG lkey;
+		DWORD lkey;
 		BYTE envr;
-		BYTE fMac : 1;
-		BYTE fEmptySpecial : 1;
-		BYTE fLoadOverridePage : 1;
-		BYTE reserved1 : 1;
-		BYTE reserved2 : 1;
-		BYTE fSpare0 : 3;
+		BYTE flags2;
+		// BYTE fMac : 1;
+		// BYTE fEmptySpecial : 1;
+		// BYTE fLoadOverridePage : 1;
+		// BYTE reserved1 : 1;
+		// BYTE reserved2 : 1;
+		// BYTE fSpare0 : 3;
 		WORD reserved3;
 		WORD reserved4;
 		DWORD reserved5;
 		DWORD reserved6;
 
 		FibBase();
-	}; // struct FibBase
+		~FibBase();
 
+		void readFibBase(std::ifstream &);
+		inline BYTE assignBits(BYTE, int);
+	} base; // struct FibBase;
+	WORD csw;
 	struct FibRgW97
 	{
 		WORD reserved1;
@@ -82,8 +83,12 @@ namespace dtdoc {
 		WORD lidFE;
 
 		FibRgW97();
-	}; // struct FibRgW97
+		~FibRgW97();
 
+		void readFibRgW(std::ifstream &);
+
+	} fibRgW; // struct FibRgW97	
+	WORD cslw;
 	struct FibRgLw97
 	{
 		DWORD cbMac;
@@ -110,12 +115,13 @@ namespace dtdoc {
 		DWORD reserved14;
 
 		FibRgLw97();
-	}; // struct FibRgLw97
+		~FibRgLw97();
 
+		void readFibRgLw(std::ifstream &);
+	} fibRgLw; // struct FibRgLw97
+	WORD cbRgFcLcb;
 	union FibRgFcLcb
 	{
-		// FibRgFcLcb() = delete;
-
 		struct FibRgFcLcb97
 		{
 			DWORD fcStshfOrig;
@@ -306,7 +312,10 @@ namespace dtdoc {
 			DWORD lcbSttbfUssr;
 
 			FibRgFcLcb97();
-		}; // struct FibRgFcLcb97
+			~FibRgFcLcb97();
+
+			void readFibRgFcLcb97(std::ifstream &);
+		} fibRgFcLcb97; // struct FibRgFcLcb97
 
 		struct FibRgFcLcb2000
 		{
@@ -343,7 +352,10 @@ namespace dtdoc {
 			DWORD lcbBkdEdnOld;
 
 			FibRgFcLcb2000();
-		}; // struct FibRgFcLcb2000
+			~FibRgFcLcb2000();
+
+			void readFibRgFcLcb2000(std::ifstream &);
+		} fibRgFcLcb2000; // struct FibRgFcLcb2000
 
 		struct FibRgFcLcb2002
 		{
@@ -406,7 +418,10 @@ namespace dtdoc {
 			DWORD lcbPlcflvcMixedXP;
 
 			FibRgFcLcb2002();
-		}; // struct FibRgFcLcb2002
+			~FibRgFcLcb2002();
+
+			void readFibRgFcLcb2002(std::ifstream &);
+		} fibRgFcLcb2002; // struct FibRgFcLcb2002
 
 		struct FibRgFcLcb2003
 		{
@@ -469,8 +484,11 @@ namespace dtdoc {
 			DWORD lcbAfd;
 
 			FibRgFcLcb2003();
-		}; // struct FibRgFcLcb2003
+			~FibRgFcLcb2003();
 
+			void readFibRgFcLcb2003(std::ifstream &);
+
+		} fibRgFcLcb2003; // struct FibRgFcLcb2003
 
 		struct FibRgFcLcb2007
 		{
@@ -515,56 +533,61 @@ namespace dtdoc {
 			DWORD lcbColorSchemeMapping;
 
 			FibRgFcLcb2007();
-		}; // struct FibRgFcLcb2007
+			~FibRgFcLcb2007();
 
-	}; // union FibRgFcLcb
+			void readFibRgFcLcb2007(std::ifstream &);
 
-	union FibRgCswNewData
-	{
-		// FibRgCswNewData() = delete;
+		} fibRgFcLcb2007; // struct FibRgFcLcb2007
 
-		struct FibRgCswNewData2000
-		{
-			WORD cQuickSavesNew;
+		FibRgFcLcb();
+		~FibRgFcLcb();
 
-			FibRgCswNewData2000();
-		}; // struct FibRgCswNewData2000
-
-		struct FibRgCswNewData2007
-		{
-			FibRgCswNewData2000 rgCswNewData2000;
-			WORD lidThemeOther;
-			WORD lidThemeFE;
-			WORD lidThemeCS;
-
-			FibRgCswNewData2007();
-		}; // struct FibRgCswNewData2007
-		
-	}; // union FibRgCswNewData
-
+	} fibRgFcLcbBlob; // union FibRgFcLcb
+	WORD cswNew;
 	struct FibRgCswNew
 	{
 		WORD nFibNew;
-		FibRgCswNewData rgCswNewData;
+		union FibRgCswNewData
+		{
+			struct FibRgCswNewData2000
+			{
+				WORD cQuickSavesNew;
+
+				FibRgCswNewData2000();
+				~FibRgCswNewData2000();
+
+				void readFibRgCswNewData2000(std::ifstream &);
+
+			} fibRgCswNewData2000; // struct FibRgCswNewData2000
+
+			struct FibRgCswNewData2007
+			{
+				FibRgCswNewData2000 rgCswNewData2000;
+				WORD lidThemeOther;
+				WORD lidThemeFE;
+				WORD lidThemeCS;
+
+				FibRgCswNewData2007();
+				~FibRgCswNewData2007();
+
+				void readFibRgCswNewData2007(std::ifstream &);
+			} fibRgCswNewData2007; // struct FibRgCswNewData2007
+
+			FibRgCswNewData();
+			~FibRgCswNewData();
+		} rgCswNewData; // union FibRgCswNewData
 
 		FibRgCswNew();
-	}; // struct FibRgCswNew
+		~FibRgCswNew();
 
-	struct Fib
-	{
-		FibBase base;
-		WORD csw;
-		FibRgW97 fibRgW;
-		WORD cslw;
-		FibRgLw97 fibRgLw;
-		WORD cbRgFcLcb;
-		FibRgFcLcb fibRgFcLcbBlob;
-		WORD cswNew;
-		FibRgCswNew fibRgCswNew;
+		void readFibRgCswNew(std::ifstream &);
+	} fibRgCswNew; // struct FibRgCswNew
 
-		Fib();
-	}; // struct Fib
+	Fib();
+	~Fib();
+
+	void readFib(std::ifstream &);
+
+}; // struct Fib
 #pragma pack(pop)
-
-}; // namespace dtdoc
 #endif // !FIB_H_INCLUDED
