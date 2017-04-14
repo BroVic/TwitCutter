@@ -1,6 +1,14 @@
 #include "FIB.h"
 #include <fstream>
 #include <iostream>
+#include <cassert>
+
+// nFib values
+#define FOR_WORD_97 0x00C1
+#define FOR_WORD_2000 0x00D9
+#define FOR_WORD_2002 0x0101
+#define FOR_WORD_2003 0x010C
+#define FOR_WORD_2007 0x0112
 
 // Default constructors/decostructors
 Fib::Fib()
@@ -387,6 +395,12 @@ void Fib::FibRgFcLcb::FibRgFcLcb2000::readFibRgFcLcb2000(std::ifstream & wrdfile
 	return;
 }
 
+void Fib::FibRgFcLcb::FibRgFcLcb2000::process_FibRgFcLcb2000()
+{
+	assert(lcbRmdThreading != 0);
+	return;
+}
+
 Fib::FibRgFcLcb::FibRgFcLcb2002::FibRgFcLcb2002()
 {
 	fcUnused1 = _SET_BYTES;
@@ -513,6 +527,13 @@ void Fib::FibRgFcLcb::FibRgFcLcb2002::readFibRgFcLcb2002(std::ifstream &document
 	documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcNewXP), sizeof(lcbPlcflvcNewXP));
 	documentStr.read(reinterpret_cast<char *>(&fcPlcflvcMixedXP), sizeof(fcPlcflvcMixedXP));
 	documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcMixedXP), sizeof(lcbPlcflvcMixedXP));
+
+	return;
+}
+
+void Fib::FibRgFcLcb::FibRgFcLcb2002::process_FibRgFcLcb2002()
+{
+	assert(lcbUnused1 == 0);
 
 	return;
 }
@@ -647,6 +668,14 @@ void Fib::FibRgFcLcb::FibRgFcLcb2003::readFibRgFcLcb2003(std::ifstream & dotdocs
 	return;
 }
 
+void Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003()
+{
+	assert(lcbCustomXForm <= 4168 && lcbCustomXForm % 2 == 0);
+	assert(fcUnused == 0);
+	assert(lcbUnused == 0);
+	return;
+}
+
 Fib::FibRgFcLcb::FibRgFcLcb2007::FibRgFcLcb2007()
 {
 	fcPlcfmthd = _SET_BYTES;
@@ -740,6 +769,31 @@ void Fib::FibRgFcLcb::FibRgFcLcb2007::readFibRgFcLcb2007(std::ifstream & dStream
 	return;
 }
 
+void Fib::FibRgFcLcb::FibRgFcLcb2007::process_FibRgFcLcb2007()
+{
+	assert(lcbPlcfmthd == 0);
+	assert(lcbSttbfBkmkMoveFrom == 0);
+	assert(lcbPlcfBkfMoveFrom == 0);
+	assert(lcbPlcfBklMoveFrom == 0);
+	assert(lcbSttbfBkmkMoveTo == 0);
+	assert(lcbPlcfBkfMoveTo == 0);
+	assert(lcbPlcfBklMoveTo == 0);
+	assert(lcbUnused1 == 0);
+	assert(lcbUnused2 == 0);
+	assert(lcbUnused3 == 0);
+	assert(lcbSttbfBkmkArto == 0);
+	assert(lcbPlcfBkfArto == 0);
+	assert(lcbPlcfBklArto == 0);
+	assert(lcbArtoData == 0);
+	assert(lcbUnused4 == 0);
+	assert(lcbUnused5 == 0);
+	assert(lcbUnused6 == 0);
+	
+	return;
+
+
+}
+
 Fib::FibRgCswNew::FibRgCswNew()
 {
 	nFibNew = _SET_BYTES;
@@ -753,9 +807,11 @@ void Fib::FibRgCswNew::readFibRgCswNew(std::ifstream & ldedstrm)
 {
 	ldedstrm.read(reinterpret_cast<char *>(&nFibNew), sizeof(nFibNew));
 
-	if (1)
+	if (nFibNew == 0x0112)
+		rgCswNewData.fibRgCswNewData2007.readFibRgCswNewData2007(ldedstrm);
+	else if ((nFibNew == 0x00D9 || nFibNew == 0x0101) || nFibNew == 0x010C)
 		rgCswNewData.fibRgCswNewData2000.readFibRgCswNewData2000(ldedstrm);
-	else { rgCswNewData.fibRgCswNewData2007.readFibRgCswNewData2007(ldedstrm); }
+	else { assert(!" value of nFibNew not valid"); }
 
 	return;
 }
@@ -807,20 +863,51 @@ void Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::readFibRgCswNewData
 	return;
 }
 
+void Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::process_FibRgCswNewData2000()
+{
+	assert(cQuickSavesNew >= 0 && cQuickSavesNew <= 0x000F);
+	return;
+}
+
 // Reads the File Information Block (FIB)
 void Fib::readFib(std::ifstream &docstream)
 {
+	// TODO: Review these function calls later
 	base.readFibBase(docstream);
 	
-	// Read rest of Fib
 	docstream.read(reinterpret_cast<char *>(&csw), sizeof(csw));
 	fibRgW.readFibRgW(docstream); 
+
 	docstream.read(reinterpret_cast<char *>(&cslw), sizeof(cslw));
 	fibRgLw.readFibRgLw(docstream);
+
 	docstream.read(reinterpret_cast<char *>(&cbRgFcLcb), sizeof(cbRgFcLcb));
-	fibRgFcLcbBlob.fibRgFcLcb97.readFibRgFcLcb97(docstream); 
+	
+	const unsigned int ver = determine_nFib_use();
+	switch (ver)
+	{
+	case FOR_WORD_97:
+		fibRgFcLcbBlob.fibRgFcLcb97.readFibRgFcLcb97(docstream);
+		break;
+	case FOR_WORD_2000:
+		fibRgFcLcbBlob.fibRgFcLcb2000.readFibRgFcLcb2000(docstream);
+		break;
+	case FOR_WORD_2002:
+		fibRgFcLcbBlob.fibRgFcLcb2002.readFibRgFcLcb2002(docstream);
+		break;
+	case FOR_WORD_2003:
+		fibRgFcLcbBlob.fibRgFcLcb2003.readFibRgFcLcb2003(docstream);
+		break;
+	case FOR_WORD_2007:
+		fibRgFcLcbBlob.fibRgFcLcb2007.readFibRgFcLcb2007(docstream);
+		break;
+	// default:
+		// break;
+	}
+	
 	docstream.read(reinterpret_cast<char *>(&cswNew), sizeof(cswNew));
-	fibRgCswNew.readFibRgCswNew(docstream); 
+	if (cswNew != 0)
+		fibRgCswNew.readFibRgCswNew(docstream); 
 
 	return;
 }
@@ -834,7 +921,7 @@ void Fib::FibBase::readFibBase(std::ifstream &docfile)
 	docfile.read(reinterpret_cast<char *>(&lid), sizeof(lid));
 	docfile.read(reinterpret_cast<char *>(&pnNext), sizeof(pnNext));
 
-	BYTE tmp = 0b0000'0000;
+	BYTE tmp = 0b0000'0000;			// temporary storage
 	const BYTE msk = 0x0F;
 	const BYTE fHP = 0x10;
 	const BYTE fC = 0x20;
@@ -880,6 +967,7 @@ void Fib::FibBase::readFibBase(std::ifstream &docfile)
 	return;
 }
 
+// Reads FibBase ONLY from the stream into memory
 void Fib::FibRgLw97::readFibRgLw(std::ifstream & mystream)
 {
 	mystream.read(reinterpret_cast<char *>(&cbMac), sizeof(cbMac));
@@ -907,6 +995,25 @@ void Fib::FibRgLw97::readFibRgLw(std::ifstream & mystream)
 
 	return;
 
+}
+
+void Fib::FibRgLw97::process_fibRgLw()
+{
+	assert(ccpText >= 0);
+	assert(ccpFtn >= 0);
+	assert(ccpHdd >= 0);
+	assert(reserved3 == 0);
+	assert(ccpAtn >= 0);
+	assert(ccpEdn >= 0);
+	assert(ccpTxbx >= 0);
+	assert(ccpHdrTxbx >= 0);
+	// assert(reserved6 <= Fib::FibRgFcLcb::FibRgFcLcb97::fcPlcfBteChpx &&
+	// reserved6 <= Fib::FibRgFcLcb::FibRgFcLcb97::lcbPlcfBteChpx)
+	// assert(reserved9 .....
+	assert(reserved13 == 0);
+	assert(reserved14 == 0);
+
+	return;
 }
 
 void Fib::FibRgW97::readFibRgW(std::ifstream & filestrm)
@@ -1120,6 +1227,98 @@ void Fib::FibRgFcLcb::FibRgFcLcb97::readFibRgFcLcb97(std::ifstream & mainstrm)
 	return;
 }
 
+void Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
+{
+	assert(lcbStshf != 0);
+	
+	/*if (Fib::FibRgLw97::ccpFtn == 0)
+		assert(lcbPlcffndTxt == 0);
+	else if (Fib::FibRgLw97::ccpFtn != 0)
+		assert(lcbPlcffndTxt != 0);
+
+	if (Fib::FibRgLw97::ccpAtn == 0)
+		assert(lcbPlcfandTxt == 0);
+	else if (Fib::FibRgLw97::ccpAtn != 0)
+		assert(lcbPlcfandTxt != 0);
+	
+	if (Fib::FibRgLw97::ccpHdd <= 0)
+		assert(lcbPlcfHdd == 0);
+	*/
+	assert(fcPlcfBteChpx > 0);
+
+	assert(lcbPlcfBteChpx > 0);
+
+	assert(fcPlcfBtePapx > 0);
+
+	assert(lcbPlcfBtePapx > 0);
+
+	assert(lcbPlcfSea == 0);
+
+	assert(lcbPlcfFldMcr == 0);
+
+	// fcSttbfBkmk: review this member's details					
+	
+	// fcPlcfBkf: review this member's details
+
+	// fcPlcfBkl: review this member's details
+
+	assert(lcbDop != 0);
+	
+	assert(lcbSttbfAssoc != 0);
+	
+	assert(lcbClx > 0);
+	
+	// fcGrpXstAtnOwners: review documentation
+	// fcSttbfAtnBkmk: review documentation
+
+	assert(lcbUnused2 == 0);
+	
+	assert(lcbUnused3 == 0);
+
+	// fcPlcSpaMom: review pls
+	
+	// fcPlcSpaHdr: review pls
+
+	
+	// fcPlcfAtnBkf: review
+	// fcPlcfAtnBkl: review docs
+
+	
+	assert(lcbFormFldSttbs == 0);
+
+	//if (Fib::FibRgLw97::ccpEdn == 0)
+	//	assert(lcbPlcfendTxt == 0);
+	//else if (Fib::FibRgLw97::ccpEdn != 0)
+	//	assert(lcbPlcfendTxt != 0);
+	//
+	// fcPlcfFldEdn
+	
+	assert(lcbUnused4 == 0);
+
+	//if (Fib::FibRgLw97::ccpTxbx == 0)
+	//	assert(lcbPlcftxbxTxt == 0);
+	//else if (Fib::FibRgLw97::ccpTxbx != 0)
+	//	assert(lcbPlcftxbxTxt != 0);
+
+	//if (Fib::FibRgLw97::ccpHdrTxbx == 0)
+	//	assert(lcbPlcfHdrtxbxTxt == 0);
+	//else if (Fib::FibRgLw97::ccpHdrTxbx != 0)
+	//	assert(lcbPlcfHdrtxbxTxt != 0);
+
+	//
+	//if (Fib::FibRgLw97::ccpTxbx == 0)
+	//	assert(lcbPlcfTxbxBkd == 0);
+	//else if (Fib::FibRgLw97::ccpTxbx != 0)
+	//	assert(lcbPlcfTxbxBkd != 0);
+
+	//if (Fib::FibRgLw97::ccpHdrTxbx == 0)
+	//	assert(lcbPlcfTxbxHdrBkd == 0);
+	//else if (Fib::FibRgLw97::ccpHdrTxbx != 0)
+	//	assert(lcbPlcfTxbxHdrBkd != 0);
+
+	return;
+}
+
 
 // Assigns values from stream to bit fields
 inline BYTE Fib::FibBase::assignBits(BYTE flag, int shftLeft)
@@ -1127,4 +1326,43 @@ inline BYTE Fib::FibBase::assignBits(BYTE flag, int shftLeft)
 	BYTE temp = 0b0000'0000;
 	temp &= flag;
 	return temp >> shftLeft;
+}
+
+void Fib::FibBase::process_fibBase()
+{
+	assert(wIdent == 0xA5EC);
+
+	if (nFib == 0x00C0 || nFib == 0x00C2)
+		nFib = 0x00C1;
+	assert(nFib == 0x00C1);
+
+	if (fGlsy == 1 || fDot == 0)
+		assert(pnNext == 0);
+
+	if (nFib >= 0x00D9)
+		assert(cQuickSaves == 0xF);
+
+	assert(fExtChar == 1);
+
+	assert(nFibBack == 0x00BF || nFibBack == 0x00C1);
+
+	if ((fEncrypted == 1 && fObfuscated == 1) ||
+		(fEncrypted == 1 && fObfuscated == 0))
+		assert(lkey == 0);
+
+	assert(envr == 0);
+
+	assert(reserved3 == 0);
+
+	assert(reserved4 == 0);
+
+	return;
+}
+
+// Checks which nFib to use for version confirmation
+inline WORD Fib::determine_nFib_use()
+{
+	if (cswNew == 0)
+		return base.nFib;
+	else { return fibRgCswNew.nFibNew; }
 }

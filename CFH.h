@@ -8,23 +8,28 @@
 
 #include <cstdint>
 
-struct GUID;					// promise
+// struct GUID;					// promise
 
 using BYTE = uint8_t;
 using WORD = uint16_t;
 using DWORD = uint32_t;
 using LONG = int32_t;
-using CLSID = GUID;
+// using CLSID = GUID;
+
+#define _SET_BYTES_ 0
 
 
 #pragma pack(push, 1)
-struct GUID
+typedef struct GUID
 {
 	DWORD Data1;
 	WORD Data2;
 	WORD Data3;
 	BYTE Data4[8];
-}; // struct GUID
+
+	GUID();
+	~GUID();
+} CLSID; // struct GUID
 
 struct OLESSHEADER
 {
@@ -49,6 +54,7 @@ struct OLESSHEADER
 	DWORD Difat[109];
 
 	OLESSHEADER();
+	~OLESSHEADER();
 }; // struct OLESSHEADER
 #pragma pack(pop)
 

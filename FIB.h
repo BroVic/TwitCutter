@@ -14,6 +14,8 @@
 #define _SET_BITS_3 0
 #define _SET_BITS_4 0
 
+#define ERR_LCBSTSHF_W97 0x3
+
 using BYTE = uint8_t;
 using CHAR = int8_t;
 using WORD = uint16_t;
@@ -63,6 +65,7 @@ struct Fib
 
 		void readFibBase(std::ifstream &);
 		inline BYTE assignBits(BYTE, int);
+		void process_fibBase();
 	} base; // struct FibBase;
 	WORD csw;
 	struct FibRgW97
@@ -80,7 +83,7 @@ struct Fib
 		WORD reserved11;
 		WORD reserved12;
 		WORD reserved13;
-		WORD lidFE;
+		WORD lidFE;    // review processsing of this member
 
 		FibRgW97();
 		~FibRgW97();
@@ -118,6 +121,8 @@ struct Fib
 		~FibRgLw97();
 
 		void readFibRgLw(std::ifstream &);
+		void process_fibRgLw();
+
 	} fibRgLw; // struct FibRgLw97
 	WORD cbRgFcLcb;
 	union FibRgFcLcb
@@ -156,7 +161,7 @@ struct Fib
 			DWORD lcbPlcfSea;
 			DWORD fcSttbfFfn;
 			DWORD lcbSttbfFfn;
-			DWORD fcPlcfFldMom;
+			DWORD fcPlcfFldMom;					// refers to offset for PlcFld
 			DWORD lcbPlcfFldMom;
 			DWORD fcPlcfFldHdr;
 			DWORD lcbPlcfFldHdr;
@@ -315,6 +320,7 @@ struct Fib
 			~FibRgFcLcb97();
 
 			void readFibRgFcLcb97(std::ifstream &);
+			void process_FibRgFcLcb97();
 		} fibRgFcLcb97; // struct FibRgFcLcb97
 
 		struct FibRgFcLcb2000
@@ -355,6 +361,8 @@ struct Fib
 			~FibRgFcLcb2000();
 
 			void readFibRgFcLcb2000(std::ifstream &);
+			void process_FibRgFcLcb2000();
+
 		} fibRgFcLcb2000; // struct FibRgFcLcb2000
 
 		struct FibRgFcLcb2002
@@ -421,6 +429,7 @@ struct Fib
 			~FibRgFcLcb2002();
 
 			void readFibRgFcLcb2002(std::ifstream &);
+			void process_FibRgFcLcb2002();
 		} fibRgFcLcb2002; // struct FibRgFcLcb2002
 
 		struct FibRgFcLcb2003
@@ -487,6 +496,7 @@ struct Fib
 			~FibRgFcLcb2003();
 
 			void readFibRgFcLcb2003(std::ifstream &);
+			void process_FibRgFcLcb2003();
 
 		} fibRgFcLcb2003; // struct FibRgFcLcb2003
 
@@ -536,6 +546,7 @@ struct Fib
 			~FibRgFcLcb2007();
 
 			void readFibRgFcLcb2007(std::ifstream &);
+			void process_FibRgFcLcb2007();
 
 		} fibRgFcLcb2007; // struct FibRgFcLcb2007
 
@@ -543,7 +554,9 @@ struct Fib
 		~FibRgFcLcb();
 
 	} fibRgFcLcbBlob; // union FibRgFcLcb
+
 	WORD cswNew;
+
 	struct FibRgCswNew
 	{
 		WORD nFibNew;
@@ -557,6 +570,7 @@ struct Fib
 				~FibRgCswNewData2000();
 
 				void readFibRgCswNewData2000(std::ifstream &);
+				void process_FibRgCswNewData2000();
 
 			} fibRgCswNewData2000; // struct FibRgCswNewData2000
 
@@ -571,6 +585,7 @@ struct Fib
 				~FibRgCswNewData2007();
 
 				void readFibRgCswNewData2007(std::ifstream &);
+				// nothing to process
 			} fibRgCswNewData2007; // struct FibRgCswNewData2007
 
 			FibRgCswNewData();
@@ -587,6 +602,7 @@ struct Fib
 	~Fib();
 
 	void readFib(std::ifstream &);
+	inline WORD determine_nFib_use();
 
 }; // struct Fib
 #pragma pack(pop)
