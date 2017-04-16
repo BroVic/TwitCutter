@@ -6,35 +6,16 @@
 #ifndef CFH_H_INCLUDED
 #define CFH_H_INCLUDED
 
-#include <cstdint>
-
-// struct GUID;					// promise
-
-using BYTE = uint8_t;
-using WORD = uint16_t;
-using DWORD = uint32_t;
-using LONG = int32_t;
-// using CLSID = GUID;
+#include "dtypes.h"
 
 #define _SET_BYTES_ 0
 
 
 #pragma pack(push, 1)
-typedef struct GUID
-{
-	DWORD Data1;
-	WORD Data2;
-	WORD Data3;
-	BYTE Data4[8];
-
-	GUID();
-	~GUID();
-} CLSID; // struct GUID
-
 struct OLESSHEADER
 {
 	BYTE Sig[8];
-	CLSID clsid;
+	CLSID CLSID_NULL;
 	WORD VerMinor;
 	WORD VerDll;
 	WORD ByteOrder;

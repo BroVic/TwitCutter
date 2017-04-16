@@ -1,4 +1,4 @@
-#include "CFH.h"
+#include "CFHeader.h"
 
 OLESSHEADER::OLESSHEADER()
 {
@@ -24,17 +24,5 @@ OLESSHEADER::OLESSHEADER()
 }
 
 OLESSHEADER::~OLESSHEADER()
-{
-}
-
-GUID::GUID()
-{
-	 Data1 = _SET_BYTES_;
-	 Data2 = _SET_BYTES_;
-	 Data3 = _SET_BYTES_;
-	 for (int i = 0; i < 8; i++) { Data4[i] = _SET_BYTES_; }
-}
-
-GUID::~GUID()
 {
 }
