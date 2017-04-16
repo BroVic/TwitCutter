@@ -1,8 +1,7 @@
 // Clx.h
 // Define in-memory data structures for use with MS-Word .DOC Clx format
 
-#include <cstdint>
-#include "FIB.h"
+#include "dtypes.h"
 
 #ifndef CLX_H_INCLUDED
 #define CLX_H_INCLUDED

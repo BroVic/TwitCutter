@@ -5,9 +5,9 @@
 #ifndef FIB_H_INCLUDED
 #define FIB_H_INCLUDED
 
-#include <cstdint>
 #include <fstream>
 #include <iostream>
+#include "dtypes.h"
 
 #define _SET_BYTES 0
 #define _SET_BITS_1 0
@@ -15,12 +15,6 @@
 #define _SET_BITS_4 0
 
 #define ERR_LCBSTSHF_W97 0x3
-
-using BYTE = uint8_t;
-using CHAR = int8_t;
-using WORD = uint16_t;
-using DWORD = uint32_t;
-using LONG = int32_t;
 
 #pragma pack(push, 1)
 struct Fib

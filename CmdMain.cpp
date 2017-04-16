@@ -9,7 +9,7 @@
 #include <fstream>
 #include <bitset>
 #include <string>
-#include "CFH.h"
+#include "CFHeader.h"
 #include "FIB.h"
 #include "Clx.h"
 
