@@ -7,9 +7,13 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include <bitset>
 #include <string>
+#include <cassert>
+#include <vector>
+#include <bitset>
+// #include <cmath>
 #include "CFHeader.h"
+#include "CFDirEntry.h"
 #include "FIB.h"
 #include "Clx.h"
 
@@ -17,7 +21,9 @@
 #define ERR_NOT_GOOD 2
 #define ZERO_OFFSET 0
 
+
 void printFibBase(Fib::FibBase);
+unsigned int fndDrctStrm(std::vector<DirEntry>, std::wstring);
 
 int main()
 {
@@ -25,6 +31,8 @@ int main()
 	std::string filename;
 	filename = "test.doc";
 	std::ifstream strm;
+
+	unsigned int location = 0;			// for testing purpuses only. REMOVE WHEN FINISHED!!!
 
 	strm.open(filename, std::ios::binary);
 	if (!strm.is_open())
@@ -43,11 +51,54 @@ int main()
 	// Read OLE Compound File Header first
 	OLESSHEADER oleBlock;
 	strm.read(reinterpret_cast<char *>(&oleBlock), sizeof(oleBlock));
+
+	static int sectorSize;
+	if (oleBlock.VerDll == 3)
+		sectorSize = 512;
+	else if (oleBlock.VerDll == 4)
+		sectorSize = 4096;
+	else { assert(oleBlock.VerDll == 3 || oleBlock.VerDll == 4); }
+
+	// offset of Word Document Stream
+	std::vector<DirEntry> dirEntries;
 	
+	// Move to offset of First Directory
+	strm.seekg(oleBlock.DirSect1 * sectorSize, std::ios::cur);
+	
+	// Read single directory entries into a vector
+	DirEntry singleEntry;
+	const int entrPerSctr = sectorSize / sizeof(DirEntry);
+	do
+	{
+		strm.read(reinterpret_cast<char *>(&singleEntry), sizeof(singleEntry));
+		location = strm.tellg();
+		dirEntries.push_back(singleEntry);
+
+	} while (singleEntry.rightSibID == NOSTREAM);
+	
+	location = fndDrctStrm(dirEntries, L"WordDocument");
+
 	// Read the File Information Block
+	strm.seekg(location, std::ios::beg);
 	Fib fileInfoBlock;
+	location = -1;
 	fileInfoBlock.readFib(strm);
 	
+	// offset of Table Stream
+	std::wstring table;
+	if (fileInfoBlock.base.fWhichTblStm)
+		table = L"1Table";
+	else { table = L"0Table"; }
+	
+	location = fndDrctStrm(dirEntries, table);
+	strm.seekg(location, std::ios::beg);
+	
+	// Find and read Clx
+	Clx charProc;
+	location = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
+	int szClx = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.lcbClx;
+	strm.seekg(location, std::ios::cur);
+	strm.read(reinterpret_cast<char *>(&charProc), sizeof(charProc));
 
 	// Testing...
 	std::cout << std::showbase << std::internal;
@@ -99,4 +150,30 @@ void printFibBase(Fib::FibBase obj)
 	std::cout << "The value of \"reserved6\" is " << obj.reserved6 << std::endl;
 
 	return;
+}
+
+unsigned int fndDrctStrm(std::vector<DirEntry> vec, std::wstring str)
+{
+	int index = vec[0].childID;
+	unsigned int offset = -1;
+	int actualLen = str.length();
+
+	while (true)
+	{
+		if (actualLen > vec[index].nameLength)
+			index = vec[index].rightSibID;
+		else if (actualLen < vec[index].nameLength)
+			index = vec[index].leftSibID;
+		else
+		{
+			// implement UNICODE matching
+			if (str.compare(vec[index].name) == 0)
+			{
+				offset = vec[index].startSectorLoc;
+				break;
+			}
+			// else {}		//iterate through string & do the needful
+		}
+	}
+	return offset;
 }

@@ -10,6 +10,13 @@
 
 #define _SET_BYTES_ 0
 
+// Special values for Compound File data structures
+#define MAXREGSECT	0xFFFFFFFA
+#define RESERVED	0xFFFFFFFB		// not applicable
+#define DIFSECT		0xFFFFFFFC
+#define FATSECT		0xFFFFFFFD
+#define ENDOFCHAIN	0xFFFFFFFE
+#define FREESECT	0xFFFFFFFF
 
 #pragma pack(push, 1)
 struct OLESSHEADER
@@ -36,6 +43,7 @@ struct OLESSHEADER
 
 	OLESSHEADER();
 	~OLESSHEADER();
+
 }; // struct OLESSHEADER
 #pragma pack(pop)
 

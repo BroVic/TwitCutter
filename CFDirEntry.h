@@ -8,11 +8,12 @@
 
 #define MAXREGSID 0xFFFFFFFA
 #define NOSTREAM 0xFFFFFFFF
+#define SET_BYTES 0
 
 #pragma pack(push, 1)
 struct DirEntry
 {
-	WCHAR name;
+	WCHAR name[32];
 	WORD nameLength;
 	BYTE objType;
 	BYTE colorFlag;
@@ -25,7 +26,10 @@ struct DirEntry
 	FILETIME modTime;
 	DWORD startSectorLoc;
 	ULONGLONG streamSize;
+
+	DirEntry();
+	~DirEntry();
+
 };
 #pragma (pop)
-
 #endif // !CFDIRENTRY_H_INCLUDED

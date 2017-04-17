@@ -1,82 +1,81 @@
 #include "Clx.h"
 
-dtdoc::Clx::Clx()
-{
-
-}
-
-dtdoc::Clx::~Clx()
+Clx::Clx()
 {
 }
 
-dtdoc::Sprm::Sprm()
+Clx::~Clx()
 {
 }
 
-dtdoc::Sprm::~Sprm()
+Sprm::Sprm()
 {
 }
 
-dtdoc::Prc::Prc()
+Sprm::~Sprm()
 {
 }
 
-dtdoc::Prc::~Prc()
+Prc::Prc()
 {
 }
 
-dtdoc::Pcdt::Pcdt()
+Prc::~Prc()
 {
 }
 
-dtdoc::Pcdt::~Pcdt()
+Pcdt::Pcdt()
 {
 }
 
-dtdoc::PrcData::PrcData()
+Pcdt::~Pcdt()
 {
 }
 
-dtdoc::PrcData::~PrcData()
+PrcData::PrcData()
 {
 }
 
-dtdoc::PlcPcd::PlcPcd()
+PrcData::~PrcData()
 {
 }
 
-dtdoc::PlcPcd::~PlcPcd()
+PlcPcd::PlcPcd()
 {
 }
 
-dtdoc::Pcd::Pcd()
+PlcPcd::~PlcPcd()
 {
 }
 
-dtdoc::Pcd::~Pcd()
+Pcd::Pcd()
 {
 }
 
-dtdoc::Prm::Prm()
+Pcd::~Pcd()
 {
 }
 
-dtdoc::Prm::~Prm()
+Prm::Prm()
 {
 }
 
-dtdoc::FcCompressed::FcCompressed()
+Prm::~Prm()
 {
 }
 
-dtdoc::FcCompressed::~FcCompressed()
+FcCompressed::FcCompressed()
 {
 }
 
-dtdoc::Prl::Prl()
+FcCompressed::~FcCompressed()
 {
 }
 
-dtdoc::Prl::~Prl()
+Prl::Prl()
+{
+}
+
+Prl::~Prl()
 {
 }

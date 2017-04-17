@@ -9,6 +9,8 @@
 
 #include <cstdint>
 
+#define SET_BYTES 0
+
 using BYTE = uint8_t;
 using CHAR = int8_t;
 using WORD = uint16_t;
@@ -23,12 +25,18 @@ struct CLSID
 	WORD Data2;
 	WORD Data3;
 	BYTE Data4[8];
+
+	CLSID();
+	~CLSID();
 }; // struct CLSID
 
 struct FILETIME
 {
 	DWORD dwLowDateTime;
 	DWORD dwHighDateTime;
+
+	FILETIME();
+	~FILETIME();
 };
 
 

@@ -6,104 +6,103 @@
 #ifndef CLX_H_INCLUDED
 #define CLX_H_INCLUDED
 
-namespace dtdoc {
 
-	struct Sprm
-	{
-		WORD ispmd : 9;
-		BYTE fspec : 1;
-		BYTE sgc : 3;
-		BYTE spra : 3;
+#pragma pack(push, 1)
+struct Sprm
+{
+	WORD ispmd : 9;
+	BYTE fspec : 1;
+	BYTE sgc : 3;
+	BYTE spra : 3;
 
-		Sprm();
-		~Sprm();
-	};
+	Sprm();
+	~Sprm();
+};
 
-	struct Prl
-	{
-		Sprm sprm;
+struct Prl
+{
+	Sprm sprm;
 
-		Prl();
-		~Prl();
-	}; // struct Prl
+	Prl();
+	~Prl();
+}; // struct Prl
 
-	struct FcCompressed
-	{
-		DWORD fc : 30;
-		BYTE fCompressed : 1;
-		BYTE r1 : 1;
+struct FcCompressed
+{
+	DWORD fc : 30;
+	BYTE fCompressed : 1;
+	BYTE r1 : 1;
 
-		FcCompressed();
-		~FcCompressed();
-	}; // struct FcCompressed
+	FcCompressed();
+	~FcCompressed();
+}; // struct FcCompressed
 
-	struct Prm
-	{
-		BYTE fComplex : 1;
-		WORD data : 15;
+struct Prm
+{
+	BYTE fComplex : 1;
+	WORD data : 15;
 
-		Prm();
-		~Prm();
-	}; // struct Prm
+	Prm();
+	~Prm();
+}; // struct Prm
 
-	struct Pcd
-	{
-		BYTE fNoParaLast : 1;
-		BYTE fR1 : 1;
-		BYTE fDirty : 1;
-		WORD fR2 : 13;
-		FcCompressed fc;
-		Prm prm; 
+struct Pcd
+{
+	BYTE fNoParaLast : 1;
+	BYTE fR1 : 1;
+	BYTE fDirty : 1;
+	WORD fR2 : 13;
+	FcCompressed fc;
+	Prm prm; 
 
-		Pcd();
-		~Pcd();
-	}; // struct Pcd
+	Pcd();
+	~Pcd();
+}; // struct Pcd
 
-	struct PlcPcd
-	{
-		DWORD *aCP;
-		Pcd aPcd;
+struct PlcPcd
+{
+	DWORD *aCP;
+	Pcd aPcd;
 
-		PlcPcd();
-		~PlcPcd();
-	}; // struct PlcPcd
+	PlcPcd();
+	~PlcPcd();
+}; // struct PlcPcd
 
-	struct PrcData
-	{
-		WORD cbGrpprl;
-		Prl *GrpPrl;
+struct PrcData
+{
+	WORD cbGrpprl;
+	Prl *GrpPrl;
 
-		PrcData();
-		~PrcData();
-	}; // struct PrcData
+	PrcData();
+	~PrcData();
+}; // struct PrcData
 
-	struct Pcdt
-	{
-		BYTE clxt;
-		DWORD lcb;
-		PlcPcd PlcPcd;
+struct Pcdt
+{
+	BYTE clxt;
+	DWORD lcb;
+	PlcPcd PlcPcd;
 
-		Pcdt();
-		~Pcdt();
-	}; // struct Pcdt
+	Pcdt();
+	~Pcdt();
+}; // struct Pcdt
 
-	struct Prc
-	{
-		BYTE clxt;
-		PrcData data;
+struct Prc
+{
+	BYTE clxt;
+	PrcData data;
 
-		Prc();
-		~Prc();
-	}; // struct Prc
+	Prc();
+	~Prc();
+}; // struct Prc
 
-	struct Clx
-	{
-		Prc *RgPrc;
-		Pcdt Pcdt;
+struct Clx
+{
+	Prc *RgPrc;
+	Pcdt Pcdt;
 
-		Clx();
-		~Clx();
-	}; // struct Clx
-
-}; // namespace dtdoc
+	Clx();
+	~Clx();
+}; // struct Clx
+#pragma pack(pop)
 #endif // !CLX_H_INCLUDED
