@@ -80,10 +80,7 @@ int main()
 	stream.seekg(offset, std::ios::beg);
 
 	Clx charProc;
-	//offset = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
-	//int szClx = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.lcbClx;
-	//stream.seekg(offset, std::ios::cur);
-	//stream.read(reinterpret_cast<char *>(&charProc), sizeof(charProc));
+	
 
 	// Testing...
 	std::cout << std::showbase << std::internal;

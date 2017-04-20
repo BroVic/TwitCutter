@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-#define SET_BYTES 0
+#define SET_BYTES	0x00
 
 using BYTE = uint8_t;
 using CHAR = int8_t;

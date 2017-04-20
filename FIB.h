@@ -56,8 +56,10 @@ struct Fib
 		FibBase();
 		~FibBase();
 
-		void readFibBase(std::ifstream &);
+		void readFibBase(std::ifstream&);
+
 		inline BYTE assignBits(BYTE, BYTE, int);
+
 		void process_fibBase();
 	} base; // struct FibBase;
 	WORD csw;
@@ -113,7 +115,7 @@ struct Fib
 		FibRgLw97();
 		~FibRgLw97();
 
-		void readFibRgLw(std::ifstream &);
+		void readFibRgLw(std::ifstream&);
 		void process_fibRgLw();
 
 	} fibRgLw; // struct FibRgLw97
@@ -588,13 +590,13 @@ struct Fib
 		FibRgCswNew();
 		~FibRgCswNew();
 
-		void readFibRgCswNew(std::ifstream &);
+		void readFibRgCswNew(std::ifstream&);
 	} fibRgCswNew; // struct FibRgCswNew
 
 	Fib();
 	~Fib();
 
-	void readFib(std::ifstream &);
+	void readFib(std::ifstream&);
 	inline WORD determine_nFib_use();
 
 }; // struct Fib

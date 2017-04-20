@@ -55,7 +55,7 @@ void OLESSHEADER::readCFHeader(std::ifstream & dcstream)
 
 std::vector<DWORD> OLESSHEADER::loadFat(std::ifstream & stream)
 {
-	const int szSect = pow(2, SectorShift);
+	const int szSect = static_cast<int>(pow(2, SectorShift));
 	// int lnFat = NumFatSects * szSect;
 	std::vector<DWORD> fat;
 	
