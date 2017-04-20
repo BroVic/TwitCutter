@@ -42,13 +42,12 @@ struct Fib
 		WORD nFibBack;
 		DWORD lkey;
 		BYTE envr;
-		BYTE flags2;
-		// BYTE fMac : 1;
-		// BYTE fEmptySpecial : 1;
-		// BYTE fLoadOverridePage : 1;
-		// BYTE reserved1 : 1;
-		// BYTE reserved2 : 1;
-		// BYTE fSpare0 : 3;
+		BYTE fMac : 1;
+		BYTE fEmptySpecial : 1;
+		BYTE fLoadOverridePage : 1;
+		BYTE reserved1 : 1;
+		BYTE reserved2 : 1;
+		BYTE fSpare0 : 3;
 		WORD reserved3;
 		WORD reserved4;
 		DWORD reserved5;
@@ -58,7 +57,7 @@ struct Fib
 		~FibBase();
 
 		void readFibBase(std::ifstream &);
-		inline BYTE assignBits(BYTE, int);
+		inline BYTE assignBits(BYTE, BYTE, int);
 		void process_fibBase();
 	} base; // struct FibBase;
 	WORD csw;

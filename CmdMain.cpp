@@ -7,11 +7,13 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <cstring>
 #include <string>
 #include <cassert>
 #include <vector>
 #include <bitset>
-// #include <cmath>
+#include <cmath>
+#include <cwchar>
 #include "CFHeader.h"
 #include "CFDirEntry.h"
 #include "FIB.h"
@@ -23,96 +25,79 @@
 
 
 void printFibBase(Fib::FibBase);
-unsigned int fndDrctStrm(std::vector<DirEntry>, std::wstring);
+int fndDrctStrm(std::vector<DirEntry>, int&, std::u16string, const int);
 
 int main()
 {
 	
 	std::string filename;
 	filename = "test.doc";
-	std::ifstream strm;
+	std::ifstream stream;
 
-	unsigned int location = 0;			// for testing purpuses only. REMOVE WHEN FINISHED!!!
-
-	strm.open(filename, std::ios::binary);
-	if (!strm.is_open())
+	stream.open(filename, std::ios::binary);
+	if (!stream.is_open())
 	{
 		std::cerr << "Could not open the file." << std::endl;
 		return ERR_NO_OPEN;
 	}
-	if (!strm.good())
+	if (!stream.good())
 	{
 		std::cerr << "The file is probably corrupted." << std::endl;
 		return ERR_NOT_GOOD;
 	}
-	if (!strm.tellg() == ZERO_OFFSET)
-		strm.seekg(ZERO_OFFSET, std::ios::beg);
+	if (!stream.tellg() == ZERO_OFFSET)
+		stream.seekg(ZERO_OFFSET, std::ios::beg);
 	
 	// Read OLE Compound File Header first
 	OLESSHEADER oleBlock;
-	strm.read(reinterpret_cast<char *>(&oleBlock), sizeof(oleBlock));
+	oleBlock.readCFHeader(stream);
 
-	static int sectorSize;
-	if (oleBlock.VerDll == 3)
-		sectorSize = 512;
-	else if (oleBlock.VerDll == 4)
-		sectorSize = 4096;
-	else { assert(oleBlock.VerDll == 3 || oleBlock.VerDll == 4); }
+	DirEntry rootEntry;
+	const int sectorSize = static_cast<int>(pow(2, oleBlock.SectorShift));
+	stream.seekg(oleBlock.DirSect1 * sectorSize, std::ios::cur);
+	rootEntry.readDirEntry(stream);
+	stream.seekg(-sectorSize, std::ios::cur);						// rewind to build binary search tree
+	rootEntry.bldTree(rootEntry, stream, sectorSize);
 
-	// offset of Word Document Stream
-	std::vector<DirEntry> dirEntries;
-	
-	// Move to offset of First Directory
-	strm.seekg(oleBlock.DirSect1 * sectorSize, std::ios::cur);
-	
-	// Read single directory entries into a vector
-	DirEntry singleEntry;
+	/*	
 	const int entrPerSctr = sectorSize / sizeof(DirEntry);
-	do
-	{
-		strm.read(reinterpret_cast<char *>(&singleEntry), sizeof(singleEntry));
-		location = strm.tellg();
-		dirEntries.push_back(singleEntry);
-
-	} while (singleEntry.rightSibID == NOSTREAM);
+	*/
+	// Locate WordDocument stream and read File Information Block
+	std::u16string srchName(u"WordDocument");
+	int offset = rootEntry.fndDrctStrm(srchName, sectorSize);
+	stream.seekg(offset, std::ios::beg);
+	offset = -1;
 	
-	location = fndDrctStrm(dirEntries, L"WordDocument");
-
-	// Read the File Information Block
-	strm.seekg(location, std::ios::beg);
 	Fib fileInfoBlock;
-	location = -1;
-	fileInfoBlock.readFib(strm);
+	fileInfoBlock.readFib(stream);
 	
-	// offset of Table Stream
-	std::wstring table;
+	// Locate Table Stream and read Clx
 	if (fileInfoBlock.base.fWhichTblStm)
-		table = L"1Table";
-	else { table = L"0Table"; }
+		srchName = u"1Table";
+	else { srchName = u"0Table"; }
 	
-	location = fndDrctStrm(dirEntries, table);
-	strm.seekg(location, std::ios::beg);
-	
-	// Find and read Clx
+	offset = rootEntry.fndDrctStrm(srchName, sectorSize);
+	stream.seekg(offset, std::ios::beg);
+
 	Clx charProc;
-	location = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
-	int szClx = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.lcbClx;
-	strm.seekg(location, std::ios::cur);
-	strm.read(reinterpret_cast<char *>(&charProc), sizeof(charProc));
+	//offset = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
+	//int szClx = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.lcbClx;
+	//stream.seekg(offset, std::ios::cur);
+	//stream.read(reinterpret_cast<char *>(&charProc), sizeof(charProc));
 
 	// Testing...
 	std::cout << std::showbase << std::internal;
 	printFibBase(fileInfoBlock.base);
-	std::cout << "The file pointer is now at offset " << strm.tellg() <<
+	std::cout << "The file pointer is now at offset " << stream.tellg() <<
 		" and the size of the File Information Block is " << sizeof(fileInfoBlock) << std::endl << std::endl;
 
-	strm.close();
+	stream.close();
 
 	return 0;
 }
 
 
-// Print output (for testing purposes only)
+// Prints output (for testing purposes only)
 void printFibBase(Fib::FibBase obj)
 {
 	std::cout << "The value of \"wIdent\" is " << std::hex << std::uppercase << obj.wIdent << std::endl;
@@ -136,14 +121,13 @@ void printFibBase(Fib::FibBase obj)
 	std::cout << "The value of \"nFibBack\" is " << obj.nFibBack << std::endl;
 	std::cout << "The value of \"lkey\" is " << obj.lkey << std::endl;
 	std::cout << "The value of \"envr\" is " << obj.envr << std::endl;
-	std::cout << "The value of \"flags2\" is " << std::bitset<8>(obj.flags2) << std::endl;
-	// std::cout << "The value of \"fMac\" is " << std::bitset<8>(obj.fMac) << std::endl;
-	// std::cout << "The value of \"fHasPic\" is " << std::bitset<8>(obj.fHasPic) << std::endl;
-	// std::cout << "The value of \"fEmptySpecial\" is " << std::bitset<8>(obj.fEmptySpecial) << std::endl;
-	// std::cout << "The value of \"fLoadOverridePage\" is " << std::bitset<8>(obj.fLoadOverridePage) << std::endl;
-	// std::cout << "The value of \"reserved1\" is " << std::bitset<8>(obj.reserved1) << std::endl;
-	// std::cout << "The value of \"reserved2\" is " << std::bitset<8>(obj.reserved2) << std::endl;
-	// std::cout << "The value of \"fSpare0\" is " << std::bitset<8>(obj.fSpare0) << std::endl;
+	std::cout << "The value of \"fMac\" is " << std::bitset<8>(obj.fMac) << std::endl;
+	std::cout << "The value of \"fHasPic\" is " << std::bitset<8>(obj.fHasPic) << std::endl;
+	std::cout << "The value of \"fEmptySpecial\" is " << std::bitset<8>(obj.fEmptySpecial) << std::endl;
+	std::cout << "The value of \"fLoadOverridePage\" is " << std::bitset<8>(obj.fLoadOverridePage) << std::endl;
+	std::cout << "The value of \"reserved1\" is " << std::bitset<8>(obj.reserved1) << std::endl;
+	std::cout << "The value of \"reserved2\" is " << std::bitset<8>(obj.reserved2) << std::endl;
+	std::cout << "The value of \"fSpare0\" is " << std::bitset<8>(obj.fSpare0) << std::endl;
 	std::cout << "The value of \"reserved3\" is " << obj.reserved3 << std::endl;
 	std::cout << "The value of \"reserved4\" is " << obj.reserved4 << std::endl;
 	std::cout << "The value of \"reserved5\" is " << obj.reserved5 << std::endl;
@@ -152,28 +136,4 @@ void printFibBase(Fib::FibBase obj)
 	return;
 }
 
-unsigned int fndDrctStrm(std::vector<DirEntry> vec, std::wstring str)
-{
-	int index = vec[0].childID;
-	unsigned int offset = -1;
-	int actualLen = str.length();
 
-	while (true)
-	{
-		if (actualLen > vec[index].nameLength)
-			index = vec[index].rightSibID;
-		else if (actualLen < vec[index].nameLength)
-			index = vec[index].leftSibID;
-		else
-		{
-			// implement UNICODE matching
-			if (str.compare(vec[index].name) == 0)
-			{
-				offset = vec[index].startSectorLoc;
-				break;
-			}
-			// else {}		//iterate through string & do the needful
-		}
-	}
-	return offset;
-}

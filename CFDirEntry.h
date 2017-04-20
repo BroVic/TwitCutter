@@ -5,12 +5,19 @@
 #define CFDIRENTRY_H_INCLUDED
 
 #include "dtypes.h"
+#include <fstream>
 
 #define MAXREGSID 0xFFFFFFFA
-#define NOSTREAM 0xFFFFFFFF
-#define SET_BYTES 0
+#define NOSTREAM  0xFFFFFFFF
 
-#pragma pack(push, 1)
+#define RED		0xOO
+#define BLACK	0x01
+
+#define DIR_UNUSED  0x00
+#define DIR_STORAGE 0x01
+#define DIR_STREAM  0x02
+#define DIR_ROOT    0x05
+
 struct DirEntry
 {
 	WCHAR name[32];
@@ -27,9 +34,14 @@ struct DirEntry
 	DWORD startSectorLoc;
 	ULONGLONG streamSize;
 
+	DirEntry* down;
+	DirEntry* lt;
+	DirEntry* rt;
+
 	DirEntry();
 	~DirEntry();
-
+	void readDirEntry(std::ifstream &);
+	void bldTree(DirEntry&, std::ifstream&, int) const;
+	int fndDrctStrm(std::u16string, const int) const;
 };
-#pragma (pop)
 #endif // !CFDIRENTRY_H_INCLUDED

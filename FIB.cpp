@@ -46,13 +46,12 @@ Fib::FibBase::FibBase()
 	nFibBack = _SET_BYTES;
 	lkey = _SET_BYTES;
 	envr = _SET_BYTES;
-	flags2 = _SET_BYTES;
-	// fMac = _SET_BITS_1;
-	// fEmptySpecial = _SET_BITS_1;
-	// fLoadOverridePage = _SET_BITS_1;
-	// reserved1 = _SET_BITS_1;
-	// reserved2 = _SET_BITS_1;
-	// fSpare0 = _SET_BITS_3;
+	fMac = _SET_BITS_1;
+	fEmptySpecial = _SET_BITS_1;
+	fLoadOverridePage = _SET_BITS_1;
+	reserved1 = _SET_BITS_1;
+	reserved2 = _SET_BITS_1;
+	fSpare0 = _SET_BITS_3;
 	reserved3 = _SET_BYTES;
 	reserved4 = _SET_BYTES;
 	reserved5 = _SET_BYTES;
@@ -678,43 +677,43 @@ void Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003()
 
 Fib::FibRgFcLcb::FibRgFcLcb2007::FibRgFcLcb2007()
 {
-	fcPlcfmthd = _SET_BYTES;
-	lcbPlcfmthd = _SET_BYTES;
-	fcSttbfBkmkMoveFrom = _SET_BYTES;
-	lcbSttbfBkmkMoveFrom = _SET_BYTES;
-	fcPlcfBkfMoveFrom = _SET_BYTES;
-	lcbPlcfBkfMoveFrom = _SET_BYTES;
-	fcPlcfBklMoveFrom = _SET_BYTES;
-	lcbPlcfBklMoveFrom = _SET_BYTES;
-	fcSttbfBkmkMoveTo = _SET_BYTES;
-	lcbSttbfBkmkMoveTo = _SET_BYTES;
-	fcPlcfBkfMoveTo = _SET_BYTES;
-	lcbPlcfBkfMoveTo = _SET_BYTES;
-	fcPlcfBklMoveTo = _SET_BYTES;
-	lcbPlcfBklMoveTo = _SET_BYTES;
-	fcUnused1 = _SET_BYTES;
-	lcbUnused1 = _SET_BYTES;
-	fcUnused2 = _SET_BYTES;
-	lcbUnused2 = _SET_BYTES;
-	fcUnused3 = _SET_BYTES;
-	lcbUnused3 = _SET_BYTES;
-	fcSttbfBkmkArto = _SET_BYTES;
-	lcbSttbfBkmkArto = _SET_BYTES;
-	fcPlcfBkfArto = _SET_BYTES;
-	lcbPlcfBkfArto = _SET_BYTES;
-	fcPlcfBklArto = _SET_BYTES;
-	lcbPlcfBklArto = _SET_BYTES;
-	fcArtoData = _SET_BYTES;
-	lcbArtoData = _SET_BYTES;
-	fcUnused4 = _SET_BYTES;
-	lcbUnused4 = _SET_BYTES;
-	fcUnused5 = _SET_BYTES;
-	lcbUnused5 = _SET_BYTES;
-	fcUnused6 = _SET_BYTES;
-	lcbUnused6 = _SET_BYTES;
-	fcOssTheme = _SET_BYTES;
-	lcbOssTheme = _SET_BYTES;
-	fcColorSchemeMapping = _SET_BYTES;
+	fcPlcfmthd            = _SET_BYTES;
+	lcbPlcfmthd           = _SET_BYTES;
+	fcSttbfBkmkMoveFrom   = _SET_BYTES;
+	lcbSttbfBkmkMoveFrom  = _SET_BYTES;
+	fcPlcfBkfMoveFrom     = _SET_BYTES;
+	lcbPlcfBkfMoveFrom    = _SET_BYTES;
+	fcPlcfBklMoveFrom     = _SET_BYTES;
+	lcbPlcfBklMoveFrom    = _SET_BYTES;
+	fcSttbfBkmkMoveTo     = _SET_BYTES;
+	lcbSttbfBkmkMoveTo    = _SET_BYTES;
+	fcPlcfBkfMoveTo       = _SET_BYTES;
+	lcbPlcfBkfMoveTo      = _SET_BYTES;
+	fcPlcfBklMoveTo       = _SET_BYTES;
+	lcbPlcfBklMoveTo      = _SET_BYTES;
+	fcUnused1             = _SET_BYTES;
+	lcbUnused1            = _SET_BYTES;
+	fcUnused2             = _SET_BYTES;
+	lcbUnused2            = _SET_BYTES;
+	fcUnused3             = _SET_BYTES;
+	lcbUnused3            = _SET_BYTES;
+	fcSttbfBkmkArto       = _SET_BYTES;
+	lcbSttbfBkmkArto      = _SET_BYTES;
+	fcPlcfBkfArto         = _SET_BYTES;
+	lcbPlcfBkfArto        = _SET_BYTES;
+	fcPlcfBklArto         = _SET_BYTES;
+	lcbPlcfBklArto        = _SET_BYTES;
+	fcArtoData            = _SET_BYTES;
+	lcbArtoData           = _SET_BYTES;
+	fcUnused4             = _SET_BYTES;
+	lcbUnused4            = _SET_BYTES;
+	fcUnused5             = _SET_BYTES;
+	lcbUnused5            = _SET_BYTES;
+	fcUnused6             = _SET_BYTES;
+	lcbUnused6            = _SET_BYTES;
+	fcOssTheme            = _SET_BYTES;
+	lcbOssTheme           = _SET_BYTES;
+	fcColorSchemeMapping  = _SET_BYTES;
 	lcbColorSchemeMapping = _SET_BYTES;
 }
 
@@ -827,8 +826,8 @@ Fib::FibRgCswNew::FibRgCswNewData::~FibRgCswNewData()
 Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::FibRgCswNewData2007()
 {
 	lidThemeOther = _SET_BYTES;
-	lidThemeFE = _SET_BYTES;
-	lidThemeCS = _SET_BYTES;
+	lidThemeFE    = _SET_BYTES;
+	lidThemeCS    = _SET_BYTES;
 }
 
 Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::~FibRgCswNewData2007()
@@ -917,48 +916,62 @@ void Fib::FibBase::readFibBase(std::ifstream &docfile)
 {
 	docfile.read(reinterpret_cast<char *>(&wIdent), sizeof(wIdent));
 	docfile.read(reinterpret_cast<char *>(&nFib), sizeof(nFib));
-	docfile.seekg(sizeof(unused), std::ios::cur);
+	docfile.read(reinterpret_cast<char *>(&unused), sizeof(unused));
 	docfile.read(reinterpret_cast<char *>(&lid), sizeof(lid));
 	docfile.read(reinterpret_cast<char *>(&pnNext), sizeof(pnNext));
 
-	BYTE tmp = 0b0000'0000;			// temporary storage
-	const BYTE msk = 0x0F;
-	const BYTE fHP = 0x10;
-	const BYTE fC = 0x20;
-	const BYTE fG = 0x40;
-	const BYTE fD = 0x80;
-	const BYTE fO = 0x1;
-	const BYTE fFE = 0x2;
-	const BYTE fLO = 0x4;
-	const BYTE fEC = 0x1;			// must be set to 1 and ignored
-	const BYTE fWR = 0x10;
-	const BYTE fROR = 0x20;
-	const BYTE fWT = 0x40;
-	const BYTE fE = 0x80;
-
+	BYTE		tmp = 0x0;			// temporary storage
+	const BYTE	fD  = 0x1;
+	const BYTE	fG  = 0x2;
+	const BYTE	fC  = 0x4;
+	const BYTE	fHP = 0x8;
+	BYTE		msk = 0x0F;			// mask last 4 bits
+	
 	docfile.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
+	fDot		= assignBits(fD, tmp, 0);
+	fGlsy		= assignBits(fG, tmp, 1);
+	fComplex	= assignBits(fC, tmp, 2);
+	fHasPic		= assignBits(fHP, tmp, 3);
+	tmp >>= 4;
 	cQuickSaves = tmp & msk;
-	fHasPic = assignBits(fHP, 4);
-	fComplex = assignBits(fC, 5);
-	fGlsy = assignBits(fG, 6);
-	fDot = assignBits(fD, 7);
-
+	
+	const BYTE fE	= 0x1;
+	const BYTE fWT	= 0x2;
+	const BYTE fROR = 0x4;
+	const BYTE fWR	= 0x8;
+	const BYTE fEC	= 0x10;
+	const BYTE fLO	= 0x20;
+	const BYTE fFE	= 0x40;
+	const BYTE fO	= 0x80;
 	docfile.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
-	fObfuscated = assignBits(fO, 0);
-	fFarEast = assignBits(fFE, 1);
-	fLoadOverride = assignBits(fLO, 2);
-	fExtChar = fEC;
-	fWriteReservation = assignBits(fWR, 4);
-	fReadOnlyRecommended = assignBits(fROR, 5);
-	fWhichTblStm = assignBits(fWT, 6);
-	fEncrypted = assignBits(fE, 7);
+	fEncrypted				= assignBits(fE, tmp, 0);
+	fWhichTblStm			= assignBits(fWT, tmp, 1);
+	fReadOnlyRecommended	= assignBits(fROR, tmp, 2);
+	fWriteReservation		= assignBits(fWR, tmp, 3);
+	fExtChar				= assignBits(fEC, tmp, 4);
+	fLoadOverride			= assignBits(fLO, tmp, 5);
+	fFarEast				= assignBits(fFE, tmp, 6);
+	fObfuscated				= assignBits(fO, tmp, 7);
 
 	docfile.read(reinterpret_cast<char *>(&nFibBack), sizeof(nFibBack));
 	docfile.read(reinterpret_cast<char *>(&lkey), sizeof(lkey));
+	docfile.read(reinterpret_cast<char *>(&envr), sizeof(envr));
+	
+	const BYTE fM	= 0x1;
+	const BYTE fES  = 0x2;
+	const BYTE fLOP = 0x4;
+	const BYTE res1 = 0x8;
+	const BYTE res2 = 0x10;
+	msk = 0x9;
+	docfile.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
+	fMac              = assignBits(fM, tmp, 0);
+	fEmptySpecial     = assignBits(fES, tmp, 1);
+	fLoadOverridePage = assignBits(fLOP, tmp, 2);
+	reserved1         = assignBits(res1, tmp, 3);
+	reserved2         = assignBits(res2, tmp, 4);
+	tmp >>= 5;
+	fSpare0 = tmp & msk;
 
-	docfile.seekg(sizeof(envr), std::ios::cur);
-
-	docfile.read(reinterpret_cast<char *>(&flags2), sizeof(flags2));
 	docfile.read(reinterpret_cast<char *>(&reserved3), sizeof(reserved3));
 	docfile.read(reinterpret_cast<char *>(&reserved4), sizeof(reserved4));
 	docfile.read(reinterpret_cast<char *>(&reserved5), sizeof(reserved5));
@@ -1321,11 +1334,10 @@ void Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
 
 
 // Assigns values from stream to bit fields
-inline BYTE Fib::FibBase::assignBits(BYTE flag, int shftLeft)
+inline BYTE Fib::FibBase::assignBits(BYTE flag, BYTE temp, int shftRt)
 {
-	BYTE temp = 0b0000'0000;
 	temp &= flag;
-	return temp >> shftLeft;
+	return temp >> shftRt;
 }
 
 void Fib::FibBase::process_fibBase()

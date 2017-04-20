@@ -6,6 +6,9 @@
 #ifndef CFH_H_INCLUDED
 #define CFH_H_INCLUDED
 
+#include <fstream>
+#include <vector>
+#include <cmath>
 #include "dtypes.h"
 
 #define _SET_BYTES_ 0
@@ -44,8 +47,10 @@ struct OLESSHEADER
 	OLESSHEADER();
 	~OLESSHEADER();
 
+	void readCFHeader(std::ifstream&);
+	std::vector<DWORD> loadFat(std::ifstream &);
+
 }; // struct OLESSHEADER
 #pragma pack(pop)
-
 #endif // !CFH_H_INCLUDED
 
