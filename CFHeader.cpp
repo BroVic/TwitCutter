@@ -1,35 +1,43 @@
 #include "CFHeader.h"
 
-OLESSHEADER::OLESSHEADER()
+// static member variables
+DWORD CFHeader::DirSect1;
+DWORD CFHeader::Difat[109];
+
+CFHeader::CFHeader()
 {
 	for (int i = 0; i < 8; i++)
-		Sig[i] = _SET_BYTES_;
-	VerMinor = _SET_BYTES_;
-	VerDll = _SET_BYTES_;
-	ByteOrder = _SET_BYTES_;
-	SectorShift = _SET_BYTES_;
-	MinSectorShift = _SET_BYTES_;
-	Reserved = _SET_BYTES_;
-	Reserved2 = _SET_BYTES_;
-	NumDirSects = _SET_BYTES_;
-	NumFatSects = _SET_BYTES_;
-	DirSect1 = _SET_BYTES_;
-	TransactSig = _SET_BYTES_;
-	MiniStrMax = _SET_BYTES_;
-	MiniFatSect1 = _SET_BYTES_;
-	NumMiniFatSects = _SET_BYTES_;
-	DifatSect1 = _SET_BYTES_;
-	NumDifatSects = _SET_BYTES_;
-	for (int i = 0; i < 109; i++) { Difat[i] = _SET_BYTES_; }
+	{
+		Sig[i] = SET_ZERO;
+	}
+	VerMinor          = SET_ZERO;
+	VerDll            = SET_ZERO;
+	ByteOrder         = SET_ZERO;
+	SectorShift       = SET_ZERO;
+	MinSectorShift    = SET_ZERO;
+	Reserved          = SET_ZERO;
+	Reserved2         = SET_ZERO;
+	NumDirSects       = SET_ZERO;
+	NumFatSects       = SET_ZERO;
+	DirSect1          = SET_ZERO;
+	TransactSig       = SET_ZERO;
+	MiniStrMax        = SET_ZERO;
+	MiniFatSect1      = SET_ZERO;
+	NumMiniFatSects   = SET_ZERO;
+	DifatSect1        = SET_ZERO;
+	NumDifatSects     = SET_ZERO;
+	for (int i = 0; i < 109; i++) 
+	{
+		Difat[i] = SET_ZERO; 
+	}
 }
 
-OLESSHEADER::~OLESSHEADER()
+CFHeader::~CFHeader()
 {
 }
 
-void OLESSHEADER::readCFHeader(std::ifstream & dcstream)
-{
-	 Sig;
+VOID CFHeader::readCFHeader(std::ifstream & dcstream)
+{ 
 	 dcstream.read(reinterpret_cast<char *>(&Sig), sizeof(Sig));
 	 dcstream.read(reinterpret_cast<char *>(&CLSID_NULL), sizeof(CLSID_NULL));
 	 dcstream.read(reinterpret_cast<char *>(&VerMinor), sizeof(VerMinor));
@@ -53,19 +61,18 @@ void OLESSHEADER::readCFHeader(std::ifstream & dcstream)
 	 return;
 }
 
-std::vector<DWORD> OLESSHEADER::loadFat(std::ifstream & stream)
+std::vector<DWORD> CFHeader::loadFat(std::ifstream & stream, const WORD szSect) 
 {
-	const int szSect = static_cast<int>(pow(2, SectorShift));
-	// int lnFat = NumFatSects * szSect;
 	std::vector<DWORD> fat;
 	
 	int i = 0;
 	while (Difat[i] != FREESECT)
 	{
 		DWORD fatValue;
-		int offset = Difat[i + 1] * szSect;
+		DWORD offset = (Difat[i] + 1) * szSect;
 		stream.seekg(offset, std::ios::beg);
-		for (int j = 0; j < szSect; j++)
+		const DWORD len = szSect / sizeof(fatValue);
+		for (DWORD j = 0; j < len; j++)
 		{
 			stream.read(reinterpret_cast<char *>(&fatValue), sizeof(fatValue));
 			fat.push_back(fatValue);
@@ -73,4 +80,40 @@ std::vector<DWORD> OLESSHEADER::loadFat(std::ifstream & stream)
 		i++;
 	}
 	return fat;
+}
+
+BOOL CFHeader::use_difat_sect()
+{
+	if (NumDifatSects == 0 && DifatSect1 == ENDOFCHAIN)
+	{
+		return false;
+	}
+	return true;
+	
+}
+
+DWORD CFHeader::fat_len(std::ifstream& streams, const WORD sctSz)
+{
+	DWORD val;
+	val = Difat[0];
+	val = (val - 1) + NumFatSects;
+	val = (val + 1) * sctSz;
+	
+	DWORD temp[128];
+	streams.seekg(val, std::ios::beg);
+	streams.read(reinterpret_cast<char *>(&temp), sctSz);
+	
+	int ovrflw = 0;
+	while (temp[ovrflw] != FREESECT)
+	{
+		ovrflw++;
+	}
+	val = ((NumFatSects - 1) * sctSz) + ovrflw;
+
+	return val;
+}
+
+WORD CFHeader::set_sector_size() const
+{
+	return static_cast<WORD>(pow(2, SectorShift));
 }

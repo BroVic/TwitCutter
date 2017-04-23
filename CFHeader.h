@@ -11,18 +11,18 @@
 #include <cmath>
 #include "dtypes.h"
 
-#define _SET_BYTES_ 0
+#define SET_ZERO 0
 
 // Special values for Compound File data structures
-#define MAXREGSECT	0xFFFFFFFA
-#define RESERVED	0xFFFFFFFB		// not applicable
-#define DIFSECT		0xFFFFFFFC
-#define FATSECT		0xFFFFFFFD
-#define ENDOFCHAIN	0xFFFFFFFE
-#define FREESECT	0xFFFFFFFF
+const DWORD MAXREGSECT  = 0xFFFFFFFA;
+const DWORD RESERVED    = 0xFFFFFFFB;		// not applicable
+const DWORD DIFSECT     = 0xFFFFFFFC;
+const DWORD FATSECT     = 0xFFFFFFFD;
+const DWORD ENDOFCHAIN  = 0xFFFFFFFE;
+const DWORD FREESECT    = 0xFFFFFFFF;
 
 #pragma pack(push, 1)
-struct OLESSHEADER
+struct CFHeader
 {
 	BYTE Sig[8];
 	CLSID CLSID_NULL;
@@ -35,22 +35,27 @@ struct OLESSHEADER
 	DWORD Reserved2;
 	DWORD NumDirSects;
 	DWORD NumFatSects;
-	DWORD DirSect1;
+	static DWORD DirSect1;
 	DWORD TransactSig;
 	DWORD MiniStrMax;
 	DWORD MiniFatSect1;
 	DWORD NumMiniFatSects;
 	DWORD DifatSect1;
 	DWORD NumDifatSects;
-	DWORD Difat[109];
+	static DWORD Difat[109];
 
-	OLESSHEADER();
-	~OLESSHEADER();
+	CFHeader();
+	~CFHeader();
 
-	void readCFHeader(std::ifstream&);
-	std::vector<DWORD> loadFat(std::ifstream &);
+	VOID readCFHeader(std::ifstream&);
+	static std::vector<DWORD> loadFat(std::ifstream&, const WORD);
+	BOOL use_difat_sect();
+	DWORD fat_len(std::ifstream&, const WORD);
+	
+	WORD set_sector_size() const;
 
-}; // struct OLESSHEADER
+
+}; // struct CFHeader
 #pragma pack(pop)
 #endif // !CFH_H_INCLUDED
 

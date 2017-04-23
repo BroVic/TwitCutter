@@ -4,19 +4,28 @@
 #include <cassert>
 
 // nFib values
-#define FOR_WORD_97 0x00C1
-#define FOR_WORD_2000 0x00D9
-#define FOR_WORD_2002 0x0101
-#define FOR_WORD_2003 0x010C
-#define FOR_WORD_2007 0x0112
+constexpr WORD FOR_WORD_97   = 0x00C1;
+constexpr WORD FOR_WORD_2000 = 0x00D9;
+constexpr WORD FOR_WORD_2002 = 0x0101;
+constexpr WORD FOR_WORD_2003 = 0x010C;
+constexpr WORD FOR_WORD_2007 = 0x0112;
 
-// Default constructors/decostructors
+// static member variables
+WORD Fib::csw;
+WORD Fib::cslw;
+WORD Fib::cbRgFcLcb;
+WORD Fib::cswNew;
+
+DWORD Fib::FibRgFcLcb::FibRgFcLcb97::fcClx;
+DWORD Fib::FibRgFcLcb::FibRgFcLcb97::lcbClx;
+
+
 Fib::Fib()
 {
-	csw			= _SET_BYTES;
-	cslw		= _SET_BYTES;
-	cbRgFcLcb	= _SET_BYTES;
-	cswNew		= _SET_BYTES;
+	csw			= SET_ZERO;
+	cslw		= SET_ZERO;
+	cbRgFcLcb	= SET_ZERO;
+	cswNew		= SET_ZERO;
 }
 
 Fib::~Fib()
@@ -25,11 +34,11 @@ Fib::~Fib()
 
 Fib::FibBase::FibBase()
 {
-	wIdent					= _SET_BYTES;
-	nFib					= _SET_BYTES;
-	unused					= _SET_BYTES;
-	lid						= _SET_BYTES;
-	pnNext					= _SET_BYTES;
+	wIdent					= SET_ZERO;
+	nFib					= SET_ZERO;
+	unused					= SET_ZERO;
+	lid						= SET_ZERO;
+	pnNext					= SET_ZERO;
 	fDot					= _SET_BITS_1;
 	fGlsy					= _SET_BITS_1;
 	fComplex				= _SET_BITS_1;
@@ -43,19 +52,19 @@ Fib::FibBase::FibBase()
 	fLoadOverride			= _SET_BITS_1;
 	fFarEast				= _SET_BITS_1;
 	fObfuscated				= _SET_BITS_1;
-	nFibBack				= _SET_BYTES;
-	lkey					= _SET_BYTES;
-	envr					= _SET_BYTES;
+	nFibBack				= SET_ZERO;
+	lkey					= SET_ZERO;
+	envr					= SET_ZERO;
 	fMac					= _SET_BITS_1;
 	fEmptySpecial			= _SET_BITS_1;
 	fLoadOverridePage		= _SET_BITS_1;
 	reserved1				= _SET_BITS_1;
 	reserved2				= _SET_BITS_1;
 	fSpare0					= _SET_BITS_3;
-	reserved3				= _SET_BYTES;
-	reserved4				= _SET_BYTES;
-	reserved5				= _SET_BYTES;
-	reserved6				= _SET_BYTES;
+	reserved3				= SET_ZERO;
+	reserved4				= SET_ZERO;
+	reserved5				= SET_ZERO;
+	reserved6				= SET_ZERO;
 }
 
 Fib::FibBase::~FibBase()
@@ -64,20 +73,20 @@ Fib::FibBase::~FibBase()
 
 Fib::FibRgW97::FibRgW97()
 {
-	reserved1	= _SET_BYTES;
-	reserved2	= _SET_BYTES;
-	reserved3	= _SET_BYTES;
-	reserved4	= _SET_BYTES;
-	reserved5	= _SET_BYTES;
-	reserved6	= _SET_BYTES;
-	reserved7	= _SET_BYTES;
-	reserved8	= _SET_BYTES;
-	reserved9	= _SET_BYTES;
-	reserved10	= _SET_BYTES;
-	reserved11	= _SET_BYTES;
-	reserved12	= _SET_BYTES;
-	reserved13	= _SET_BYTES;
-	lidFE = _SET_BYTES;
+	reserved1	= SET_ZERO;
+	reserved2	= SET_ZERO;
+	reserved3	= SET_ZERO;
+	reserved4	= SET_ZERO;
+	reserved5	= SET_ZERO;
+	reserved6	= SET_ZERO;
+	reserved7	= SET_ZERO;
+	reserved8	= SET_ZERO;
+	reserved9	= SET_ZERO;
+	reserved10	= SET_ZERO;
+	reserved11	= SET_ZERO;
+	reserved12	= SET_ZERO;
+	reserved13	= SET_ZERO;
+	lidFE = SET_ZERO;
 }
 
 Fib::FibRgW97::~FibRgW97()
@@ -86,28 +95,28 @@ Fib::FibRgW97::~FibRgW97()
 
 Fib::FibRgLw97::FibRgLw97()
 {
-	cbMac		= _SET_BYTES;
-	reserved1	= _SET_BYTES;
-	reserved2	= _SET_BYTES;
-	ccpText		= _SET_BYTES;
-	ccpFtn		= _SET_BYTES;
-	ccpHdd		= _SET_BYTES;
-	reserved3	= _SET_BYTES;
-	ccpAtn		= _SET_BYTES;
-	ccpEdn		= _SET_BYTES;
-	ccpTxbx		= _SET_BYTES;
-	ccpHdrTxbx	= _SET_BYTES;
-	reserved4	= _SET_BYTES;
-	reserved5	= _SET_BYTES;
-	reserved6	= _SET_BYTES;
-	reserved7	= _SET_BYTES;
-	reserved8	= _SET_BYTES;
-	reserved9	= _SET_BYTES;
-	reserved10	= _SET_BYTES;
-	reserved11	= _SET_BYTES;
-	reserved12	= _SET_BYTES;
-	reserved13	= _SET_BYTES;
-	reserved14	= _SET_BYTES;
+	cbMac		= SET_ZERO;
+	reserved1	= SET_ZERO;
+	reserved2	= SET_ZERO;
+	ccpText		= SET_ZERO;
+	ccpFtn		= SET_ZERO;
+	ccpHdd		= SET_ZERO;
+	reserved3	= SET_ZERO;
+	ccpAtn		= SET_ZERO;
+	ccpEdn		= SET_ZERO;
+	ccpTxbx		= SET_ZERO;
+	ccpHdrTxbx	= SET_ZERO;
+	reserved4	= SET_ZERO;
+	reserved5	= SET_ZERO;
+	reserved6	= SET_ZERO;
+	reserved7	= SET_ZERO;
+	reserved8	= SET_ZERO;
+	reserved9	= SET_ZERO;
+	reserved10	= SET_ZERO;
+	reserved11	= SET_ZERO;
+	reserved12	= SET_ZERO;
+	reserved13	= SET_ZERO;
+	reserved14	= SET_ZERO;
 }
 
 Fib::FibRgLw97::~FibRgLw97()
@@ -124,192 +133,192 @@ Fib::FibRgFcLcb::~FibRgFcLcb()
 
 Fib::FibRgFcLcb::FibRgFcLcb97::FibRgFcLcb97()
 {
-	fcStshfOrig			= _SET_BYTES;
-	lcbStshfOrig		= _SET_BYTES;
-	fcStshf				= _SET_BYTES;
-	lcbStshf			= _SET_BYTES;
-	fcPlcffndRef		= _SET_BYTES;
-	lcbPlcffndRef		= _SET_BYTES;
-	fcPlcffndTxt		= _SET_BYTES;
-	lcbPlcffndTxt		= _SET_BYTES;
-	fcPlcfandRef		= _SET_BYTES;
-	lcbPlcfandRef		= _SET_BYTES;
-	fcPlcfandTxt		= _SET_BYTES;
-	lcbPlcfandTxt		= _SET_BYTES;
-	fcPlcfSed			= _SET_BYTES;
-	lcbPlcfSed			= _SET_BYTES;
-	fcPlcPad			= _SET_BYTES;
-	lcbPlcPad			= _SET_BYTES;
-	fcPlcfPhe			= _SET_BYTES;
-	lcbPlcfPhe			= _SET_BYTES;
-	fcSttbfGlsy			= _SET_BYTES;
-	lcbSttbfGlsy		= _SET_BYTES;
-	fcPlcfGlsy			= _SET_BYTES;
-	lcbPlcfGlsy			= _SET_BYTES;
-	fcPlcfHdd			= _SET_BYTES;
-	lcbPlcfHdd			= _SET_BYTES;
-	fcPlcfBteChpx		= _SET_BYTES;
-	lcbPlcfBteChpx		= _SET_BYTES;
-	fcPlcfBtePapx		= _SET_BYTES;
-	lcbPlcfBtePapx		= _SET_BYTES;
-	fcPlcfSea			= _SET_BYTES;
-	lcbPlcfSea			= _SET_BYTES;
-	fcSttbfFfn			= _SET_BYTES;
-	lcbSttbfFfn			= _SET_BYTES;
-	fcPlcfFldMom		= _SET_BYTES;
-	lcbPlcfFldMom		= _SET_BYTES;
-	fcPlcfFldHdr		= _SET_BYTES;
-	lcbPlcfFldHdr		= _SET_BYTES;
-	fcPlcfFldFtn		= _SET_BYTES;
-	lcbPlcfFldFtn		= _SET_BYTES;
-	fcPlcfFldAtn		= _SET_BYTES;
-	lcbPlcfFldAtn		= _SET_BYTES;
-	fcPlcfFldMcr		= _SET_BYTES;
-	lcbPlcfFldMcr		= _SET_BYTES;
-	fcSttbfBkmk			= _SET_BYTES;
-	lcbSttbfBkmk		= _SET_BYTES;
-	fcPlcfBkf			= _SET_BYTES;
-	lcbPlcfBkf			= _SET_BYTES;
-	fcPlcfBkl			= _SET_BYTES;
-	lcbPlcfBkl			= _SET_BYTES;
-	fcCmds				= _SET_BYTES;
-	lcbCmds				= _SET_BYTES;
-	fcUnused1			= _SET_BYTES;
-	lcbUnused1			= _SET_BYTES;
-	fcSttbfMcr			= _SET_BYTES;
-	lcbSttbfMcr			= _SET_BYTES;
-	fcPrDrvr			= _SET_BYTES;
-	lcbPrDrvr			= _SET_BYTES;
-	fcPrEnvPort			= _SET_BYTES;
-	lcbPrEnvPort		= _SET_BYTES;
-	fcPrEnvLand			= _SET_BYTES;
-	lcbPrEnvLand		= _SET_BYTES;
-	fcWss				= _SET_BYTES;
-	lcbWss				= _SET_BYTES;
-	fcDop				= _SET_BYTES;
-	lcbDop				= _SET_BYTES;
-	fcSttbfAssoc		= _SET_BYTES;
-	lcbSttbfAssoc		= _SET_BYTES;
-	fcClx				= _SET_BYTES;
-	lcbClx				= _SET_BYTES;
-	fcPlcfPgdFtn		= _SET_BYTES;
-	lcbPlcfPgdFtn		= _SET_BYTES;
-	fcAutosaveSource	= _SET_BYTES;
-	lcbAutosaveSource	= _SET_BYTES;
-	fcGrpXstAtnOwners	= _SET_BYTES;
-	lcbGrpXstAtnOwners	= _SET_BYTES;
-	fcSttbfAtnBkmk		= _SET_BYTES;
-	lcbSttbfAtnBkmk		= _SET_BYTES;
-	fcUnused2			= _SET_BYTES;
-	lcbUnused2			= _SET_BYTES;
-	fcUnused3			= _SET_BYTES;
-	lcbUnused3			= _SET_BYTES;
-	fcPlcSpaMom			= _SET_BYTES;
-	lcbPlcSpaMom		= _SET_BYTES;
-	fcPlcSpaHdr			= _SET_BYTES;
-	lcbPlcSpaHdr		= _SET_BYTES;
-	fcPlcfAtnBkf		= _SET_BYTES;
-	lcbPlcfAtnBkf		= _SET_BYTES;
-	fcPlcfAtnBkl		= _SET_BYTES;
-	lcbPlcfAtnBkl		= _SET_BYTES;
-	fcPms				= _SET_BYTES;
-	lcbPms				= _SET_BYTES;
-	fcFormFldSttbs		= _SET_BYTES;
-	lcbFormFldSttbs		= _SET_BYTES;
-	fcPlcfendRef		= _SET_BYTES;
-	lcbPlcfendRef		= _SET_BYTES;
-	fcPlcfendTxt		= _SET_BYTES;
-	lcbPlcfendTxt		= _SET_BYTES;
-	fcPlcfFldEdn		= _SET_BYTES;
-	lcbPlcfFldEdn		= _SET_BYTES;
-	fcUnused4			= _SET_BYTES;
-	lcbUnused4			= _SET_BYTES;
-	fcDggInfo			= _SET_BYTES;
-	lcbDggInfo			= _SET_BYTES;
-	fcSttbfRMark		= _SET_BYTES;
-	lcbSttbfRMark		= _SET_BYTES;
-	fcSttbfCaption		= _SET_BYTES;
-	lcbSttbfCaption		= _SET_BYTES;
-	fcSttbfAutoCaption	= _SET_BYTES;
-	lcbSttbfAutoCaption = _SET_BYTES;
-	fcPlcfWkb			= _SET_BYTES;
-	lcbPlcfWkb			= _SET_BYTES;
-	fcPlcfSpl			= _SET_BYTES;
-	lcbPlcfSpl			= _SET_BYTES;
-	fcPlcftxbxTxt		= _SET_BYTES;
-	lcbPlcftxbxTxt		= _SET_BYTES;
-	fcPlcfFldTxbx		= _SET_BYTES;
-	lcbPlcfFldTxbx		= _SET_BYTES;
-	fcPlcfHdrtxbxTxt	= _SET_BYTES;
-	lcbPlcfHdrtxbxTxt	= _SET_BYTES;
-	fcPlcffldHdrTxbx	= _SET_BYTES;
-	lcbPlcffldHdrTxbx	= _SET_BYTES;
-	fcStwUser			= _SET_BYTES;
-	lcbStwUser			= _SET_BYTES;
-	fcSttbTtmbd			= _SET_BYTES;
-	lcbSttbTtmbd		= _SET_BYTES;
-	fcCookieData		= _SET_BYTES;
-	lcbCookieData		= _SET_BYTES;
-	fcPgdMotherOldOld	= _SET_BYTES;
-	lcbPgdMotherOldOld	= _SET_BYTES;
-	fcBkdMotherOldOld	= _SET_BYTES;
-	lcbBkdMotherOldOld	= _SET_BYTES;
-	fcPgdFtnOldOld		= _SET_BYTES;
-	lcbPgdFtnOldOld		= _SET_BYTES;
-	fcBkdFtnOldOld		= _SET_BYTES;
-	lcbBkdFtnOldOld		= _SET_BYTES;
-	fcPgdEdnOldOld		= _SET_BYTES;
-	lcbPgdEdnOldOld		= _SET_BYTES;
-	fcBkdEdnOldOld		= _SET_BYTES;
-	lcbBkdEdnOldOld		= _SET_BYTES;
-	fcSttbfIntlFld		= _SET_BYTES;
-	lcbSttbfIntlFld		= _SET_BYTES;
-	fcRouteSlip			= _SET_BYTES;
-	lcbRouteSlip		= _SET_BYTES;
-	fcSttbSavedBy		= _SET_BYTES;
-	lcbSttbSavedBy		= _SET_BYTES;
-	fcSttbFnm			= _SET_BYTES;
-	lcbSttbFnm			= _SET_BYTES;
-	fcPlfLst			= _SET_BYTES;
-	lcbPlfLst			= _SET_BYTES;
-	fcPlfLfo			= _SET_BYTES;
-	lcbPlfLfo			= _SET_BYTES;
-	fcPlcfTxbxBkd		= _SET_BYTES;
-	lcbPlcfTxbxBkd		= _SET_BYTES;
-	fcPlcfTxbxHdrBkd	= _SET_BYTES;
-	lcbPlcfTxbxHdrBkd	= _SET_BYTES;
-	fcDocUndoWord9		= _SET_BYTES;
-	lcbDocUndoWord9		= _SET_BYTES;
-	fcRgbUse			= _SET_BYTES;
-	lcbRgbUse			= _SET_BYTES;
-	fcUsp				= _SET_BYTES;
-	lcbUsp				= _SET_BYTES;
-	fcUskf				= _SET_BYTES;
-	lcbUskf				= _SET_BYTES;
-	fcPlcupcRgbUse		= _SET_BYTES;
-	lcbPlcupcRgbUse		= _SET_BYTES;
-	fcPlcupcUsp			= _SET_BYTES;
-	lcbPlcupcUsp		= _SET_BYTES;
-	fcSttbGlsyStyle		= _SET_BYTES;
-	lcbSttbGlsyStyle	= _SET_BYTES;
-	fcPlgosl			= _SET_BYTES;
-	lcbPlgosl			= _SET_BYTES;
-	fcPlcocx			= _SET_BYTES;
-	lcbPlcocx			= _SET_BYTES;
-	fcPlcfBteLvc		= _SET_BYTES;
-	lcbPlcfBteLvc		= _SET_BYTES;
-	dwLowDateTime		= _SET_BYTES;
-	dwHighDateTime		= _SET_BYTES;
-	fcPlcfLvcPre10		= _SET_BYTES;
-	lcbPlcfLvcPre10		= _SET_BYTES;
-	fcPlcfAsumy			= _SET_BYTES;
-	lcbPlcfAsumy		= _SET_BYTES;
-	fcPlcfGram			= _SET_BYTES;
-	lcbPlcfGram			= _SET_BYTES;
-	fcSttbListNames		= _SET_BYTES;
-	lcbSttbListNames	= _SET_BYTES;
-	fcSttbfUssr			= _SET_BYTES;
-	lcbSttbfUssr		= _SET_BYTES;
+	fcStshfOrig			= SET_ZERO;
+	lcbStshfOrig		= SET_ZERO;
+	fcStshf				= SET_ZERO;
+	lcbStshf			= SET_ZERO;
+	fcPlcffndRef		= SET_ZERO;
+	lcbPlcffndRef		= SET_ZERO;
+	fcPlcffndTxt		= SET_ZERO;
+	lcbPlcffndTxt		= SET_ZERO;
+	fcPlcfandRef		= SET_ZERO;
+	lcbPlcfandRef		= SET_ZERO;
+	fcPlcfandTxt		= SET_ZERO;
+	lcbPlcfandTxt		= SET_ZERO;
+	fcPlcfSed			= SET_ZERO;
+	lcbPlcfSed			= SET_ZERO;
+	fcPlcPad			= SET_ZERO;
+	lcbPlcPad			= SET_ZERO;
+	fcPlcfPhe			= SET_ZERO;
+	lcbPlcfPhe			= SET_ZERO;
+	fcSttbfGlsy			= SET_ZERO;
+	lcbSttbfGlsy		= SET_ZERO;
+	fcPlcfGlsy			= SET_ZERO;
+	lcbPlcfGlsy			= SET_ZERO;
+	fcPlcfHdd			= SET_ZERO;
+	lcbPlcfHdd			= SET_ZERO;
+	fcPlcfBteChpx		= SET_ZERO;
+	lcbPlcfBteChpx		= SET_ZERO;
+	fcPlcfBtePapx		= SET_ZERO;
+	lcbPlcfBtePapx		= SET_ZERO;
+	fcPlcfSea			= SET_ZERO;
+	lcbPlcfSea			= SET_ZERO;
+	fcSttbfFfn			= SET_ZERO;
+	lcbSttbfFfn			= SET_ZERO;
+	fcPlcfFldMom		= SET_ZERO;
+	lcbPlcfFldMom		= SET_ZERO;
+	fcPlcfFldHdr		= SET_ZERO;
+	lcbPlcfFldHdr		= SET_ZERO;
+	fcPlcfFldFtn		= SET_ZERO;
+	lcbPlcfFldFtn		= SET_ZERO;
+	fcPlcfFldAtn		= SET_ZERO;
+	lcbPlcfFldAtn		= SET_ZERO;
+	fcPlcfFldMcr		= SET_ZERO;
+	lcbPlcfFldMcr		= SET_ZERO;
+	fcSttbfBkmk			= SET_ZERO;
+	lcbSttbfBkmk		= SET_ZERO;
+	fcPlcfBkf			= SET_ZERO;
+	lcbPlcfBkf			= SET_ZERO;
+	fcPlcfBkl			= SET_ZERO;
+	lcbPlcfBkl			= SET_ZERO;
+	fcCmds				= SET_ZERO;
+	lcbCmds				= SET_ZERO;
+	fcUnused1			= SET_ZERO;
+	lcbUnused1			= SET_ZERO;
+	fcSttbfMcr			= SET_ZERO;
+	lcbSttbfMcr			= SET_ZERO;
+	fcPrDrvr			= SET_ZERO;
+	lcbPrDrvr			= SET_ZERO;
+	fcPrEnvPort			= SET_ZERO;
+	lcbPrEnvPort		= SET_ZERO;
+	fcPrEnvLand			= SET_ZERO;
+	lcbPrEnvLand		= SET_ZERO;
+	fcWss				= SET_ZERO;
+	lcbWss				= SET_ZERO;
+	fcDop				= SET_ZERO;
+	lcbDop				= SET_ZERO;
+	fcSttbfAssoc		= SET_ZERO;
+	lcbSttbfAssoc		= SET_ZERO;
+	fcClx				= SET_ZERO;
+	lcbClx				= SET_ZERO;
+	fcPlcfPgdFtn		= SET_ZERO;
+	lcbPlcfPgdFtn		= SET_ZERO;
+	fcAutosaveSource	= SET_ZERO;
+	lcbAutosaveSource	= SET_ZERO;
+	fcGrpXstAtnOwners	= SET_ZERO;
+	lcbGrpXstAtnOwners	= SET_ZERO;
+	fcSttbfAtnBkmk		= SET_ZERO;
+	lcbSttbfAtnBkmk		= SET_ZERO;
+	fcUnused2			= SET_ZERO;
+	lcbUnused2			= SET_ZERO;
+	fcUnused3			= SET_ZERO;
+	lcbUnused3			= SET_ZERO;
+	fcPlcSpaMom			= SET_ZERO;
+	lcbPlcSpaMom		= SET_ZERO;
+	fcPlcSpaHdr			= SET_ZERO;
+	lcbPlcSpaHdr		= SET_ZERO;
+	fcPlcfAtnBkf		= SET_ZERO;
+	lcbPlcfAtnBkf		= SET_ZERO;
+	fcPlcfAtnBkl		= SET_ZERO;
+	lcbPlcfAtnBkl		= SET_ZERO;
+	fcPms				= SET_ZERO;
+	lcbPms				= SET_ZERO;
+	fcFormFldSttbs		= SET_ZERO;
+	lcbFormFldSttbs		= SET_ZERO;
+	fcPlcfendRef		= SET_ZERO;
+	lcbPlcfendRef		= SET_ZERO;
+	fcPlcfendTxt		= SET_ZERO;
+	lcbPlcfendTxt		= SET_ZERO;
+	fcPlcfFldEdn		= SET_ZERO;
+	lcbPlcfFldEdn		= SET_ZERO;
+	fcUnused4			= SET_ZERO;
+	lcbUnused4			= SET_ZERO;
+	fcDggInfo			= SET_ZERO;
+	lcbDggInfo			= SET_ZERO;
+	fcSttbfRMark		= SET_ZERO;
+	lcbSttbfRMark		= SET_ZERO;
+	fcSttbfCaption		= SET_ZERO;
+	lcbSttbfCaption		= SET_ZERO;
+	fcSttbfAutoCaption	= SET_ZERO;
+	lcbSttbfAutoCaption = SET_ZERO;
+	fcPlcfWkb			= SET_ZERO;
+	lcbPlcfWkb			= SET_ZERO;
+	fcPlcfSpl			= SET_ZERO;
+	lcbPlcfSpl			= SET_ZERO;
+	fcPlcftxbxTxt		= SET_ZERO;
+	lcbPlcftxbxTxt		= SET_ZERO;
+	fcPlcfFldTxbx		= SET_ZERO;
+	lcbPlcfFldTxbx		= SET_ZERO;
+	fcPlcfHdrtxbxTxt	= SET_ZERO;
+	lcbPlcfHdrtxbxTxt	= SET_ZERO;
+	fcPlcffldHdrTxbx	= SET_ZERO;
+	lcbPlcffldHdrTxbx	= SET_ZERO;
+	fcStwUser			= SET_ZERO;
+	lcbStwUser			= SET_ZERO;
+	fcSttbTtmbd			= SET_ZERO;
+	lcbSttbTtmbd		= SET_ZERO;
+	fcCookieData		= SET_ZERO;
+	lcbCookieData		= SET_ZERO;
+	fcPgdMotherOldOld	= SET_ZERO;
+	lcbPgdMotherOldOld	= SET_ZERO;
+	fcBkdMotherOldOld	= SET_ZERO;
+	lcbBkdMotherOldOld	= SET_ZERO;
+	fcPgdFtnOldOld		= SET_ZERO;
+	lcbPgdFtnOldOld		= SET_ZERO;
+	fcBkdFtnOldOld		= SET_ZERO;
+	lcbBkdFtnOldOld		= SET_ZERO;
+	fcPgdEdnOldOld		= SET_ZERO;
+	lcbPgdEdnOldOld		= SET_ZERO;
+	fcBkdEdnOldOld		= SET_ZERO;
+	lcbBkdEdnOldOld		= SET_ZERO;
+	fcSttbfIntlFld		= SET_ZERO;
+	lcbSttbfIntlFld		= SET_ZERO;
+	fcRouteSlip			= SET_ZERO;
+	lcbRouteSlip		= SET_ZERO;
+	fcSttbSavedBy		= SET_ZERO;
+	lcbSttbSavedBy		= SET_ZERO;
+	fcSttbFnm			= SET_ZERO;
+	lcbSttbFnm			= SET_ZERO;
+	fcPlfLst			= SET_ZERO;
+	lcbPlfLst			= SET_ZERO;
+	fcPlfLfo			= SET_ZERO;
+	lcbPlfLfo			= SET_ZERO;
+	fcPlcfTxbxBkd		= SET_ZERO;
+	lcbPlcfTxbxBkd		= SET_ZERO;
+	fcPlcfTxbxHdrBkd	= SET_ZERO;
+	lcbPlcfTxbxHdrBkd	= SET_ZERO;
+	fcDocUndoWord9		= SET_ZERO;
+	lcbDocUndoWord9		= SET_ZERO;
+	fcRgbUse			= SET_ZERO;
+	lcbRgbUse			= SET_ZERO;
+	fcUsp				= SET_ZERO;
+	lcbUsp				= SET_ZERO;
+	fcUskf				= SET_ZERO;
+	lcbUskf				= SET_ZERO;
+	fcPlcupcRgbUse		= SET_ZERO;
+	lcbPlcupcRgbUse		= SET_ZERO;
+	fcPlcupcUsp			= SET_ZERO;
+	lcbPlcupcUsp		= SET_ZERO;
+	fcSttbGlsyStyle		= SET_ZERO;
+	lcbSttbGlsyStyle	= SET_ZERO;
+	fcPlgosl			= SET_ZERO;
+	lcbPlgosl			= SET_ZERO;
+	fcPlcocx			= SET_ZERO;
+	lcbPlcocx			= SET_ZERO;
+	fcPlcfBteLvc		= SET_ZERO;
+	lcbPlcfBteLvc		= SET_ZERO;
+	dwLowDateTime		= SET_ZERO;
+	dwHighDateTime		= SET_ZERO;
+	fcPlcfLvcPre10		= SET_ZERO;
+	lcbPlcfLvcPre10		= SET_ZERO;
+	fcPlcfAsumy			= SET_ZERO;
+	lcbPlcfAsumy		= SET_ZERO;
+	fcPlcfGram			= SET_ZERO;
+	lcbPlcfGram			= SET_ZERO;
+	fcSttbListNames		= SET_ZERO;
+	lcbSttbListNames	= SET_ZERO;
+	fcSttbfUssr			= SET_ZERO;
+	lcbSttbfUssr		= SET_ZERO;
 }
 
 Fib::FibRgFcLcb::FibRgFcLcb97::~FibRgFcLcb97()
@@ -318,82 +327,44 @@ Fib::FibRgFcLcb::FibRgFcLcb97::~FibRgFcLcb97()
 
 Fib::FibRgFcLcb::FibRgFcLcb2000::FibRgFcLcb2000()
 {
-	fcPlcfTch			= _SET_BYTES;
-	lcbPlcfTch			= _SET_BYTES;
-	fcRmdThreading		= _SET_BYTES;
-	lcbRmdThreading		= _SET_BYTES;
-	fcMid				= _SET_BYTES;
-	lcbMid				= _SET_BYTES;
-	fcSttbRgtplc		= _SET_BYTES;
-	lcbSttbRgtplc		= _SET_BYTES;
-	fcMsoEnvelope		= _SET_BYTES;
-	lcbMsoEnvelope		= _SET_BYTES;
-	fcPlcfLad			= _SET_BYTES;
-	lcbPlcfLad			= _SET_BYTES;
-	fcRgDofr			= _SET_BYTES;
-	lcbRgDofr			= _SET_BYTES;
-	fcPlcosl			= _SET_BYTES;
-	lcbPlcosl			= _SET_BYTES;
-	fcPlcfCookieOld		= _SET_BYTES;
-	lcbPlcfCookieOld	= _SET_BYTES;
-	fcPgdMotherOld		= _SET_BYTES;
-	lcbPgdMotherOld		= _SET_BYTES;
-	fcBkdMotherOld		= _SET_BYTES;
-	lcbBkdMotherOld		= _SET_BYTES;
-	fcPgdFtnOld			= _SET_BYTES;
-	lcbPgdFtnOld		= _SET_BYTES;
-	fcBkdFtnOld			= _SET_BYTES;
-	lcbBkdFtnOld		= _SET_BYTES;
-	fcPgdEdnOld			= _SET_BYTES;
-	lcbPgdEdnOld		= _SET_BYTES;
-	fcBkdEdnOld			= _SET_BYTES;
-	lcbBkdEdnOld		= _SET_BYTES;
+	fcPlcfTch			= SET_ZERO;
+	lcbPlcfTch			= SET_ZERO;
+	fcRmdThreading		= SET_ZERO;
+	lcbRmdThreading		= SET_ZERO;
+	fcMid				= SET_ZERO;
+	lcbMid				= SET_ZERO;
+	fcSttbRgtplc		= SET_ZERO;
+	lcbSttbRgtplc		= SET_ZERO;
+	fcMsoEnvelope		= SET_ZERO;
+	lcbMsoEnvelope		= SET_ZERO;
+	fcPlcfLad			= SET_ZERO;
+	lcbPlcfLad			= SET_ZERO;
+	fcRgDofr			= SET_ZERO;
+	lcbRgDofr			= SET_ZERO;
+	fcPlcosl			= SET_ZERO;
+	lcbPlcosl			= SET_ZERO;
+	fcPlcfCookieOld		= SET_ZERO;
+	lcbPlcfCookieOld	= SET_ZERO;
+	fcPgdMotherOld		= SET_ZERO;
+	lcbPgdMotherOld		= SET_ZERO;
+	fcBkdMotherOld		= SET_ZERO;
+	lcbBkdMotherOld		= SET_ZERO;
+	fcPgdFtnOld			= SET_ZERO;
+	lcbPgdFtnOld		= SET_ZERO;
+	fcBkdFtnOld			= SET_ZERO;
+	lcbBkdFtnOld		= SET_ZERO;
+	fcPgdEdnOld			= SET_ZERO;
+	lcbPgdEdnOld		= SET_ZERO;
+	fcBkdEdnOld			= SET_ZERO;
+	lcbBkdEdnOld		= SET_ZERO;
 }
 
 Fib::FibRgFcLcb::FibRgFcLcb2000::~FibRgFcLcb2000()
 {
 }
 
-void Fib::FibRgFcLcb::FibRgFcLcb2000::readFibRgFcLcb2000(std::ifstream & wrdfile)
-{
-	FibRgFcLcb97 varPortion97;
-	varPortion97.readFibRgFcLcb97(wrdfile);
 
-	wrdfile.read(reinterpret_cast<char *>(&fcPlcfTch), sizeof(fcPlcfTch));
-	wrdfile.read(reinterpret_cast<char *>(&lcbPlcfTch), sizeof(lcbPlcfTch));
-	wrdfile.read(reinterpret_cast<char *>(&fcRmdThreading), sizeof(fcRmdThreading));
-	wrdfile.read(reinterpret_cast<char *>(&lcbRmdThreading), sizeof(lcbRmdThreading));
-	wrdfile.read(reinterpret_cast<char *>(&fcMid), sizeof(fcMid));
-	wrdfile.read(reinterpret_cast<char *>(&lcbMid), sizeof(lcbMid));
-	wrdfile.read(reinterpret_cast<char *>(&fcSttbRgtplc), sizeof(fcSttbRgtplc));
-	wrdfile.read(reinterpret_cast<char *>(&lcbSttbRgtplc), sizeof(lcbSttbRgtplc));
-	wrdfile.read(reinterpret_cast<char *>(&fcMsoEnvelope), sizeof(fcMsoEnvelope));
-	wrdfile.read(reinterpret_cast<char *>(&lcbMsoEnvelope), sizeof(lcbMsoEnvelope));
-	wrdfile.read(reinterpret_cast<char *>(&fcPlcfLad), sizeof(fcPlcfLad));
-	wrdfile.read(reinterpret_cast<char *>(&lcbPlcfLad), sizeof(lcbPlcfLad));
-	wrdfile.read(reinterpret_cast<char *>(&fcRgDofr), sizeof(fcRgDofr));
-	wrdfile.read(reinterpret_cast<char *>(&lcbRgDofr), sizeof(lcbRgDofr));
-	wrdfile.read(reinterpret_cast<char *>(&fcPlcosl), sizeof(fcPlcosl));
-	wrdfile.read(reinterpret_cast<char *>(&lcbPlcosl), sizeof(lcbPlcosl));
-	wrdfile.read(reinterpret_cast<char *>(&fcPlcfCookieOld), sizeof(fcPlcfCookieOld));
-	wrdfile.read(reinterpret_cast<char *>(&lcbPlcfCookieOld), sizeof(lcbPlcfCookieOld));
-	wrdfile.read(reinterpret_cast<char *>(&fcPgdMotherOld), sizeof(fcPgdMotherOld));
-	wrdfile.read(reinterpret_cast<char *>(&lcbPgdMotherOld), sizeof(lcbPgdMotherOld));
-	wrdfile.read(reinterpret_cast<char *>(&fcBkdMotherOld), sizeof(fcBkdMotherOld));
-	wrdfile.read(reinterpret_cast<char *>(&lcbBkdMotherOld), sizeof(lcbBkdMotherOld));
-	wrdfile.read(reinterpret_cast<char *>(&fcPgdFtnOld), sizeof(fcPgdFtnOld));
-	wrdfile.read(reinterpret_cast<char *>(&lcbPgdFtnOld), sizeof(lcbPgdFtnOld));
-	wrdfile.read(reinterpret_cast<char *>(&fcBkdFtnOld), sizeof(fcBkdFtnOld));
-	wrdfile.read(reinterpret_cast<char *>(&lcbBkdFtnOld), sizeof(lcbBkdFtnOld));
-	wrdfile.read(reinterpret_cast<char *>(&fcPgdEdnOld), sizeof(fcPgdEdnOld));
-	wrdfile.read(reinterpret_cast<char *>(&lcbPgdEdnOld), sizeof(lcbPgdEdnOld));
-	wrdfile.read(reinterpret_cast<char *>(&fcBkdEdnOld), sizeof(fcBkdEdnOld));
-	wrdfile.read(reinterpret_cast<char *>(&lcbBkdEdnOld), sizeof(lcbBkdEdnOld));
-
-	return;
-}
-
-void Fib::FibRgFcLcb::FibRgFcLcb2000::process_FibRgFcLcb2000()
+VOID Fib::FibRgFcLcb::FibRgFcLcb2000::process_FibRgFcLcb2000()
 {
 	assert(lcbRmdThreading != 0);
 	return;
@@ -401,62 +372,62 @@ void Fib::FibRgFcLcb::FibRgFcLcb2000::process_FibRgFcLcb2000()
 
 Fib::FibRgFcLcb::FibRgFcLcb2002::FibRgFcLcb2002()
 {
-	fcUnused1				= _SET_BYTES;
-	lcbUnused1				= _SET_BYTES;
-	fcPlcfPgp				= _SET_BYTES;
-	lcbPlcfPgp				= _SET_BYTES;
-	fcPlcfuim				= _SET_BYTES;
-	lcbPlcfuim				= _SET_BYTES;
-	fcPlfguidUim			= _SET_BYTES;
-	lcbPlfguidUim			= _SET_BYTES;
-	fcAtrdExtra				= _SET_BYTES;
-	lcbAtrdExtra			= _SET_BYTES;
-	fcPlrsid				= _SET_BYTES;
-	lcbPlrsid				= _SET_BYTES;
-	fcSttbfBkmkFactoid		= _SET_BYTES;
-	lcbSttbfBkmkFactoid		= _SET_BYTES;
-	fcPlcfBkfFactoid		= _SET_BYTES;
-	lcbPlcfBkfFactoid		= _SET_BYTES;
-	fcPlcfcookie			= _SET_BYTES;
-	lcbPlcfcookie			= _SET_BYTES;
-	fcPlcfBklFactoid		= _SET_BYTES;
-	lcbPlcfBklFactoid		= _SET_BYTES;
-	fcFactoidData			= _SET_BYTES;
-	lcbFactoidData			= _SET_BYTES;
-	fcDocUndo				= _SET_BYTES;
-	lcbDocUndo				= _SET_BYTES;
-	fcSttbfBkmkFcc			= _SET_BYTES;
-	lcbSttbfBkmkFcc			= _SET_BYTES;
-	fcPlcfBkfFcc			= _SET_BYTES;
-	lcbPlcfBkfFcc			= _SET_BYTES;
-	fcPlcfBklFcc			= _SET_BYTES;
-	lcbPlcfBklFcc			= _SET_BYTES;
-	fcSttbfbkmkBPRepairs	= _SET_BYTES;
-	lcbSttbfbkmkBPRepairs	= _SET_BYTES;
-	fcPlcfbkfBPRepairs		= _SET_BYTES;
-	lcbPlcfbkfBPRepairs		= _SET_BYTES;
-	fcPlcfbklBPRepairs		= _SET_BYTES;
-	lcbPlcfbklBPRepairs		= _SET_BYTES;
-	fcPmsNew				= _SET_BYTES;
-	lcbPmsNew				= _SET_BYTES;
-	fcODSO					= _SET_BYTES;
-	lcbODSO					= _SET_BYTES;
-	fcPlcfpmiOldXP			= _SET_BYTES;
-	lcbPlcfpmiOldXP			= _SET_BYTES;
-	fcPlcfpmiNewXP			= _SET_BYTES;
-	lcbPlcfpmiNewXP			= _SET_BYTES;
-	fcPlcfpmiMixedXP		= _SET_BYTES;
-	lcbPlcfpmiMixedXP		= _SET_BYTES;
-	fcUnused2				= _SET_BYTES;
-	lcbUnused2				= _SET_BYTES;
-	fcPlcffactoid			= _SET_BYTES;
-	lcbPlcffactoid			= _SET_BYTES;
-	fcPlcflvcOldXP			= _SET_BYTES;
-	lcbPlcflvcOldXP			= _SET_BYTES;
-	fcPlcflvcNewXP			= _SET_BYTES;
-	lcbPlcflvcNewXP			= _SET_BYTES;
-	fcPlcflvcMixedXP		= _SET_BYTES;
-	lcbPlcflvcMixedXP		= _SET_BYTES;
+	fcUnused1				= SET_ZERO;
+	lcbUnused1				= SET_ZERO;
+	fcPlcfPgp				= SET_ZERO;
+	lcbPlcfPgp				= SET_ZERO;
+	fcPlcfuim				= SET_ZERO;
+	lcbPlcfuim				= SET_ZERO;
+	fcPlfguidUim			= SET_ZERO;
+	lcbPlfguidUim			= SET_ZERO;
+	fcAtrdExtra				= SET_ZERO;
+	lcbAtrdExtra			= SET_ZERO;
+	fcPlrsid				= SET_ZERO;
+	lcbPlrsid				= SET_ZERO;
+	fcSttbfBkmkFactoid		= SET_ZERO;
+	lcbSttbfBkmkFactoid		= SET_ZERO;
+	fcPlcfBkfFactoid		= SET_ZERO;
+	lcbPlcfBkfFactoid		= SET_ZERO;
+	fcPlcfcookie			= SET_ZERO;
+	lcbPlcfcookie			= SET_ZERO;
+	fcPlcfBklFactoid		= SET_ZERO;
+	lcbPlcfBklFactoid		= SET_ZERO;
+	fcFactoidData			= SET_ZERO;
+	lcbFactoidData			= SET_ZERO;
+	fcDocUndo				= SET_ZERO;
+	lcbDocUndo				= SET_ZERO;
+	fcSttbfBkmkFcc			= SET_ZERO;
+	lcbSttbfBkmkFcc			= SET_ZERO;
+	fcPlcfBkfFcc			= SET_ZERO;
+	lcbPlcfBkfFcc			= SET_ZERO;
+	fcPlcfBklFcc			= SET_ZERO;
+	lcbPlcfBklFcc			= SET_ZERO;
+	fcSttbfbkmkBPRepairs	= SET_ZERO;
+	lcbSttbfbkmkBPRepairs	= SET_ZERO;
+	fcPlcfbkfBPRepairs		= SET_ZERO;
+	lcbPlcfbkfBPRepairs		= SET_ZERO;
+	fcPlcfbklBPRepairs		= SET_ZERO;
+	lcbPlcfbklBPRepairs		= SET_ZERO;
+	fcPmsNew				= SET_ZERO;
+	lcbPmsNew				= SET_ZERO;
+	fcODSO					= SET_ZERO;
+	lcbODSO					= SET_ZERO;
+	fcPlcfpmiOldXP			= SET_ZERO;
+	lcbPlcfpmiOldXP			= SET_ZERO;
+	fcPlcfpmiNewXP			= SET_ZERO;
+	lcbPlcfpmiNewXP			= SET_ZERO;
+	fcPlcfpmiMixedXP		= SET_ZERO;
+	lcbPlcfpmiMixedXP		= SET_ZERO;
+	fcUnused2				= SET_ZERO;
+	lcbUnused2				= SET_ZERO;
+	fcPlcffactoid			= SET_ZERO;
+	lcbPlcffactoid			= SET_ZERO;
+	fcPlcflvcOldXP			= SET_ZERO;
+	lcbPlcflvcOldXP			= SET_ZERO;
+	fcPlcflvcNewXP			= SET_ZERO;
+	lcbPlcflvcNewXP			= SET_ZERO;
+	fcPlcflvcMixedXP		= SET_ZERO;
+	lcbPlcflvcMixedXP		= SET_ZERO;
 
 }
 
@@ -464,72 +435,7 @@ Fib::FibRgFcLcb::FibRgFcLcb2002::~FibRgFcLcb2002()
 {
 }
 
-void Fib::FibRgFcLcb::FibRgFcLcb2002::readFibRgFcLcb2002(std::ifstream &documentStr)
-{
-	FibRgFcLcb2000 varPortion2000;
-	varPortion2000.readFibRgFcLcb2000(documentStr);
-
-	documentStr.read(reinterpret_cast<char *>(&fcUnused1), sizeof(fcUnused1));
-	documentStr.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(lcbUnused1));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfPgp), sizeof(fcPlcfPgp));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfPgp), sizeof(lcbPlcfPgp));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfuim), sizeof(fcPlcfuim));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfuim), sizeof(lcbPlcfuim));
-	documentStr.read(reinterpret_cast<char *>(&fcPlfguidUim), sizeof(fcPlfguidUim));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlfguidUim), sizeof(lcbPlfguidUim));
-	documentStr.read(reinterpret_cast<char *>(&fcAtrdExtra), sizeof(fcAtrdExtra));
-	documentStr.read(reinterpret_cast<char *>(&lcbAtrdExtra), sizeof(lcbAtrdExtra));
-	documentStr.read(reinterpret_cast<char *>(&fcPlrsid), sizeof(fcPlrsid));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlrsid), sizeof(lcbPlrsid));
-	documentStr.read(reinterpret_cast<char *>(&fcSttbfBkmkFactoid), sizeof(fcSttbfBkmkFactoid));
-	documentStr.read(reinterpret_cast<char *>(&lcbSttbfBkmkFactoid), sizeof(lcbSttbfBkmkFactoid));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfBkfFactoid), sizeof(fcPlcfBkfFactoid));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfBkfFactoid), sizeof(lcbPlcfBkfFactoid));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfcookie), sizeof(fcPlcfcookie));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfcookie), sizeof(lcbPlcfcookie));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfBklFactoid), sizeof(fcPlcfBklFactoid));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfBklFactoid), sizeof(lcbPlcfBklFactoid));
-	documentStr.read(reinterpret_cast<char *>(&fcFactoidData), sizeof(fcFactoidData));
-	documentStr.read(reinterpret_cast<char *>(&lcbFactoidData), sizeof(lcbFactoidData));
-	documentStr.read(reinterpret_cast<char *>(&fcDocUndo), sizeof(fcDocUndo));
-	documentStr.read(reinterpret_cast<char *>(&lcbDocUndo), sizeof(lcbDocUndo));
-	documentStr.read(reinterpret_cast<char *>(&fcSttbfBkmkFcc), sizeof(fcSttbfBkmkFcc));
-	documentStr.read(reinterpret_cast<char *>(&lcbSttbfBkmkFcc), sizeof(lcbSttbfBkmkFcc));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfBkfFcc), sizeof(fcPlcfBkfFcc));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfBkfFcc), sizeof(lcbPlcfBkfFcc));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfBklFcc), sizeof(fcPlcfBklFcc));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfBklFcc), sizeof(lcbPlcfBklFcc));
-	documentStr.read(reinterpret_cast<char *>(&fcSttbfbkmkBPRepairs), sizeof(fcSttbfbkmkBPRepairs));
-	documentStr.read(reinterpret_cast<char *>(&lcbSttbfbkmkBPRepairs), sizeof(lcbSttbfbkmkBPRepairs));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfbkfBPRepairs), sizeof(fcPlcfbkfBPRepairs));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfbkfBPRepairs), sizeof(lcbPlcfbkfBPRepairs));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfbklBPRepairs), sizeof(fcPlcfbklBPRepairs));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfbklBPRepairs), sizeof(lcbPlcfbklBPRepairs));
-	documentStr.read(reinterpret_cast<char *>(&fcPmsNew), sizeof(fcPmsNew));
-	documentStr.read(reinterpret_cast<char *>(&lcbPmsNew), sizeof(lcbPmsNew));
-	documentStr.read(reinterpret_cast<char *>(&fcODSO), sizeof(fcODSO));
-	documentStr.read(reinterpret_cast<char *>(&lcbODSO), sizeof(lcbODSO));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiOldXP), sizeof(fcPlcfpmiOldXP));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiOldXP), sizeof(lcbPlcfpmiOldXP));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiNewXP), sizeof(fcPlcfpmiNewXP));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiNewXP), sizeof(lcbPlcfpmiNewXP));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiMixedXP), sizeof(fcPlcfpmiMixedXP));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiMixedXP), sizeof(lcbPlcfpmiMixedXP));
-	documentStr.read(reinterpret_cast<char *>(&fcUnused2), sizeof(fcUnused2));
-	documentStr.read(reinterpret_cast<char *>(&lcbUnused2), sizeof(lcbUnused2));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcffactoid), sizeof(fcPlcffactoid));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcffactoid), sizeof(lcbPlcffactoid));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcflvcOldXP), sizeof(fcPlcflvcOldXP));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcOldXP), sizeof(lcbPlcflvcOldXP));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcflvcNewXP), sizeof(fcPlcflvcNewXP));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcNewXP), sizeof(lcbPlcflvcNewXP));
-	documentStr.read(reinterpret_cast<char *>(&fcPlcflvcMixedXP), sizeof(fcPlcflvcMixedXP));
-	documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcMixedXP), sizeof(lcbPlcflvcMixedXP));
-
-	return;
-}
-
-void Fib::FibRgFcLcb::FibRgFcLcb2002::process_FibRgFcLcb2002()
+VOID Fib::FibRgFcLcb::FibRgFcLcb2002::process_FibRgFcLcb2002()
 {
 	assert(lcbUnused1 == 0);
 
@@ -538,62 +444,62 @@ void Fib::FibRgFcLcb::FibRgFcLcb2002::process_FibRgFcLcb2002()
 
 Fib::FibRgFcLcb::FibRgFcLcb2003::FibRgFcLcb2003()
 {
-	fcHplxsdr				= _SET_BYTES;
-	lcbHplxsdr				= _SET_BYTES;
-	fcSttbfBkmkSdt			= _SET_BYTES;
-	lcbSttbfBkmkSdt			= _SET_BYTES;
-	fcPlcfBkfSdt			= _SET_BYTES;
-	lcbPlcfBkfSdt			= _SET_BYTES;
-	fcPlcfBklSdt			= _SET_BYTES;
-	lcbPlcfBklSdt			= _SET_BYTES;
-	fcCustomXForm			= _SET_BYTES;
-	lcbCustomXForm			= _SET_BYTES;
-	fcSttbfBkmkProt			= _SET_BYTES;
-	lcbSttbfBkmkProt		= _SET_BYTES;
-	fcPlcfBkfProt			= _SET_BYTES;
-	lcbPlcfBkfProt			= _SET_BYTES;
-	fcPlcfBklProt			= _SET_BYTES;
-	lcbPlcfBklProt			= _SET_BYTES;
-	fcSttbProtUser			= _SET_BYTES;
-	lcbSttbProtUser			= _SET_BYTES;
-	fcUnused				= _SET_BYTES;
-	lcbUnused				= _SET_BYTES;
-	fcPlcfpmiOld			= _SET_BYTES;
-	lcbPlcfpmiOld			= _SET_BYTES;
-	fcPlcfpmiOldInline		= _SET_BYTES;
-	lcbPlcfpmiOldInline		= _SET_BYTES;
-	fcPlcfpmiNew			= _SET_BYTES;
-	lcbPlcfpmiNew			= _SET_BYTES;
-	fcPlcfpmiNewInline		= _SET_BYTES;
-	lcbPlcfpmiNewInline		= _SET_BYTES;
-	fcPlcflvcOld			= _SET_BYTES;
-	lcbPlcflvcOld			= _SET_BYTES;
-	fcPlcflvcOldInline		= _SET_BYTES;
-	lcbPlcflvcOldInline		= _SET_BYTES;
-	fcPlcflvcNew			= _SET_BYTES;
-	lcbPlcflvcNew			= _SET_BYTES;
-	fcPlcflvcNewInline		= _SET_BYTES;
-	lcbPlcflvcNewInline		= _SET_BYTES;
-	fcPgdMother				= _SET_BYTES;
-	lcbPgdMother			= _SET_BYTES;
-	fcBkdMother				= _SET_BYTES;
-	lcbBkdMother			= _SET_BYTES;
-	fcAfdMother				= _SET_BYTES;
-	lcbAfdMother			= _SET_BYTES;
-	fcPgdFtn				= _SET_BYTES;
-	lcbPgdFtn				= _SET_BYTES;
-	fcBkdFtn				= _SET_BYTES;
-	lcbBkdFtn				= _SET_BYTES;
-	fcAfdFtn				= _SET_BYTES;
-	lcbAfdFtn				= _SET_BYTES;
-	fcPgdEdn				= _SET_BYTES;
-	lcbPgdEdn				= _SET_BYTES;
-	fcBkdEdn				= _SET_BYTES;
-	lcbBkdEdn				= _SET_BYTES;
-	fcAfdEdn				= _SET_BYTES;
-	lcbAfdEdn				= _SET_BYTES;
-	fcAfd					= _SET_BYTES;
-	lcbAfd					= _SET_BYTES;
+	fcHplxsdr				= SET_ZERO;
+	lcbHplxsdr				= SET_ZERO;
+	fcSttbfBkmkSdt			= SET_ZERO;
+	lcbSttbfBkmkSdt			= SET_ZERO;
+	fcPlcfBkfSdt			= SET_ZERO;
+	lcbPlcfBkfSdt			= SET_ZERO;
+	fcPlcfBklSdt			= SET_ZERO;
+	lcbPlcfBklSdt			= SET_ZERO;
+	fcCustomXForm			= SET_ZERO;
+	lcbCustomXForm			= SET_ZERO;
+	fcSttbfBkmkProt			= SET_ZERO;
+	lcbSttbfBkmkProt		= SET_ZERO;
+	fcPlcfBkfProt			= SET_ZERO;
+	lcbPlcfBkfProt			= SET_ZERO;
+	fcPlcfBklProt			= SET_ZERO;
+	lcbPlcfBklProt			= SET_ZERO;
+	fcSttbProtUser			= SET_ZERO;
+	lcbSttbProtUser			= SET_ZERO;
+	fcUnused				= SET_ZERO;
+	lcbUnused				= SET_ZERO;
+	fcPlcfpmiOld			= SET_ZERO;
+	lcbPlcfpmiOld			= SET_ZERO;
+	fcPlcfpmiOldInline		= SET_ZERO;
+	lcbPlcfpmiOldInline		= SET_ZERO;
+	fcPlcfpmiNew			= SET_ZERO;
+	lcbPlcfpmiNew			= SET_ZERO;
+	fcPlcfpmiNewInline		= SET_ZERO;
+	lcbPlcfpmiNewInline		= SET_ZERO;
+	fcPlcflvcOld			= SET_ZERO;
+	lcbPlcflvcOld			= SET_ZERO;
+	fcPlcflvcOldInline		= SET_ZERO;
+	lcbPlcflvcOldInline		= SET_ZERO;
+	fcPlcflvcNew			= SET_ZERO;
+	lcbPlcflvcNew			= SET_ZERO;
+	fcPlcflvcNewInline		= SET_ZERO;
+	lcbPlcflvcNewInline		= SET_ZERO;
+	fcPgdMother				= SET_ZERO;
+	lcbPgdMother			= SET_ZERO;
+	fcBkdMother				= SET_ZERO;
+	lcbBkdMother			= SET_ZERO;
+	fcAfdMother				= SET_ZERO;
+	lcbAfdMother			= SET_ZERO;
+	fcPgdFtn				= SET_ZERO;
+	lcbPgdFtn				= SET_ZERO;
+	fcBkdFtn				= SET_ZERO;
+	lcbBkdFtn				= SET_ZERO;
+	fcAfdFtn				= SET_ZERO;
+	lcbAfdFtn				= SET_ZERO;
+	fcPgdEdn				= SET_ZERO;
+	lcbPgdEdn				= SET_ZERO;
+	fcBkdEdn				= SET_ZERO;
+	lcbBkdEdn				= SET_ZERO;
+	fcAfdEdn				= SET_ZERO;
+	lcbAfdEdn				= SET_ZERO;
+	fcAfd					= SET_ZERO;
+	lcbAfd					= SET_ZERO;
 
 }
 
@@ -601,72 +507,8 @@ Fib::FibRgFcLcb::FibRgFcLcb2003::~FibRgFcLcb2003()
 {
 }
 
-void Fib::FibRgFcLcb::FibRgFcLcb2003::readFibRgFcLcb2003(std::ifstream & dotdocstrm)
-{
-	FibRgFcLcb2002 varPortion2002;
-	varPortion2002.readFibRgFcLcb2002(dotdocstrm);
 
-	dotdocstrm.read(reinterpret_cast<char *>(&fcHplxsdr), sizeof(fcHplxsdr));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbHplxsdr), sizeof(lcbHplxsdr));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcSttbfBkmkSdt), sizeof(fcSttbfBkmkSdt));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbfBkmkSdt), sizeof(lcbSttbfBkmkSdt));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBkfSdt), sizeof(fcPlcfBkfSdt));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBkfSdt), sizeof(lcbPlcfBkfSdt));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBklSdt), sizeof(fcPlcfBklSdt));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBklSdt), sizeof(lcbPlcfBklSdt));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcCustomXForm), sizeof(fcCustomXForm));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbCustomXForm), sizeof(lcbCustomXForm));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcSttbfBkmkProt), sizeof(fcSttbfBkmkProt));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbfBkmkProt), sizeof(lcbSttbfBkmkProt));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBkfProt), sizeof(fcPlcfBkfProt));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBkfProt), sizeof(lcbPlcfBkfProt));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBklProt), sizeof(fcPlcfBklProt));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBklProt), sizeof(lcbPlcfBklProt));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcSttbProtUser), sizeof(fcSttbProtUser));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbProtUser), sizeof(lcbSttbProtUser));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcUnused), sizeof(fcUnused));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbUnused), sizeof(lcbUnused));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiOld), sizeof(fcPlcfpmiOld));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiOld), sizeof(lcbPlcfpmiOld));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiOldInline), sizeof(fcPlcfpmiOldInline));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiOldInline), sizeof(lcbPlcfpmiOldInline));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiNew), sizeof(fcPlcfpmiNew));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiNew), sizeof(lcbPlcfpmiNew));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiNewInline), sizeof(fcPlcfpmiNewInline));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiNewInline), sizeof(lcbPlcfpmiNewInline));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcOld), sizeof(fcPlcflvcOld));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcOld), sizeof(lcbPlcflvcOld));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcOldInline), sizeof(fcPlcflvcOldInline));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcOldInline), sizeof(lcbPlcflvcOldInline));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcNew), sizeof(fcPlcflvcNew));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcNew), sizeof(lcbPlcflvcNew));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcNewInline), sizeof(fcPlcflvcNewInline));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcNewInline), sizeof(lcbPlcflvcNewInline));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPgdMother), sizeof(fcPgdMother));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdMother), sizeof(lcbPgdMother));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcBkdMother), sizeof(fcBkdMother));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdMother), sizeof(lcbBkdMother));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcAfdMother), sizeof(fcAfdMother));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdMother), sizeof(lcbAfdMother));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPgdFtn), sizeof(fcPgdFtn));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdFtn), sizeof(lcbPgdFtn));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcBkdFtn), sizeof(fcBkdFtn));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdFtn), sizeof(lcbBkdFtn));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcAfdFtn), sizeof(fcAfdFtn));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdFtn), sizeof(lcbAfdFtn));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcPgdEdn), sizeof(fcPgdEdn));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdEdn), sizeof(lcbPgdEdn));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcBkdEdn), sizeof(fcBkdEdn));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdEdn), sizeof(lcbBkdEdn));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcAfdEdn), sizeof(fcAfdEdn));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdEdn), sizeof(lcbAfdEdn));
-	dotdocstrm.read(reinterpret_cast<char *>(&fcAfd), sizeof(fcAfd));
-	dotdocstrm.read(reinterpret_cast<char *>(&lcbAfd), sizeof(lcbAfd));
-
-	return;
-}
-
-void Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003()
+VOID Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003()
 {
 	assert(lcbCustomXForm <= 4168 && lcbCustomXForm % 2 == 0);
 	assert(fcUnused == 0);
@@ -676,98 +518,52 @@ void Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003()
 
 Fib::FibRgFcLcb::FibRgFcLcb2007::FibRgFcLcb2007()
 {
-	fcPlcfmthd            = _SET_BYTES;
-	lcbPlcfmthd           = _SET_BYTES;
-	fcSttbfBkmkMoveFrom   = _SET_BYTES;
-	lcbSttbfBkmkMoveFrom  = _SET_BYTES;
-	fcPlcfBkfMoveFrom     = _SET_BYTES;
-	lcbPlcfBkfMoveFrom    = _SET_BYTES;
-	fcPlcfBklMoveFrom     = _SET_BYTES;
-	lcbPlcfBklMoveFrom    = _SET_BYTES;
-	fcSttbfBkmkMoveTo     = _SET_BYTES;
-	lcbSttbfBkmkMoveTo    = _SET_BYTES;
-	fcPlcfBkfMoveTo       = _SET_BYTES;
-	lcbPlcfBkfMoveTo      = _SET_BYTES;
-	fcPlcfBklMoveTo       = _SET_BYTES;
-	lcbPlcfBklMoveTo      = _SET_BYTES;
-	fcUnused1             = _SET_BYTES;
-	lcbUnused1            = _SET_BYTES;
-	fcUnused2             = _SET_BYTES;
-	lcbUnused2            = _SET_BYTES;
-	fcUnused3             = _SET_BYTES;
-	lcbUnused3            = _SET_BYTES;
-	fcSttbfBkmkArto       = _SET_BYTES;
-	lcbSttbfBkmkArto      = _SET_BYTES;
-	fcPlcfBkfArto         = _SET_BYTES;
-	lcbPlcfBkfArto        = _SET_BYTES;
-	fcPlcfBklArto         = _SET_BYTES;
-	lcbPlcfBklArto        = _SET_BYTES;
-	fcArtoData            = _SET_BYTES;
-	lcbArtoData           = _SET_BYTES;
-	fcUnused4             = _SET_BYTES;
-	lcbUnused4            = _SET_BYTES;
-	fcUnused5             = _SET_BYTES;
-	lcbUnused5            = _SET_BYTES;
-	fcUnused6             = _SET_BYTES;
-	lcbUnused6            = _SET_BYTES;
-	fcOssTheme            = _SET_BYTES;
-	lcbOssTheme           = _SET_BYTES;
-	fcColorSchemeMapping  = _SET_BYTES;
-	lcbColorSchemeMapping = _SET_BYTES;
+	fcPlcfmthd            = SET_ZERO;
+	lcbPlcfmthd           = SET_ZERO;
+	fcSttbfBkmkMoveFrom   = SET_ZERO;
+	lcbSttbfBkmkMoveFrom  = SET_ZERO;
+	fcPlcfBkfMoveFrom     = SET_ZERO;
+	lcbPlcfBkfMoveFrom    = SET_ZERO;
+	fcPlcfBklMoveFrom     = SET_ZERO;
+	lcbPlcfBklMoveFrom    = SET_ZERO;
+	fcSttbfBkmkMoveTo     = SET_ZERO;
+	lcbSttbfBkmkMoveTo    = SET_ZERO;
+	fcPlcfBkfMoveTo       = SET_ZERO;
+	lcbPlcfBkfMoveTo      = SET_ZERO;
+	fcPlcfBklMoveTo       = SET_ZERO;
+	lcbPlcfBklMoveTo      = SET_ZERO;
+	fcUnused1             = SET_ZERO;
+	lcbUnused1            = SET_ZERO;
+	fcUnused2             = SET_ZERO;
+	lcbUnused2            = SET_ZERO;
+	fcUnused3             = SET_ZERO;
+	lcbUnused3            = SET_ZERO;
+	fcSttbfBkmkArto       = SET_ZERO;
+	lcbSttbfBkmkArto      = SET_ZERO;
+	fcPlcfBkfArto         = SET_ZERO;
+	lcbPlcfBkfArto        = SET_ZERO;
+	fcPlcfBklArto         = SET_ZERO;
+	lcbPlcfBklArto        = SET_ZERO;
+	fcArtoData            = SET_ZERO;
+	lcbArtoData           = SET_ZERO;
+	fcUnused4             = SET_ZERO;
+	lcbUnused4            = SET_ZERO;
+	fcUnused5             = SET_ZERO;
+	lcbUnused5            = SET_ZERO;
+	fcUnused6             = SET_ZERO;
+	lcbUnused6            = SET_ZERO;
+	fcOssTheme            = SET_ZERO;
+	lcbOssTheme           = SET_ZERO;
+	fcColorSchemeMapping  = SET_ZERO;
+	lcbColorSchemeMapping = SET_ZERO;
 }
 
 Fib::FibRgFcLcb::FibRgFcLcb2007::~FibRgFcLcb2007()
 {
 }
 
-void Fib::FibRgFcLcb::FibRgFcLcb2007::readFibRgFcLcb2007(std::ifstream & dStream)
-{
-	FibRgFcLcb2003 varPortion2003;
-	varPortion2003.readFibRgFcLcb2003(dStream);
-	
-	dStream.read(reinterpret_cast<char *>(&fcPlcfmthd), sizeof(fcPlcfmthd));
-	dStream.read(reinterpret_cast<char *>(&lcbPlcfmthd), sizeof(lcbPlcfmthd));
-	dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkMoveFrom), sizeof(fcSttbfBkmkMoveFrom));
-	dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkMoveFrom), sizeof(lcbSttbfBkmkMoveFrom));
-	dStream.read(reinterpret_cast<char *>(&fcPlcfBkfMoveFrom), sizeof(fcPlcfBkfMoveFrom));
-	dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfMoveFrom), sizeof(lcbPlcfBkfMoveFrom));
-	dStream.read(reinterpret_cast<char *>(&fcPlcfBklMoveFrom), sizeof(fcPlcfBklMoveFrom));
-	dStream.read(reinterpret_cast<char *>(&lcbPlcfBklMoveFrom), sizeof(lcbPlcfBklMoveFrom));
-	dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkMoveTo), sizeof(fcSttbfBkmkMoveTo));
-	dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkMoveTo), sizeof(lcbSttbfBkmkMoveTo));
-	dStream.read(reinterpret_cast<char *>(&fcPlcfBkfMoveTo), sizeof(fcPlcfBkfMoveTo));
-	dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfMoveTo), sizeof(lcbPlcfBkfMoveTo));
-	dStream.read(reinterpret_cast<char *>(&fcPlcfBklMoveTo), sizeof(fcPlcfBklMoveTo));
-	dStream.read(reinterpret_cast<char *>(&lcbPlcfBklMoveTo), sizeof(lcbPlcfBklMoveTo));
-	dStream.read(reinterpret_cast<char *>(&fcUnused1), sizeof(fcUnused1));
-	dStream.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(lcbUnused1));
-	dStream.read(reinterpret_cast<char *>(&fcUnused2), sizeof(fcUnused2));
-	dStream.read(reinterpret_cast<char *>(&lcbUnused2), sizeof(lcbUnused2));
-	dStream.read(reinterpret_cast<char *>(&fcUnused3), sizeof(fcUnused3));
-	dStream.read(reinterpret_cast<char *>(&lcbUnused3), sizeof(lcbUnused3));
-	dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkArto), sizeof(fcSttbfBkmkArto));
-	dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkArto), sizeof(lcbSttbfBkmkArto));
-	dStream.read(reinterpret_cast<char *>(&fcPlcfBkfArto), sizeof(fcPlcfBkfArto));
-	dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfArto), sizeof(lcbPlcfBkfArto));
-	dStream.read(reinterpret_cast<char *>(&fcPlcfBklArto), sizeof(fcPlcfBklArto));
-	dStream.read(reinterpret_cast<char *>(&lcbPlcfBklArto), sizeof(lcbPlcfBklArto));
-	dStream.read(reinterpret_cast<char *>(&fcArtoData), sizeof(fcArtoData));
-	dStream.read(reinterpret_cast<char *>(&lcbArtoData), sizeof(lcbArtoData));
-	dStream.read(reinterpret_cast<char *>(&fcUnused4), sizeof(fcUnused4));
-	dStream.read(reinterpret_cast<char *>(&lcbUnused4), sizeof(lcbUnused4));
-	dStream.read(reinterpret_cast<char *>(&fcUnused5), sizeof(fcUnused5));
-	dStream.read(reinterpret_cast<char *>(&lcbUnused5), sizeof(lcbUnused5));
-	dStream.read(reinterpret_cast<char *>(&fcUnused6), sizeof(fcUnused6));
-	dStream.read(reinterpret_cast<char *>(&lcbUnused6), sizeof(lcbUnused6));
-	dStream.read(reinterpret_cast<char *>(&fcOssTheme), sizeof(fcOssTheme));
-	dStream.read(reinterpret_cast<char *>(&lcbOssTheme), sizeof(lcbOssTheme));
-	dStream.read(reinterpret_cast<char *>(&fcColorSchemeMapping), sizeof(fcColorSchemeMapping));
-	dStream.read(reinterpret_cast<char *>(&lcbColorSchemeMapping), sizeof(lcbColorSchemeMapping));
 
-	return;
-}
-
-void Fib::FibRgFcLcb::FibRgFcLcb2007::process_FibRgFcLcb2007()
+VOID Fib::FibRgFcLcb::FibRgFcLcb2007::process_FibRgFcLcb2007()
 {
 	assert(lcbPlcfmthd == 0);
 	assert(lcbSttbfBkmkMoveFrom == 0);
@@ -794,14 +590,14 @@ void Fib::FibRgFcLcb::FibRgFcLcb2007::process_FibRgFcLcb2007()
 
 Fib::FibRgCswNew::FibRgCswNew()
 {
-	nFibNew = _SET_BYTES;
+	nFibNew = SET_ZERO;
 }
 
 Fib::FibRgCswNew::~FibRgCswNew()
 {
 }
 
-void Fib::FibRgCswNew::readFibRgCswNew(std::ifstream & ldedstrm)
+VOID Fib::FibRgCswNew::readFibRgCswNew(std::ifstream & ldedstrm)
 {
 	ldedstrm.read(reinterpret_cast<char *>(&nFibNew), sizeof(nFibNew));
 
@@ -824,94 +620,70 @@ Fib::FibRgCswNew::FibRgCswNewData::~FibRgCswNewData()
 
 Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::FibRgCswNewData2007()
 {
-	lidThemeOther = _SET_BYTES;
-	lidThemeFE    = _SET_BYTES;
-	lidThemeCS    = _SET_BYTES;
+	lidThemeOther = SET_ZERO;
+	lidThemeFE    = SET_ZERO;
+	lidThemeCS    = SET_ZERO;
 }
 
 Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::~FibRgCswNewData2007()
 {
 }
 
-void Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::readFibRgCswNewData2007(std::ifstream & streamin)
-{
-	FibRgCswNewData2000 newdat2000;
-	newdat2000.readFibRgCswNewData2000(streamin);
-
-	streamin.read(reinterpret_cast<char *>(&lidThemeOther), sizeof(lidThemeOther));
-	streamin.read(reinterpret_cast<char *>(&lidThemeFE), sizeof(lidThemeFE));
-	streamin.read(reinterpret_cast<char *>(&lidThemeCS), sizeof(lidThemeCS));
-
-	return;
-}
 
 Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::FibRgCswNewData2000()
 {
-	cQuickSavesNew = _SET_BYTES;
+	cQuickSavesNew = SET_ZERO;
 }
 
 Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::~FibRgCswNewData2000()
 {
 }
 
-void Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::readFibRgCswNewData2000(std::ifstream & instream)
-{
-	instream.read(reinterpret_cast<char *>(&cQuickSavesNew), sizeof(cQuickSavesNew));
-
-	return;
-}
-
-void Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::process_FibRgCswNewData2000()
+VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::process_FibRgCswNewData2000()
 {
 	assert(cQuickSavesNew >= 0 && cQuickSavesNew <= 0x000F);
 	return;
 }
 
 // Reads the File Information Block (FIB)
-void Fib::readFib(std::ifstream &docstream)
+VOID Fib::readFib(std::ifstream &docstream)
 {
-	// TODO: Review these function calls later
-	base.readFibBase(docstream);
-	
+	int readSize = 0;
+	int objSize = 0;
+	docstream.read(reinterpret_cast<char *>(&base), sizeof(base)); // base.readFibBase(docstream);
+
 	docstream.read(reinterpret_cast<char *>(&csw), sizeof(csw));
-	fibRgW.readFibRgW(docstream); 
+	readSize = csw * 2;
+	objSize = sizeof(fibRgW);
+	docstream.read(reinterpret_cast<char *>(&fibRgW), objSize); // fibRgW.readFibRgW(docstream); 
+	adjust_file_pointer(docstream, objSize, readSize);
 
 	docstream.read(reinterpret_cast<char *>(&cslw), sizeof(cslw));
-	fibRgLw.readFibRgLw(docstream);
+	readSize = cslw * 4;
+	objSize = sizeof(fibRgLw);
+	docstream.read(reinterpret_cast<char *>(&fibRgLw), objSize); // fibRgLw.readFibRgLw(docstream);
+	adjust_file_pointer(docstream, objSize, readSize);
 
 	docstream.read(reinterpret_cast<char *>(&cbRgFcLcb), sizeof(cbRgFcLcb));
-	
-	const unsigned int ver = determine_nFib_use();
-	switch (ver)
-	{
-	case FOR_WORD_97:
-		fibRgFcLcbBlob.fibRgFcLcb97.readFibRgFcLcb97(docstream);
-		break;
-	case FOR_WORD_2000:
-		fibRgFcLcbBlob.fibRgFcLcb2000.readFibRgFcLcb2000(docstream);
-		break;
-	case FOR_WORD_2002:
-		fibRgFcLcbBlob.fibRgFcLcb2002.readFibRgFcLcb2002(docstream);
-		break;
-	case FOR_WORD_2003:
-		fibRgFcLcbBlob.fibRgFcLcb2003.readFibRgFcLcb2003(docstream);
-		break;
-	case FOR_WORD_2007:
-		fibRgFcLcbBlob.fibRgFcLcb2007.readFibRgFcLcb2007(docstream);
-		break;
-	// default:
-		// break;
-	}
+	readSize = cbRgFcLcb * 8;
+	objSize = sizeof(fibRgFcLcbBlob);
+	docstream.read(reinterpret_cast<char *>(&fibRgFcLcbBlob), objSize);
+	adjust_file_pointer(docstream, objSize, readSize);
 	
 	docstream.read(reinterpret_cast<char *>(&cswNew), sizeof(cswNew));
-	if (cswNew != 0)
-		fibRgCswNew.readFibRgCswNew(docstream); 
-
+	const unsigned int ver = determine_nFib_use();
+	if (cswNew != 0x00)
+	{
+		readSize = cswNew * 2;
+		objSize = sizeof(fibRgCswNew);
+		docstream.read(reinterpret_cast<char *>(&fibRgCswNew), objSize); // fibRgCswNew.readFibRgCswNew(docstream);
+		adjust_file_pointer(docstream, objSize, readSize);
+	}
 	return;
 }
 
-// Reads FibBase ONLY from the stream into memory
-void Fib::FibBase::readFibBase(std::ifstream &docfile)
+// Reads various structures from the stream into memory
+VOID Fib::FibBase::readFibBase(std::ifstream &docfile)
 {
 	docfile.read(reinterpret_cast<char *>(&wIdent), sizeof(wIdent));
 	docfile.read(reinterpret_cast<char *>(&nFib), sizeof(nFib));
@@ -979,56 +751,58 @@ void Fib::FibBase::readFibBase(std::ifstream &docfile)
 	return;
 }
 
-// Reads FibBase ONLY from the stream into memory
-void Fib::FibRgLw97::readFibRgLw(std::ifstream & mystream)
+VOID Fib::FibRgLw97::readFibRgLw(std::ifstream & mystream)
 {
+	WORD add_member_sizes = 0;
+
 	mystream.read(reinterpret_cast<char *>(&cbMac), sizeof(cbMac));
+	add_member_sizes += sizeof(cbMac);
 	mystream.read(reinterpret_cast<char *>(&reserved1), sizeof(reserved1));
+	add_member_sizes += sizeof(reserved1);
 	mystream.read(reinterpret_cast<char *>(&reserved2), sizeof(reserved2));
+	add_member_sizes += sizeof(reserved2);
 	mystream.read(reinterpret_cast<char *>(&ccpText), sizeof(ccpText));
+	add_member_sizes += sizeof(ccpText);
 	mystream.read(reinterpret_cast<char *>(&ccpFtn), sizeof(ccpFtn));
+	add_member_sizes += sizeof(ccpFtn);
 	mystream.read(reinterpret_cast<char *>(&ccpHdd), sizeof(ccpHdd));
+	add_member_sizes += sizeof(ccpHdd);
 	mystream.read(reinterpret_cast<char *>(&reserved3), sizeof(reserved3));
+	add_member_sizes += sizeof(reserved3);
 	mystream.read(reinterpret_cast<char *>(&ccpAtn), sizeof(ccpAtn));
+	add_member_sizes += sizeof(ccpAtn);
 	mystream.read(reinterpret_cast<char *>(&ccpEdn), sizeof(ccpEdn));
+	add_member_sizes += sizeof(ccpEdn);
 	mystream.read(reinterpret_cast<char *>(&ccpTxbx), sizeof(ccpTxbx));
+	add_member_sizes += sizeof(ccpTxbx);
 	mystream.read(reinterpret_cast<char *>(&ccpHdrTxbx), sizeof(ccpHdrTxbx));
+	add_member_sizes += sizeof(ccpHdrTxbx);
 	mystream.read(reinterpret_cast<char *>(&reserved4), sizeof(reserved4));
+	add_member_sizes += sizeof(reserved4);
 	mystream.read(reinterpret_cast<char *>(&reserved5), sizeof(reserved5));
+	add_member_sizes += sizeof(reserved5);
 	mystream.read(reinterpret_cast<char *>(&reserved6), sizeof(reserved6));
+	add_member_sizes += sizeof(reserved6);
 	mystream.read(reinterpret_cast<char *>(&reserved7), sizeof(reserved7));
+	add_member_sizes += sizeof(reserved7);
 	mystream.read(reinterpret_cast<char *>(&reserved8), sizeof(reserved8));
+	add_member_sizes += sizeof(reserved8);
 	mystream.read(reinterpret_cast<char *>(&reserved9), sizeof(reserved9));
+	add_member_sizes += sizeof(reserved9);
 	mystream.read(reinterpret_cast<char *>(&reserved10), sizeof(reserved10));
+	add_member_sizes += sizeof(reserved10);
 	mystream.read(reinterpret_cast<char *>(&reserved11), sizeof(reserved11));
+	add_member_sizes += sizeof(reserved11);
 	mystream.read(reinterpret_cast<char *>(&reserved12), sizeof(reserved12));
+	add_member_sizes += sizeof(reserved12);
 	mystream.read(reinterpret_cast<char *>(&reserved13), sizeof(reserved13));
+	add_member_sizes += sizeof(reserved13);
 	mystream.read(reinterpret_cast<char *>(&reserved14), sizeof(reserved14));
-
-	return;
+	add_member_sizes += sizeof(reserved14);
 
 }
 
-void Fib::FibRgLw97::process_fibRgLw()
-{
-	assert(ccpText >= 0);
-	assert(ccpFtn >= 0);
-	assert(ccpHdd >= 0);
-	assert(reserved3 == 0);
-	assert(ccpAtn >= 0);
-	assert(ccpEdn >= 0);
-	assert(ccpTxbx >= 0);
-	assert(ccpHdrTxbx >= 0);
-	// assert(reserved6 <= Fib::FibRgFcLcb::FibRgFcLcb97::fcPlcfBteChpx &&
-	// reserved6 <= Fib::FibRgFcLcb::FibRgFcLcb97::lcbPlcfBteChpx)
-	// assert(reserved9 .....
-	assert(reserved13 == 0);
-	assert(reserved14 == 0);
-
-	return;
-}
-
-void Fib::FibRgW97::readFibRgW(std::ifstream & filestrm)
+VOID Fib::FibRgW97::readFibRgW(std::ifstream & filestrm)
 {
 	filestrm.read(reinterpret_cast<char *>(&reserved1), sizeof(reserved1));
 	filestrm.read(reinterpret_cast<char *>(&reserved2), sizeof(reserved2));
@@ -1048,7 +822,7 @@ void Fib::FibRgW97::readFibRgW(std::ifstream & filestrm)
 	return;
 }
 
-void Fib::FibRgFcLcb::FibRgFcLcb97::readFibRgFcLcb97(std::ifstream & mainstrm)
+VOID Fib::FibRgFcLcb::FibRgFcLcb97::readFibRgFcLcb97(std::ifstream & mainstrm)
 {
 	mainstrm.read(reinterpret_cast<char *>(&fcStshfOrig), sizeof(fcStshfOrig));
 	mainstrm.read(reinterpret_cast<char *>(&lcbStshfOrig), sizeof(lcbStshfOrig));
@@ -1079,6 +853,7 @@ void Fib::FibRgFcLcb::FibRgFcLcb97::readFibRgFcLcb97(std::ifstream & mainstrm)
 	mainstrm.read(reinterpret_cast<char *>(&fcPlcfBtePapx), sizeof(fcPlcfBtePapx));
 	mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBtePapx), sizeof(lcbPlcfBtePapx));
 	mainstrm.read(reinterpret_cast<char *>(&fcPlcfSea), sizeof(fcPlcfSea));
+	mainstrm.read(reinterpret_cast<char *>(&lcbPlcfSea), sizeof(lcbPlcfSea));
 	mainstrm.read(reinterpret_cast<char *>(&fcSttbfFfn), sizeof(fcSttbfFfn));
 	mainstrm.read(reinterpret_cast<char *>(&lcbSttbfFfn), sizeof(lcbSttbfFfn));
 	mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldMom), sizeof(fcPlcfFldMom));
@@ -1239,7 +1014,262 @@ void Fib::FibRgFcLcb::FibRgFcLcb97::readFibRgFcLcb97(std::ifstream & mainstrm)
 	return;
 }
 
-void Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
+VOID Fib::FibRgFcLcb::FibRgFcLcb2000::readFibRgFcLcb2000(std::ifstream & wrdfile)
+{
+	FibRgFcLcb97 varPortion97;
+	varPortion97.readFibRgFcLcb97(wrdfile);
+
+	wrdfile.read(reinterpret_cast<char *>(&fcPlcfTch), sizeof(fcPlcfTch));
+	wrdfile.read(reinterpret_cast<char *>(&lcbPlcfTch), sizeof(lcbPlcfTch));
+	wrdfile.read(reinterpret_cast<char *>(&fcRmdThreading), sizeof(fcRmdThreading));
+	wrdfile.read(reinterpret_cast<char *>(&lcbRmdThreading), sizeof(lcbRmdThreading));
+	wrdfile.read(reinterpret_cast<char *>(&fcMid), sizeof(fcMid));
+	wrdfile.read(reinterpret_cast<char *>(&lcbMid), sizeof(lcbMid));
+	wrdfile.read(reinterpret_cast<char *>(&fcSttbRgtplc), sizeof(fcSttbRgtplc));
+	wrdfile.read(reinterpret_cast<char *>(&lcbSttbRgtplc), sizeof(lcbSttbRgtplc));
+	wrdfile.read(reinterpret_cast<char *>(&fcMsoEnvelope), sizeof(fcMsoEnvelope));
+	wrdfile.read(reinterpret_cast<char *>(&lcbMsoEnvelope), sizeof(lcbMsoEnvelope));
+	wrdfile.read(reinterpret_cast<char *>(&fcPlcfLad), sizeof(fcPlcfLad));
+	wrdfile.read(reinterpret_cast<char *>(&lcbPlcfLad), sizeof(lcbPlcfLad));
+	wrdfile.read(reinterpret_cast<char *>(&fcRgDofr), sizeof(fcRgDofr));
+	wrdfile.read(reinterpret_cast<char *>(&lcbRgDofr), sizeof(lcbRgDofr));
+	wrdfile.read(reinterpret_cast<char *>(&fcPlcosl), sizeof(fcPlcosl));
+	wrdfile.read(reinterpret_cast<char *>(&lcbPlcosl), sizeof(lcbPlcosl));
+	wrdfile.read(reinterpret_cast<char *>(&fcPlcfCookieOld), sizeof(fcPlcfCookieOld));
+	wrdfile.read(reinterpret_cast<char *>(&lcbPlcfCookieOld), sizeof(lcbPlcfCookieOld));
+	wrdfile.read(reinterpret_cast<char *>(&fcPgdMotherOld), sizeof(fcPgdMotherOld));
+	wrdfile.read(reinterpret_cast<char *>(&lcbPgdMotherOld), sizeof(lcbPgdMotherOld));
+	wrdfile.read(reinterpret_cast<char *>(&fcBkdMotherOld), sizeof(fcBkdMotherOld));
+	wrdfile.read(reinterpret_cast<char *>(&lcbBkdMotherOld), sizeof(lcbBkdMotherOld));
+	wrdfile.read(reinterpret_cast<char *>(&fcPgdFtnOld), sizeof(fcPgdFtnOld));
+	wrdfile.read(reinterpret_cast<char *>(&lcbPgdFtnOld), sizeof(lcbPgdFtnOld));
+	wrdfile.read(reinterpret_cast<char *>(&fcBkdFtnOld), sizeof(fcBkdFtnOld));
+	wrdfile.read(reinterpret_cast<char *>(&lcbBkdFtnOld), sizeof(lcbBkdFtnOld));
+	wrdfile.read(reinterpret_cast<char *>(&fcPgdEdnOld), sizeof(fcPgdEdnOld));
+	wrdfile.read(reinterpret_cast<char *>(&lcbPgdEdnOld), sizeof(lcbPgdEdnOld));
+	wrdfile.read(reinterpret_cast<char *>(&fcBkdEdnOld), sizeof(fcBkdEdnOld));
+	wrdfile.read(reinterpret_cast<char *>(&lcbBkdEdnOld), sizeof(lcbBkdEdnOld));
+
+	return;
+}
+
+VOID Fib::FibRgFcLcb::FibRgFcLcb2002::readFibRgFcLcb2002(std::ifstream &documentStr)
+{
+	FibRgFcLcb2000 varPortion2000;
+	varPortion2000.readFibRgFcLcb2000(documentStr);
+
+	documentStr.read(reinterpret_cast<char *>(&fcUnused1), sizeof(fcUnused1));
+	documentStr.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(lcbUnused1));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfPgp), sizeof(fcPlcfPgp));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfPgp), sizeof(lcbPlcfPgp));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfuim), sizeof(fcPlcfuim));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfuim), sizeof(lcbPlcfuim));
+	documentStr.read(reinterpret_cast<char *>(&fcPlfguidUim), sizeof(fcPlfguidUim));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlfguidUim), sizeof(lcbPlfguidUim));
+	documentStr.read(reinterpret_cast<char *>(&fcAtrdExtra), sizeof(fcAtrdExtra));
+	documentStr.read(reinterpret_cast<char *>(&lcbAtrdExtra), sizeof(lcbAtrdExtra));
+	documentStr.read(reinterpret_cast<char *>(&fcPlrsid), sizeof(fcPlrsid));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlrsid), sizeof(lcbPlrsid));
+	documentStr.read(reinterpret_cast<char *>(&fcSttbfBkmkFactoid), sizeof(fcSttbfBkmkFactoid));
+	documentStr.read(reinterpret_cast<char *>(&lcbSttbfBkmkFactoid), sizeof(lcbSttbfBkmkFactoid));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfBkfFactoid), sizeof(fcPlcfBkfFactoid));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfBkfFactoid), sizeof(lcbPlcfBkfFactoid));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfcookie), sizeof(fcPlcfcookie));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfcookie), sizeof(lcbPlcfcookie));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfBklFactoid), sizeof(fcPlcfBklFactoid));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfBklFactoid), sizeof(lcbPlcfBklFactoid));
+	documentStr.read(reinterpret_cast<char *>(&fcFactoidData), sizeof(fcFactoidData));
+	documentStr.read(reinterpret_cast<char *>(&lcbFactoidData), sizeof(lcbFactoidData));
+	documentStr.read(reinterpret_cast<char *>(&fcDocUndo), sizeof(fcDocUndo));
+	documentStr.read(reinterpret_cast<char *>(&lcbDocUndo), sizeof(lcbDocUndo));
+	documentStr.read(reinterpret_cast<char *>(&fcSttbfBkmkFcc), sizeof(fcSttbfBkmkFcc));
+	documentStr.read(reinterpret_cast<char *>(&lcbSttbfBkmkFcc), sizeof(lcbSttbfBkmkFcc));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfBkfFcc), sizeof(fcPlcfBkfFcc));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfBkfFcc), sizeof(lcbPlcfBkfFcc));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfBklFcc), sizeof(fcPlcfBklFcc));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfBklFcc), sizeof(lcbPlcfBklFcc));
+	documentStr.read(reinterpret_cast<char *>(&fcSttbfbkmkBPRepairs), sizeof(fcSttbfbkmkBPRepairs));
+	documentStr.read(reinterpret_cast<char *>(&lcbSttbfbkmkBPRepairs), sizeof(lcbSttbfbkmkBPRepairs));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfbkfBPRepairs), sizeof(fcPlcfbkfBPRepairs));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfbkfBPRepairs), sizeof(lcbPlcfbkfBPRepairs));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfbklBPRepairs), sizeof(fcPlcfbklBPRepairs));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfbklBPRepairs), sizeof(lcbPlcfbklBPRepairs));
+	documentStr.read(reinterpret_cast<char *>(&fcPmsNew), sizeof(fcPmsNew));
+	documentStr.read(reinterpret_cast<char *>(&lcbPmsNew), sizeof(lcbPmsNew));
+	documentStr.read(reinterpret_cast<char *>(&fcODSO), sizeof(fcODSO));
+	documentStr.read(reinterpret_cast<char *>(&lcbODSO), sizeof(lcbODSO));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiOldXP), sizeof(fcPlcfpmiOldXP));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiOldXP), sizeof(lcbPlcfpmiOldXP));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiNewXP), sizeof(fcPlcfpmiNewXP));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiNewXP), sizeof(lcbPlcfpmiNewXP));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiMixedXP), sizeof(fcPlcfpmiMixedXP));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiMixedXP), sizeof(lcbPlcfpmiMixedXP));
+	documentStr.read(reinterpret_cast<char *>(&fcUnused2), sizeof(fcUnused2));
+	documentStr.read(reinterpret_cast<char *>(&lcbUnused2), sizeof(lcbUnused2));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcffactoid), sizeof(fcPlcffactoid));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcffactoid), sizeof(lcbPlcffactoid));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcflvcOldXP), sizeof(fcPlcflvcOldXP));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcOldXP), sizeof(lcbPlcflvcOldXP));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcflvcNewXP), sizeof(fcPlcflvcNewXP));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcNewXP), sizeof(lcbPlcflvcNewXP));
+	documentStr.read(reinterpret_cast<char *>(&fcPlcflvcMixedXP), sizeof(fcPlcflvcMixedXP));
+	documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcMixedXP), sizeof(lcbPlcflvcMixedXP));
+
+	return;
+}
+
+VOID Fib::FibRgFcLcb::FibRgFcLcb2003::readFibRgFcLcb2003(std::ifstream & dotdocstrm)
+{
+	FibRgFcLcb2002 varPortion2002;
+	varPortion2002.readFibRgFcLcb2002(dotdocstrm);
+
+	dotdocstrm.read(reinterpret_cast<char *>(&fcHplxsdr), sizeof(fcHplxsdr));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbHplxsdr), sizeof(lcbHplxsdr));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcSttbfBkmkSdt), sizeof(fcSttbfBkmkSdt));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbfBkmkSdt), sizeof(lcbSttbfBkmkSdt));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBkfSdt), sizeof(fcPlcfBkfSdt));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBkfSdt), sizeof(lcbPlcfBkfSdt));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBklSdt), sizeof(fcPlcfBklSdt));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBklSdt), sizeof(lcbPlcfBklSdt));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcCustomXForm), sizeof(fcCustomXForm));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbCustomXForm), sizeof(lcbCustomXForm));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcSttbfBkmkProt), sizeof(fcSttbfBkmkProt));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbfBkmkProt), sizeof(lcbSttbfBkmkProt));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBkfProt), sizeof(fcPlcfBkfProt));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBkfProt), sizeof(lcbPlcfBkfProt));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBklProt), sizeof(fcPlcfBklProt));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBklProt), sizeof(lcbPlcfBklProt));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcSttbProtUser), sizeof(fcSttbProtUser));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbProtUser), sizeof(lcbSttbProtUser));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcUnused), sizeof(fcUnused));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbUnused), sizeof(lcbUnused));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiOld), sizeof(fcPlcfpmiOld));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiOld), sizeof(lcbPlcfpmiOld));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiOldInline), sizeof(fcPlcfpmiOldInline));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiOldInline), sizeof(lcbPlcfpmiOldInline));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiNew), sizeof(fcPlcfpmiNew));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiNew), sizeof(lcbPlcfpmiNew));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiNewInline), sizeof(fcPlcfpmiNewInline));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiNewInline), sizeof(lcbPlcfpmiNewInline));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcOld), sizeof(fcPlcflvcOld));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcOld), sizeof(lcbPlcflvcOld));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcOldInline), sizeof(fcPlcflvcOldInline));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcOldInline), sizeof(lcbPlcflvcOldInline));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcNew), sizeof(fcPlcflvcNew));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcNew), sizeof(lcbPlcflvcNew));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcNewInline), sizeof(fcPlcflvcNewInline));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcNewInline), sizeof(lcbPlcflvcNewInline));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPgdMother), sizeof(fcPgdMother));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdMother), sizeof(lcbPgdMother));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcBkdMother), sizeof(fcBkdMother));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdMother), sizeof(lcbBkdMother));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcAfdMother), sizeof(fcAfdMother));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdMother), sizeof(lcbAfdMother));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPgdFtn), sizeof(fcPgdFtn));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdFtn), sizeof(lcbPgdFtn));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcBkdFtn), sizeof(fcBkdFtn));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdFtn), sizeof(lcbBkdFtn));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcAfdFtn), sizeof(fcAfdFtn));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdFtn), sizeof(lcbAfdFtn));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcPgdEdn), sizeof(fcPgdEdn));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdEdn), sizeof(lcbPgdEdn));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcBkdEdn), sizeof(fcBkdEdn));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdEdn), sizeof(lcbBkdEdn));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcAfdEdn), sizeof(fcAfdEdn));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdEdn), sizeof(lcbAfdEdn));
+	dotdocstrm.read(reinterpret_cast<char *>(&fcAfd), sizeof(fcAfd));
+	dotdocstrm.read(reinterpret_cast<char *>(&lcbAfd), sizeof(lcbAfd));
+
+	return;
+}
+
+VOID Fib::FibRgFcLcb::FibRgFcLcb2007::readFibRgFcLcb2007(std::ifstream & dStream)
+{
+	FibRgFcLcb2003 varPortion2003;
+	varPortion2003.readFibRgFcLcb2003(dStream);
+
+	dStream.read(reinterpret_cast<char *>(&fcPlcfmthd), sizeof(fcPlcfmthd));
+	dStream.read(reinterpret_cast<char *>(&lcbPlcfmthd), sizeof(lcbPlcfmthd));
+	dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkMoveFrom), sizeof(fcSttbfBkmkMoveFrom));
+	dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkMoveFrom), sizeof(lcbSttbfBkmkMoveFrom));
+	dStream.read(reinterpret_cast<char *>(&fcPlcfBkfMoveFrom), sizeof(fcPlcfBkfMoveFrom));
+	dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfMoveFrom), sizeof(lcbPlcfBkfMoveFrom));
+	dStream.read(reinterpret_cast<char *>(&fcPlcfBklMoveFrom), sizeof(fcPlcfBklMoveFrom));
+	dStream.read(reinterpret_cast<char *>(&lcbPlcfBklMoveFrom), sizeof(lcbPlcfBklMoveFrom));
+	dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkMoveTo), sizeof(fcSttbfBkmkMoveTo));
+	dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkMoveTo), sizeof(lcbSttbfBkmkMoveTo));
+	dStream.read(reinterpret_cast<char *>(&fcPlcfBkfMoveTo), sizeof(fcPlcfBkfMoveTo));
+	dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfMoveTo), sizeof(lcbPlcfBkfMoveTo));
+	dStream.read(reinterpret_cast<char *>(&fcPlcfBklMoveTo), sizeof(fcPlcfBklMoveTo));
+	dStream.read(reinterpret_cast<char *>(&lcbPlcfBklMoveTo), sizeof(lcbPlcfBklMoveTo));
+	dStream.read(reinterpret_cast<char *>(&fcUnused1), sizeof(fcUnused1));
+	dStream.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(lcbUnused1));
+	dStream.read(reinterpret_cast<char *>(&fcUnused2), sizeof(fcUnused2));
+	dStream.read(reinterpret_cast<char *>(&lcbUnused2), sizeof(lcbUnused2));
+	dStream.read(reinterpret_cast<char *>(&fcUnused3), sizeof(fcUnused3));
+	dStream.read(reinterpret_cast<char *>(&lcbUnused3), sizeof(lcbUnused3));
+	dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkArto), sizeof(fcSttbfBkmkArto));
+	dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkArto), sizeof(lcbSttbfBkmkArto));
+	dStream.read(reinterpret_cast<char *>(&fcPlcfBkfArto), sizeof(fcPlcfBkfArto));
+	dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfArto), sizeof(lcbPlcfBkfArto));
+	dStream.read(reinterpret_cast<char *>(&fcPlcfBklArto), sizeof(fcPlcfBklArto));
+	dStream.read(reinterpret_cast<char *>(&lcbPlcfBklArto), sizeof(lcbPlcfBklArto));
+	dStream.read(reinterpret_cast<char *>(&fcArtoData), sizeof(fcArtoData));
+	dStream.read(reinterpret_cast<char *>(&lcbArtoData), sizeof(lcbArtoData));
+	dStream.read(reinterpret_cast<char *>(&fcUnused4), sizeof(fcUnused4));
+	dStream.read(reinterpret_cast<char *>(&lcbUnused4), sizeof(lcbUnused4));
+	dStream.read(reinterpret_cast<char *>(&fcUnused5), sizeof(fcUnused5));
+	dStream.read(reinterpret_cast<char *>(&lcbUnused5), sizeof(lcbUnused5));
+	dStream.read(reinterpret_cast<char *>(&fcUnused6), sizeof(fcUnused6));
+	dStream.read(reinterpret_cast<char *>(&lcbUnused6), sizeof(lcbUnused6));
+	dStream.read(reinterpret_cast<char *>(&fcOssTheme), sizeof(fcOssTheme));
+	dStream.read(reinterpret_cast<char *>(&lcbOssTheme), sizeof(lcbOssTheme));
+	dStream.read(reinterpret_cast<char *>(&fcColorSchemeMapping), sizeof(fcColorSchemeMapping));
+	dStream.read(reinterpret_cast<char *>(&lcbColorSchemeMapping), sizeof(lcbColorSchemeMapping));
+
+	return;
+}
+
+VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::readFibRgCswNewData2000(std::ifstream & instream)
+{
+	instream.read(reinterpret_cast<char *>(&cQuickSavesNew), sizeof(cQuickSavesNew));
+
+	return;
+}
+
+VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::readFibRgCswNewData2007(std::ifstream & streamin)
+{
+	FibRgCswNewData2000 newdat2000;
+	newdat2000.readFibRgCswNewData2000(streamin);
+
+	streamin.read(reinterpret_cast<char *>(&lidThemeOther), sizeof(lidThemeOther));
+	streamin.read(reinterpret_cast<char *>(&lidThemeFE), sizeof(lidThemeFE));
+	streamin.read(reinterpret_cast<char *>(&lidThemeCS), sizeof(lidThemeCS));
+
+	return;
+}
+
+
+VOID Fib::FibRgLw97::process_fibRgLw()
+{
+	assert(ccpText >= 0);
+	assert(ccpFtn >= 0);
+	assert(ccpHdd >= 0);
+	assert(reserved3 == 0);
+	assert(ccpAtn >= 0);
+	assert(ccpEdn >= 0);
+	assert(ccpTxbx >= 0);
+	assert(ccpHdrTxbx >= 0);
+	// assert(reserved6 <= Fib::FibRgFcLcb::FibRgFcLcb97::fcPlcfBteChpx &&
+	// reserved6 <= Fib::FibRgFcLcb::FibRgFcLcb97::lcbPlcfBteChpx)
+	// assert(reserved9 .....
+	assert(reserved13 == 0);
+	assert(reserved14 == 0);
+
+	return;
+}
+
+VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
 {
 	assert(lcbStshf != 0);
 	
@@ -1330,16 +1360,7 @@ void Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
 
 	return;
 }
-
-
-// Assigns values from stream to bit fields
-inline BYTE Fib::FibBase::assignBits(BYTE flag, BYTE temp, int shftRt)
-{
-	temp &= flag;
-	return temp >> shftRt;
-}
-
-void Fib::FibBase::process_fibBase()
+VOID Fib::FibBase::process_fibBase()
 {
 	assert(wIdent == 0xA5EC);
 
@@ -1370,10 +1391,41 @@ void Fib::FibBase::process_fibBase()
 	return;
 }
 
+
+// Assigns values from stream to bit fields
+inline BYTE Fib::FibBase::assignBits(BYTE flag, BYTE temp, int shftRt)
+{
+	temp &= flag;
+	return temp >> shftRt;
+}
+
+
 // Checks which nFib to use for version confirmation
-inline WORD Fib::determine_nFib_use()
+inline WORD Fib::determine_nFib_use() const
 {
 	if (cswNew == 0)
+	{
 		return base.nFib;
-	else { return fibRgCswNew.nFibNew; }
+	}
+	else
+	{
+		return fibRgCswNew.nFibNew;
+	}
+}
+
+// Ignores fields that are not to be read and moves downstream by a given number
+inline VOID Fib::skip_fields(std::ifstream & docustrm, DWORD numSkipped) const
+{
+	docustrm.seekg(numSkipped, std::ios::cur);
+	return;
+}
+
+inline VOID Fib::adjust_file_pointer(std::ifstream& strm, WORD gvnSize, WORD standard) const
+{
+	if (gvnSize < standard)
+	{
+		const int diff = standard - gvnSize;
+		strm.seekg(diff, std::ios::cur);
+	}
+	return;
 }

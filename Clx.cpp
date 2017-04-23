@@ -1,5 +1,7 @@
 #include "Clx.h"
 
+
+
 Clx::Clx()
 {
 }
@@ -8,11 +10,9 @@ Clx::~Clx()
 {
 }
 
-void Clx::readClx(std::ifstream & strom)
+VOID Clx::readToClx(std::ifstream & strom)
 {
-	Prc::readPrc(strom);
-	Pcdt::readPcdt(strom);
-
+	strom.read(reinterpret_cast<char *>(this), Fib::FibRgFcLcb::FibRgFcLcb97::lcbClx);
 	return;
 }
 
@@ -29,9 +29,9 @@ Sprm::~Sprm()
 {
 }
 
-void Sprm::readSprm(std::ifstream &streams)
+VOID Sprm::readSprm(std::ifstream &streams)
 {
-	WORD temp = SET_BYTES;
+	WORD temp = SET_ZERO;
 	streams.read(reinterpret_cast<char *>(&temp), sizeof(temp));
 	// ...
 
@@ -40,42 +40,26 @@ void Sprm::readSprm(std::ifstream &streams)
 
 Prc::Prc()
 {
-	clxt = SET_BYTES;
+	clxt = SET_ZERO;
 }
 
 Prc::~Prc()
 {
 }
 
-void Prc::readPrc(std::ifstream & filestream)
-{
-	filestream.read(reinterpret_cast<char *>(&clxt), sizeof(clxt));
-	readPcdt(filestream);
-
-	return;
-}
-
 Pcdt::Pcdt()
 {
-	clxt = SET_BYTES;
-	lcb = SET_BYTES;
+	clxt = SET_ZERO;
+	lcb = SET_ZERO;
 }
 
 Pcdt::~Pcdt()
 {
 }
 
-void Pcdt::readPcdt(std::ifstream &docstream)
-{
-	docstream.read(reinterpret_cast<char *>(&clxt), sizeof(clxt));
-	docstream.read(reinterpret_cast<char *>(&lcb), sizeof(lcb));
-	readPlcpcd(docstream);
-	return;
-}
-
 PrcData::PrcData()
 {
-	cbGrpprl	= SET_BYTES;
+	cbGrpprl	= SET_ZERO;
 	GrpPrl		= nullptr;
 }
 
@@ -83,13 +67,6 @@ PrcData::~PrcData()
 {
 }
 
-void PrcData::readPrcdata(std::ifstream &streem)
-{
-	streem.read(reinterpret_cast<char *>(&cbGrpprl), sizeof(cbGrpprl));
-	readPrl(streem);
-
-	return;
-}
 
 PlcPcd::PlcPcd()
 {
@@ -100,12 +77,6 @@ PlcPcd::~PlcPcd()
 {
 }
 
-void PlcPcd::readPlcpcd(std::ifstream & docstr)
-{
-	docstr.read(reinterpret_cast<char *>(&aCP), sizeof(aCP));
-	readPcd(docstr);
-	return;
-}
 
 Pcd::Pcd()
 {
@@ -119,18 +90,6 @@ Pcd::~Pcd()
 {
 }
 
-void Pcd::readPcd(std::ifstream &dstream)
-{
-	WORD tmp = SET_BYTES;
-	dstream.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
-	// ...
-
-	readFccomp(dstream);
-	readPrm(dstream);
-
-	return;
-}
-
 Prm::Prm()
 {
 	fComplex	= SET_BITS_1;
@@ -140,16 +99,16 @@ Prm::Prm()
 Prm::~Prm()
 {
 }
-
-void Prm::readPrm(std::ifstream &thisstrm)
-{
-	WORD tmp = SET_BYTES;
-	thisstrm.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
-	// ...
-
-	return;
-}
-
+//
+//VOID Prm::readPrm(std::ifstream &thisstrm)
+//{
+//	WORD tmp = SET_ZERO;
+//	thisstrm.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
+//	// ...
+//
+//	return;
+//}
+//
 FcCompressed::FcCompressed()
 {
 	fc			= SET_BITS_30;
@@ -160,15 +119,15 @@ FcCompressed::FcCompressed()
 FcCompressed::~FcCompressed()
 {
 }
-
-void FcCompressed::readFccomp(std::ifstream &strming)
-{
-	DWORD temp = SET_BYTES;
-	strming.read(reinterpret_cast<char *>(&temp), sizeof(temp));
-	// ...
-	return;
-}
-
+//
+//VOID FcCompressed::readFccomp(std::ifstream &strming)
+//{
+//	DWORD temp = SET_ZERO;
+//	strming.read(reinterpret_cast<char *>(&temp), sizeof(temp));
+//	// ...
+//	return;
+//}
+//
 Prl::Prl()
 {
 }
@@ -176,15 +135,3 @@ Prl::Prl()
 Prl::~Prl()
 {
 }
-
-void Prl::readPrl(std::ifstream &mystrm)
-{
-	
-	Sprm::readSprm(mystrm);
-	return;
-}
-
-//offset = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
-//int szClx = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.lcbClx;
-//stream.seekg(offset, std::ios::cur);
-//stream.read(reinterpret_cast<char *>(&charProc), sizeof(charProc));

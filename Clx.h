@@ -1,20 +1,19 @@
 // Clx.h
 // Define in-memory data structures for use with MS-Word .DOC Clx format
 
+#ifndef CLX_H_INCLUDED
+#define CLX_H_INCLUDED
+
 #include <fstream>
 #include "dtypes.h"
 #include "FIB.h"
 
-#ifndef CLX_H_INCLUDED
-#define CLX_H_INCLUDED
-
-#define SET_BYTES	0x00
-#define SET_BITS_1	0x00
-#define SET_BITS_3	0x00
-#define SET_BITS_9	0x00
-#define SET_BITS_13 0x00
-#define SET_BITS_15 0x00
-#define SET_BITS_30 0x00
+#define SET_BITS_1	0x0
+#define SET_BITS_3	0x0
+#define SET_BITS_9	0x0
+#define SET_BITS_13 0x0
+#define SET_BITS_15 0x0
+#define SET_BITS_30 0x0
 
 #pragma pack(push, 1)
 struct Sprm
@@ -27,9 +26,9 @@ struct Sprm
 
 	Sprm();
 	~Sprm();
-	friend struct FibBase;
 
-	void readSprm(std::ifstream&);
+	VOID readSprm(std::ifstream&);
+
 };
 
 struct Prl
@@ -38,7 +37,7 @@ struct Prl
 
 	Prl();
 	~Prl();
-	void readPrl(std::ifstream&);
+	VOID readPrl(std::ifstream&);
 }; // struct Prl
 
 struct FcCompressed
@@ -50,7 +49,7 @@ struct FcCompressed
 	FcCompressed();
 	~FcCompressed();
 
-	void readFccomp(std::ifstream&);
+	VOID readFccomp(std::ifstream&);
 }; // struct FcCompressed
 
 struct Prm
@@ -61,7 +60,7 @@ struct Prm
 	Prm();
 	~Prm();
 
-	void readPrm(std::ifstream&);
+	VOID readPrm(std::ifstream&);
 }; // struct Prm
 
 struct Pcd
@@ -76,7 +75,7 @@ struct Pcd
 	Pcd();
 	~Pcd();
 
-	void readPcd(std::ifstream&);
+	VOID readPcd(std::ifstream&);
 }; // struct Pcd
 
 struct PlcPcd
@@ -87,7 +86,7 @@ struct PlcPcd
 	PlcPcd();
 	~PlcPcd();
 
-	void readPlcpcd(std::ifstream&);
+	VOID readPlcpcd(std::ifstream&);
 
 }; // struct PlcPcd
 
@@ -99,19 +98,19 @@ struct PrcData
 	PrcData();
 	~PrcData();
 
-	void readPrcdata(std::ifstream&);
+	VOID readPrcdata(std::ifstream&);
 }; // struct PrcData
 
 struct Pcdt
 {
 	BYTE clxt;
 	DWORD lcb;
-	PlcPcd PlcPcd;
+	PlcPcd plcPcd;
 
 	Pcdt();
 	~Pcdt();
 
-	void readPcdt(std::ifstream&);
+	VOID readPcdt(std::ifstream&);
 }; // struct Pcdt
 
 struct Prc
@@ -122,7 +121,7 @@ struct Prc
 	Prc();
 	~Prc();
 
-	void readPrc(std::ifstream&);
+	VOID readPrc(std::ifstream&);
 }; // struct Prc
 
 struct Clx
@@ -133,7 +132,7 @@ struct Clx
 	Clx();
 	~Clx();
 
-	void readClx(std::ifstream&);
+	VOID readToClx(std::ifstream&);
 }; // struct Clx
 #pragma pack(pop)
 #endif // !CLX_H_INCLUDED

@@ -9,7 +9,6 @@
 #include <iostream>
 #include "dtypes.h"
 
-#define _SET_BYTES 0
 #define _SET_BITS_1 0
 #define _SET_BITS_3 0
 #define _SET_BITS_4 0
@@ -56,13 +55,13 @@ struct Fib
 		FibBase();
 		~FibBase();
 
-		void readFibBase(std::ifstream&);
+		VOID readFibBase(std::ifstream&);
 
 		inline BYTE assignBits(BYTE, BYTE, int);
 
-		void process_fibBase();
+		VOID process_fibBase();
 	} base; // struct FibBase;
-	WORD csw;
+	static WORD csw;
 	struct FibRgW97
 	{
 		WORD reserved1;
@@ -83,10 +82,10 @@ struct Fib
 		FibRgW97();
 		~FibRgW97();
 
-		void readFibRgW(std::ifstream &);
+		VOID readFibRgW(std::ifstream &);
 
 	} fibRgW; // struct FibRgW97	
-	WORD cslw;
+	static WORD cslw;
 	struct FibRgLw97
 	{
 		DWORD cbMac;
@@ -115,11 +114,11 @@ struct Fib
 		FibRgLw97();
 		~FibRgLw97();
 
-		void readFibRgLw(std::ifstream&);
-		void process_fibRgLw();
+		VOID readFibRgLw(std::ifstream&);
+		VOID process_fibRgLw();
 
 	} fibRgLw; // struct FibRgLw97
-	WORD cbRgFcLcb;
+	static WORD cbRgFcLcb;
 	union FibRgFcLcb
 	{
 		struct FibRgFcLcb97
@@ -190,8 +189,8 @@ struct Fib
 			DWORD lcbDop;
 			DWORD fcSttbfAssoc;
 			DWORD lcbSttbfAssoc;
-			DWORD fcClx;
-			DWORD lcbClx;
+			static DWORD fcClx;
+			static DWORD lcbClx;
 			DWORD fcPlcfPgdFtn;
 			DWORD lcbPlcfPgdFtn;
 			DWORD fcAutosaveSource;
@@ -314,10 +313,9 @@ struct Fib
 			FibRgFcLcb97();
 			~FibRgFcLcb97();
 
-			void readFibRgFcLcb97(std::ifstream &);
-			void process_FibRgFcLcb97();
-		} fibRgFcLcb97; // struct FibRgFcLcb97
-
+			VOID readFibRgFcLcb97(std::ifstream &);
+			VOID process_FibRgFcLcb97();
+		} fibRgFcLcb97;          // struct FibRgFcLcb97
 		struct FibRgFcLcb2000
 		{
 			FibRgFcLcb97 rgFcLcb97;
@@ -355,11 +353,10 @@ struct Fib
 			FibRgFcLcb2000();
 			~FibRgFcLcb2000();
 
-			void readFibRgFcLcb2000(std::ifstream &);
-			void process_FibRgFcLcb2000();
+			VOID readFibRgFcLcb2000(std::ifstream &);
+			VOID process_FibRgFcLcb2000();
 
-		} fibRgFcLcb2000; // struct FibRgFcLcb2000
-
+		} fibRgFcLcb2000;     // struct FibRgFcLcb2000
 		struct FibRgFcLcb2002
 		{
 			FibRgFcLcb2000 rgFcLcb2000;
@@ -423,10 +420,9 @@ struct Fib
 			FibRgFcLcb2002();
 			~FibRgFcLcb2002();
 
-			void readFibRgFcLcb2002(std::ifstream &);
-			void process_FibRgFcLcb2002();
-		} fibRgFcLcb2002; // struct FibRgFcLcb2002
-
+			VOID readFibRgFcLcb2002(std::ifstream &);
+			VOID process_FibRgFcLcb2002();
+		} fibRgFcLcb2002;    // struct FibRgFcLcb2002
 		struct FibRgFcLcb2003
 		{
 			FibRgFcLcb2002 rgFcLcb2002;
@@ -490,11 +486,10 @@ struct Fib
 			FibRgFcLcb2003();
 			~FibRgFcLcb2003();
 
-			void readFibRgFcLcb2003(std::ifstream &);
-			void process_FibRgFcLcb2003();
+			VOID readFibRgFcLcb2003(std::ifstream &);
+			VOID process_FibRgFcLcb2003();
 
-		} fibRgFcLcb2003; // struct FibRgFcLcb2003
-
+		} fibRgFcLcb2003;    // struct FibRgFcLcb2003
 		struct FibRgFcLcb2007
 		{
 			FibRgFcLcb2003 rgFcLcb2003;
@@ -540,18 +535,16 @@ struct Fib
 			FibRgFcLcb2007();
 			~FibRgFcLcb2007();
 
-			void readFibRgFcLcb2007(std::ifstream &);
-			void process_FibRgFcLcb2007();
+			VOID readFibRgFcLcb2007(std::ifstream &);
+			VOID process_FibRgFcLcb2007();
 
-		} fibRgFcLcb2007; // struct FibRgFcLcb2007
+		} fibRgFcLcb2007;    // struct FibRgFcLcb2007
 
 		FibRgFcLcb();
 		~FibRgFcLcb();
 
 	} fibRgFcLcbBlob; // union FibRgFcLcb
-
-	WORD cswNew;
-
+	static WORD cswNew;
 	struct FibRgCswNew
 	{
 		WORD nFibNew;
@@ -564,8 +557,8 @@ struct Fib
 				FibRgCswNewData2000();
 				~FibRgCswNewData2000();
 
-				void readFibRgCswNewData2000(std::ifstream &);
-				void process_FibRgCswNewData2000();
+				VOID readFibRgCswNewData2000(std::ifstream &);
+				VOID process_FibRgCswNewData2000();
 
 			} fibRgCswNewData2000; // struct FibRgCswNewData2000
 
@@ -579,7 +572,7 @@ struct Fib
 				FibRgCswNewData2007();
 				~FibRgCswNewData2007();
 
-				void readFibRgCswNewData2007(std::ifstream &);
+				VOID readFibRgCswNewData2007(std::ifstream &);
 				// nothing to process
 			} fibRgCswNewData2007; // struct FibRgCswNewData2007
 
@@ -590,14 +583,17 @@ struct Fib
 		FibRgCswNew();
 		~FibRgCswNew();
 
-		void readFibRgCswNew(std::ifstream&);
+		VOID readFibRgCswNew(std::ifstream&);
 	} fibRgCswNew; // struct FibRgCswNew
 
 	Fib();
 	~Fib();
 
-	void readFib(std::ifstream&);
-	inline WORD determine_nFib_use();
+	VOID readFib(std::ifstream&);
+	inline WORD determine_nFib_use() const;
+	inline VOID skip_fields(std::ifstream&, DWORD) const;
+	inline VOID adjust_file_pointer(std::ifstream&, WORD, WORD) const;
+
 
 }; // struct Fib
 #pragma pack(pop)

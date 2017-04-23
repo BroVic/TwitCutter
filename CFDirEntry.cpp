@@ -3,27 +3,23 @@
 DirEntry::DirEntry()
 {
 	for (int i = 0; i < 32; i++)
-		name[i]		= SET_BYTES;
-	nameLength		= SET_BYTES;
-	objType			= SET_BYTES;
-	colorFlag		= SET_BYTES;
-	leftSibID		= SET_BYTES;
-	rightSibID		= SET_BYTES;
-	childID			= SET_BYTES;
-	stateBits		= SET_BYTES;
-	startSectorLoc	= SET_BYTES;
-	streamSize		= SET_BYTES;
-
-	down	= nullptr;
-	lt		= nullptr;
-	rt		= nullptr;
+		name[i]		= SET_ZERO;
+	nameLength		= SET_ZERO;
+	objType			= SET_ZERO;
+	colorFlag		= SET_ZERO;
+	leftSibID		= SET_ZERO;
+	rightSibID		= SET_ZERO;
+	childID			= SET_ZERO;
+	stateBits		= SET_ZERO;
+	startSectorLoc	= SET_ZERO;
+	streamSize		= SET_ZERO;
 }
 
 DirEntry::~DirEntry()
 {
 }
 
-void DirEntry::readDirEntry(std::ifstream& flstrm)
+VOID DirEntry::readDirEntry(std::ifstream& flstrm)
 {
 	flstrm.read(reinterpret_cast<char *>(&name), sizeof(name));
 	flstrm.read(reinterpret_cast<char *>(&nameLength), sizeof(nameLength));
@@ -42,92 +38,47 @@ void DirEntry::readDirEntry(std::ifstream& flstrm)
 	return;
 }
 
-// Builds a red-black binary search tree
-void DirEntry::bldTree(DirEntry& root, std::ifstream& strm, int szObj) const
+WORD DirEntry::find_directory(std::ifstream& stream, std::u16string str, const int sctSz)
 {
-	int dirOffset = strm.tellg();
-	szObj /= sizeof(DirEntry);
-	DirEntry* trav	=  &root;
-	do
-	{
-		// introduce conditioning HERE to decide which pointer to link to allocated object
-		bool downOpen;
-		bool rightOpen;
-		bool leftOpen;
-
-		if (trav->childID == NOSTREAM)
-		{
-			downOpen = false;
-		}
-		if (trav->rightSibID == NOSTREAM)
-		{
-			rightOpen = false;
-		}
-		if (trav->leftSibID == NOSTREAM)
-		{
-			leftOpen = false;
-		}
-		
-		if (downOpen || rightOpen || leftOpen)
-		{
-			int sectNum = 0;
-			if (downOpen)
-			{
-				trav->down = new (std::nothrow) DirEntry;
-				trav = trav->down;
-				sectNum = trav->childID;
-			}
-			else if (rightOpen)
-			{
-				trav->rt = new (std::nothrow) DirEntry;
-				trav = trav->rt;
-				sectNum = trav->rightSibID;
-			}
-			else if (leftOpen)
-			{
-				trav->lt = new (std::nothrow) DirEntry;
-				trav = trav->lt;
-				sectNum = trav->leftSibID;
-			}
-			
-			strm.seekg(dirOffset, std::ios::beg);
-			strm.seekg(szObj * sectNum);
-			trav->readDirEntry(strm);
-		}
-	} while (true);
-
-	return;
-}
-
-// Finds the stream for a particular Directory Entry and returns its offset
-int DirEntry::fndDrctStrm(std::u16string str, const int sctSz) const
-{
-	DirEntry* tracker = nullptr;
+	const int d1 = CFHeader::DirSect1;
+	const int offset = (d1 + 1) * sctSz;
 	
-	if (this->objType == DIR_ROOT)
+	std::vector<DWORD> fat = CFHeader::loadFat(stream, sctSz);
+	int sectors = d1;
+	while (fat[sectors] != ENDOFCHAIN)
 	{
-		tracker = this->down;
-	}
-	
-	if (tracker->objType == DIR_STORAGE)
-	{
-		tracker = tracker->down;
+		sectors++;
 	}
 
-	if (tracker->objType == DIR_STREAM)
+	const int n = ((sectors - d1) + 1) * (sctSz / DIRENTRY_SIZE);
+	int id = 0;
+	for (int i = 1; i <= n; i++)
 	{
-		if (str.length() > tracker->nameLength)
+		if (this->objType == DIR_ROOT || this->objType == DIR_STORAGE)
 		{
-			tracker = tracker->rt;
+			id = this->childID;
 		}
-		else if (str.length() < tracker->nameLength)
+		else if (this->objType == DIR_STREAM)
 		{
-			tracker = tracker->lt;
-		}
-		else
-		{
-			// iterate through strings and compare
-		}
+			if (((str.length() + 1) * 2) > this->nameLength)
+			{
+				id = this->rightSibID;
+			}
+			else if (((str.length() + 1) * 2) < this->nameLength)
+			{
+				id = this->leftSibID;
+			}
+			else
+			{
+				if (str.compare(this->name) == 0)
+				{
+					return (this->startSectorLoc + 1) * sctSz;
+				}
+			}
+		} 
+		stream.seekg(offset, std::ios::beg);
+		stream.seekg((id * sizeof(DirEntry)), std::ios::cur);
+		this->readDirEntry(stream);
 	}
-	return (tracker->startSectorLoc + 1) * sctSz;
+	return 0;
 }
