@@ -16,9 +16,6 @@ WORD Fib::cslw;
 WORD Fib::cbRgFcLcb;
 WORD Fib::cswNew;
 
-DWORD Fib::FibRgFcLcb::FibRgFcLcb97::fcClx;
-DWORD Fib::FibRgFcLcb::FibRgFcLcb97::lcbClx;
-
 
 Fib::Fib()
 {
@@ -649,33 +646,33 @@ VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::process_FibRgCswNew
 VOID Fib::readFib(std::ifstream &docstream)
 {
 	int readSize = 0;
-	int objSize = 0;
-	docstream.read(reinterpret_cast<char *>(&base), sizeof(base)); // base.readFibBase(docstream);
+	int objSize = sizeof(FibBase);
+	docstream.read(reinterpret_cast<char *>(&base), objSize); // base.readFibBase(docstream);
 
-	docstream.read(reinterpret_cast<char *>(&csw), sizeof(csw));
+	docstream.read(reinterpret_cast<char *>(&csw), sizeof(WORD));
 	readSize = csw * 2;
-	objSize = sizeof(fibRgW);
+	objSize = sizeof(FibRgW97);
 	docstream.read(reinterpret_cast<char *>(&fibRgW), objSize); // fibRgW.readFibRgW(docstream); 
 	adjust_file_pointer(docstream, objSize, readSize);
 
-	docstream.read(reinterpret_cast<char *>(&cslw), sizeof(cslw));
+	docstream.read(reinterpret_cast<char *>(&cslw), sizeof(WORD));
 	readSize = cslw * 4;
-	objSize = sizeof(fibRgLw);
+	objSize = sizeof(FibRgLw97);
 	docstream.read(reinterpret_cast<char *>(&fibRgLw), objSize); // fibRgLw.readFibRgLw(docstream);
 	adjust_file_pointer(docstream, objSize, readSize);
 
-	docstream.read(reinterpret_cast<char *>(&cbRgFcLcb), sizeof(cbRgFcLcb));
+	docstream.read(reinterpret_cast<char *>(&cbRgFcLcb), sizeof(WORD));
 	readSize = cbRgFcLcb * 8;
-	objSize = sizeof(fibRgFcLcbBlob);
+	objSize = sizeof(FibRgFcLcb);
 	docstream.read(reinterpret_cast<char *>(&fibRgFcLcbBlob), objSize);
 	adjust_file_pointer(docstream, objSize, readSize);
 	
-	docstream.read(reinterpret_cast<char *>(&cswNew), sizeof(cswNew));
+	docstream.read(reinterpret_cast<char *>(&cswNew), sizeof(WORD));
 	const unsigned int ver = determine_nFib_use();
 	if (cswNew != 0x00)
 	{
 		readSize = cswNew * 2;
-		objSize = sizeof(fibRgCswNew);
+		objSize = sizeof(FibRgCswNew);
 		docstream.read(reinterpret_cast<char *>(&fibRgCswNew), objSize); // fibRgCswNew.readFibRgCswNew(docstream);
 		adjust_file_pointer(docstream, objSize, readSize);
 	}

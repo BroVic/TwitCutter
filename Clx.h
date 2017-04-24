@@ -16,123 +16,97 @@
 #define SET_BITS_30 0x0
 
 #pragma pack(push, 1)
-struct Sprm
-{
-
-	WORD ispmd : 9;
-	BYTE fspec : 1;
-	BYTE sgc : 3;
-	BYTE spra : 3;
-
-	Sprm();
-	~Sprm();
-
-	VOID readSprm(std::ifstream&);
-
-};
-
-struct Prl
-{
-	Sprm sprm;
-
-	Prl();
-	~Prl();
-	VOID readPrl(std::ifstream&);
-}; // struct Prl
-
-struct FcCompressed
-{
-	DWORD fc : 30;
-	BYTE fCompressed : 1;
-	BYTE r1 : 1;
-
-	FcCompressed();
-	~FcCompressed();
-
-	VOID readFccomp(std::ifstream&);
-}; // struct FcCompressed
-
-struct Prm
-{
-	BYTE fComplex : 1;
-	WORD data : 15;
-
-	Prm();
-	~Prm();
-
-	VOID readPrm(std::ifstream&);
-}; // struct Prm
-
-struct Pcd
-{
-	BYTE fNoParaLast : 1;
-	BYTE fR1 : 1;
-	BYTE fDirty : 1;
-	WORD fR2 : 13;
-	FcCompressed fc;
-	Prm prm; 
-
-	Pcd();
-	~Pcd();
-
-	VOID readPcd(std::ifstream&);
-}; // struct Pcd
-
-struct PlcPcd
-{
-	DWORD *aCP;
-	Pcd aPcd;
-
-	PlcPcd();
-	~PlcPcd();
-
-	VOID readPlcpcd(std::ifstream&);
-
-}; // struct PlcPcd
-
-struct PrcData
-{
-	WORD cbGrpprl;
-	Prl *GrpPrl;
-
-	PrcData();
-	~PrcData();
-
-	VOID readPrcdata(std::ifstream&);
-}; // struct PrcData
-
-struct Pcdt
-{
-	BYTE clxt;
-	DWORD lcb;
-	PlcPcd plcPcd;
-
-	Pcdt();
-	~Pcdt();
-
-	VOID readPcdt(std::ifstream&);
-}; // struct Pcdt
-
-struct Prc
-{
-	BYTE clxt;
-	PrcData data;
-
-	Prc();
-	~Prc();
-
-	VOID readPrc(std::ifstream&);
-}; // struct Prc
-
 struct Clx
 {
-	Prc *RgPrc;
-	Pcdt Pcdt;
+	struct Prc
+	{
+		BYTE clxt;
+		struct PrcData
+		{
+			WORD cbGrpprl;
+			struct Prl
+			{
+				struct Sprm
+				{
+					WORD ispmd : 9;
+					BYTE fspec : 1;
+					BYTE sgc : 3;
+					BYTE spra : 3;
+
+					Sprm();
+					~Sprm();
+
+				} sprm; // struct Sprm
+
+				Prl();
+				~Prl();
+
+			} GrpPrl; // struct Prl
+
+			PrcData();
+			~PrcData();
+
+		} data; // struct PrcData
+
+		Prc();
+		~Prc();
+
+	} rgPrc; // struct Prc
+	struct Pcdt
+	{
+		BYTE clxt;
+		DWORD lcb;
+		struct PlcPcd
+		{
+			DWORD aCP;
+			struct Pcd
+			{
+				BYTE fNoParaLast : 1;
+				BYTE fR1 : 1;
+				BYTE fDirty : 1;
+				WORD fR2 : 13;
+				struct FcCompressed
+				{
+					DWORD fc : 30;
+					BYTE fCompressed : 1;
+					BYTE r1 : 1;
+
+					FcCompressed();
+					~FcCompressed();
+
+				} fc; // struct FcCompressed
+				struct Prm
+				{
+					BYTE fComplex : 1;
+					WORD data : 15;
+
+					Prm();
+					~Prm();
+
+				} prm; // struct Prm
+
+				Pcd();
+				~Pcd();
+
+			} aPcd; // struct Pcd
+
+			PlcPcd();
+			~PlcPcd();
+
+		} plcPcd; // struct PlcPcd
+
+		Pcdt();
+		~Pcdt();
+
+	} pcdt; // struct Pcdt
 
 	Clx();
 	~Clx();
 
-	VOID readToClx(std::ifstream&);
+	VOID readToClx(std::ifstream&, DWORD);
+
 }; // struct Clx
+
 #pragma pack(pop)
+
 #endif // !CLX_H_INCLUDED

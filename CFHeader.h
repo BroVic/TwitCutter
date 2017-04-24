@@ -11,15 +11,13 @@
 #include <cmath>
 #include "dtypes.h"
 
-#define SET_ZERO 0
-
 // Special values for Compound File data structures
-const DWORD MAXREGSECT  = 0xFFFFFFFA;
-const DWORD RESERVED    = 0xFFFFFFFB;		// not applicable
-const DWORD DIFSECT     = 0xFFFFFFFC;
-const DWORD FATSECT     = 0xFFFFFFFD;
-const DWORD ENDOFCHAIN  = 0xFFFFFFFE;
-const DWORD FREESECT    = 0xFFFFFFFF;
+constexpr DWORD MAXREGSECT  = 0xFFFFFFFA;
+constexpr DWORD RESERVED    = 0xFFFFFFFB;		// not applicable
+constexpr DWORD DIFSECT     = 0xFFFFFFFC;
+constexpr DWORD FATSECT     = 0xFFFFFFFD;
+constexpr DWORD ENDOFCHAIN  = 0xFFFFFFFE;
+constexpr DWORD FREESECT    = 0xFFFFFFFF;
 
 #pragma pack(push, 1)
 struct CFHeader

@@ -1,6 +1,76 @@
 #include "Clx.h"
 
+Clx::Prc::PrcData::PrcData()
+{
+}
 
+Clx::Prc::PrcData::~PrcData()
+{
+}
+
+Clx::Prc::Prc()
+{
+}
+
+Clx::Prc::~Prc()
+{
+}
+
+Clx::Prc::PrcData::Prl::Prl()
+{
+}
+
+Clx::Prc::PrcData::Prl::~Prl()
+{
+}
+
+Clx::Prc::PrcData::Prl::Sprm::Sprm()
+{
+}
+
+Clx::Prc::PrcData::Prl::Sprm::~Sprm()
+{
+}
+
+Clx::Pcdt::PlcPcd::Pcd::FcCompressed::FcCompressed()
+{
+}
+
+Clx::Pcdt::PlcPcd::Pcd::FcCompressed::~FcCompressed()
+{
+}
+
+Clx::Pcdt::PlcPcd::Pcd::Prm::Prm()
+{
+}
+
+Clx::Pcdt::PlcPcd::Pcd::Prm::~Prm()
+{
+}
+
+Clx::Pcdt::PlcPcd::Pcd::Pcd()
+{
+}
+
+Clx::Pcdt::PlcPcd::Pcd::~Pcd()
+{
+}
+
+Clx::Pcdt::PlcPcd::PlcPcd()
+{
+}
+
+Clx::Pcdt::PlcPcd::~PlcPcd()
+{
+}
+
+Clx::Pcdt::Pcdt()
+{
+}
+
+Clx::Pcdt::~Pcdt()
+{
+}
 
 Clx::Clx()
 {
@@ -10,128 +80,8 @@ Clx::~Clx()
 {
 }
 
-VOID Clx::readToClx(std::ifstream & strom)
+VOID Clx::readToClx(std::ifstream &stream, DWORD lcb)
 {
-	strom.read(reinterpret_cast<char *>(this), Fib::FibRgFcLcb::FibRgFcLcb97::lcbClx);
+	stream.read(reinterpret_cast<char *>(this), lcb);
 	return;
-}
-
-Sprm::Sprm()
-{
-	ispmd	= SET_BITS_9;
-	fspec	= SET_BITS_1;
-	sgc		= SET_BITS_3;
-	spra	= SET_BITS_3;
-	
-}
-
-Sprm::~Sprm()
-{
-}
-
-VOID Sprm::readSprm(std::ifstream &streams)
-{
-	WORD temp = SET_ZERO;
-	streams.read(reinterpret_cast<char *>(&temp), sizeof(temp));
-	// ...
-
-	return;
-}
-
-Prc::Prc()
-{
-	clxt = SET_ZERO;
-}
-
-Prc::~Prc()
-{
-}
-
-Pcdt::Pcdt()
-{
-	clxt = SET_ZERO;
-	lcb = SET_ZERO;
-}
-
-Pcdt::~Pcdt()
-{
-}
-
-PrcData::PrcData()
-{
-	cbGrpprl	= SET_ZERO;
-	GrpPrl		= nullptr;
-}
-
-PrcData::~PrcData()
-{
-}
-
-
-PlcPcd::PlcPcd()
-{
-	aCP = nullptr;
-}
-
-PlcPcd::~PlcPcd()
-{
-}
-
-
-Pcd::Pcd()
-{
-	fNoParaLast = SET_BITS_1;
-	fR1			= SET_BITS_1;
-	fDirty		= SET_BITS_1;
-	fR2			= SET_BITS_13;
-}
-
-Pcd::~Pcd()
-{
-}
-
-Prm::Prm()
-{
-	fComplex	= SET_BITS_1;
-	data		= SET_BITS_15;
-}
-
-Prm::~Prm()
-{
-}
-//
-//VOID Prm::readPrm(std::ifstream &thisstrm)
-//{
-//	WORD tmp = SET_ZERO;
-//	thisstrm.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
-//	// ...
-//
-//	return;
-//}
-//
-FcCompressed::FcCompressed()
-{
-	fc			= SET_BITS_30;
-	fCompressed = SET_BITS_1;
-	r1			= SET_BITS_1;
-}
-
-FcCompressed::~FcCompressed()
-{
-}
-//
-//VOID FcCompressed::readFccomp(std::ifstream &strming)
-//{
-//	DWORD temp = SET_ZERO;
-//	strming.read(reinterpret_cast<char *>(&temp), sizeof(temp));
-//	// ...
-//	return;
-//}
-//
-Prl::Prl()
-{
-}
-
-Prl::~Prl()
-{
 }

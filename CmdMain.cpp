@@ -71,9 +71,10 @@ int main()
 	stream.seekg(offset, std::ios::beg);
 
 	Clx charProc;
-	offset = Fib::FibRgFcLcb::FibRgFcLcb97::fcClx;
+	offset = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
+	unsigned int cap = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.lcbClx;
 	stream.seekg(offset, std::ios::cur);
-	charProc.readToClx(stream);
+	charProc.readToClx(stream, cap);
 
 	stream.close();
 

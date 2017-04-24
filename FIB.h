@@ -189,8 +189,8 @@ struct Fib
 			DWORD lcbDop;
 			DWORD fcSttbfAssoc;
 			DWORD lcbSttbfAssoc;
-			static DWORD fcClx;
-			static DWORD lcbClx;
+			DWORD fcClx;
+			DWORD lcbClx;
 			DWORD fcPlcfPgdFtn;
 			DWORD lcbPlcfPgdFtn;
 			DWORD fcAutosaveSource;
