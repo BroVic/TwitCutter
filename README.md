@@ -11,4 +11,5 @@
 		- Read the *File Information Block (FIB)* from offset 0 of this stream.
 		- Locate the *Table* stream.
 		- Locate the *Clx* using data available on the FIB.
+		- Read the *Clx* from the stream.
 		- ...
