@@ -80,6 +80,3 @@ int main()
 
 	return 0;
 }
-
-
-// Prints output (for testing purposes only)

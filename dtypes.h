@@ -10,6 +10,7 @@ using BYTE      = uint8_t;
 using CHAR      = int8_t;
 using WORD      = uint16_t;
 using DWORD     = uint32_t;
+using SHORT     = int16_t;
 using LONG      = int32_t;
 using WCHAR     = char16_t;
 using ULONGLONG = uint64_t;

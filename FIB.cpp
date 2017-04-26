@@ -1390,7 +1390,7 @@ VOID Fib::FibBase::process_fibBase()
 
 
 // Assigns values from stream to bit fields
-inline BYTE Fib::FibBase::assignBits(BYTE flag, BYTE temp, int shftRt)
+inline BYTE Fib::assignBits(BYTE flag, BYTE temp, int shftRt)
 {
 	temp &= flag;
 	return temp >> shftRt;

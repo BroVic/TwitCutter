@@ -57,8 +57,6 @@ struct Fib
 
 		VOID readFibBase(std::ifstream&);
 
-		inline BYTE assignBits(BYTE, BYTE, int);
-
 		VOID process_fibBase();
 	} base; // struct FibBase;
 	static WORD csw;
@@ -593,6 +591,8 @@ struct Fib
 	inline WORD determine_nFib_use() const;
 	inline VOID skip_fields(std::ifstream&, DWORD) const;
 	inline VOID adjust_file_pointer(std::ifstream&, WORD, WORD) const;
+	inline static BYTE assignBits(BYTE, BYTE, int);
+
 
 
 }; // struct Fib
