@@ -16,31 +16,31 @@ Clx::Prc::~Prc()
 {
 }
 
-Clx::Prc::PrcData::Prl::Prl()
+Prl::Prl()
 {
 }
 
-Clx::Prc::PrcData::Prl::~Prl()
+Prl::~Prl()
 {
 }
 
-Clx::Prc::PrcData::Prl::Sprm::Sprm()
+Prl::Sprm::Sprm()
 {
 }
 
-Clx::Prc::PrcData::Prl::Sprm::~Sprm()
+Prl::Sprm::~Sprm()
 {
 }
 
-Clx::Pcdt::PlcPcd::Pcd::FcCompressed::FcCompressed()
+Pcd::FcCompressed::FcCompressed()
 {
 }
 
-Clx::Pcdt::PlcPcd::Pcd::FcCompressed::~FcCompressed()
+Pcd::FcCompressed::~FcCompressed()
 {
 }
 
-VOID Clx::Pcdt::PlcPcd::Pcd::FcCompressed::readFcData(std::ifstream &stream)
+VOID Pcd::FcCompressed::readFcData(std::ifstream &stream)
 {
 	DWORD temp   = 0;
 	DWORD mask   = 0x3FFFFFFF;
@@ -54,16 +54,16 @@ VOID Clx::Pcdt::PlcPcd::Pcd::FcCompressed::readFcData(std::ifstream &stream)
 
 	return;
 }
+Pcd::Prm::Prm()
 
-Clx::Pcdt::PlcPcd::Pcd::Prm::Prm()
 {
 }
 
-Clx::Pcdt::PlcPcd::Pcd::Prm::~Prm()
+Pcd::Prm::~Prm()
 {
 }
 
-VOID Clx::Pcdt::PlcPcd::Pcd::Prm::readPrmData(std::ifstream &curstream)
+VOID Pcd::Prm::readPrmData(std::ifstream &curstream)
 {
 	WORD tmp  = 0;
 	WORD mask = 0xFFFE;
@@ -76,7 +76,7 @@ VOID Clx::Pcdt::PlcPcd::Pcd::Prm::readPrmData(std::ifstream &curstream)
 	return;
 }
 
-void Clx::Pcdt::PlcPcd::Pcd::readPcd(std::ifstream &flsrc)
+void Pcd::readPcd(std::ifstream &flsrc)
 {
 	WORD temp  = 0;
 	WORD mask  = 0xFFFB;
@@ -97,19 +97,19 @@ void Clx::Pcdt::PlcPcd::Pcd::readPcd(std::ifstream &flsrc)
 	return;
 }
 
-Clx::Pcdt::PlcPcd::Pcd::Pcd()
+Pcd::Pcd()
 {
 }
 
-Clx::Pcdt::PlcPcd::Pcd::~Pcd()
+Pcd::~Pcd()
 {
 }
 
-Clx::Pcdt::PlcPcd::PlcPcd()
+PlcPcd::PlcPcd()
 {
 }
 
-Clx::Pcdt::PlcPcd::~PlcPcd()
+PlcPcd::~PlcPcd()
 {
 }
 
@@ -129,40 +129,51 @@ Clx::~Clx()
 {
 }
 
+inline DWORD Clx::Pcdt::calcArrayLength(DWORD cbSz)
+{
+	return (cbSz - 4) / (4 + sizeof(Pcd));
+}
+
 VOID Clx::Pcdt::readPcdt(std::ifstream &strm)
 {
-	strm.read(reinterpret_cast<char *>(this->clxt), sizeof(this->clxt));
-	strm.read(reinterpret_cast<char *>(this->lcb), sizeof(this->lcb));
-	readPlcPcd(strm, lcb);
+	DWORD numArr = calcArrayLength(lcb);
+
+	plcPcd.readPlcPcd(strm, numArr);
 	
 	return;
 }
 
-VOID Clx::readToClx(std::ifstream &stream, DWORD lcb)
+// Decides on how to start reading the structure
+VOID Clx::readToClx(std::ifstream &stream)
 {
 	BYTE tmpClxt = 0x00;
-	int shift    = sizeof(BYTE);
-	stream.read(reinterpret_cast<char *>(&tmpClxt), shift);
-	stream.seekg(-shift, std::ios::cur);
+	stream.read(reinterpret_cast<char *>(&tmpClxt), sizeof(BYTE));
+
 	if (tmpClxt == 0x01)
 	{
-		// readPrc();
+		// prc.readPrc();
+
+		// NB: if this branch is followed, end with a reading of the first 
+		// field of the next structure, for a smooth transition
 	}
 	
-	if (tmpClxt == 0x02)
-	{
-		
-	}
+	pcdt.readPcdt(stream);
 	
 	return;
 }
 
 
-VOID Clx::Pcdt::readPlcPcd(std::ifstream &strm)
+VOID PlcPcd::readPlcPcd(std::ifstream &strm, DWORD num)
 {
-	plcPcd.aCP = new DWORD[lcb]; // ???
-	strm.read(reinterpret_cast<char *>(&plcPcd.aCP), lcb);
-	plcPcd.aPcd.readPcd(strm);
+	for (int i = 0; i < (num +1); i++)
+	{
+		strm.read(reinterpret_cast<char *>(aCP), sizeof(DWORD));
+	}
+
+	for (int i = 0; i < num; i++)
+	{
+		aPcd[i].readPcd(strm);
+	}
 
 	return;
 }
