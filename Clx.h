@@ -8,12 +8,12 @@
 #include "dtypes.h"
 #include "FIB.h"
 
-#define SET_BITS_1	0x0
-#define SET_BITS_3	0x0
-#define SET_BITS_9	0x0
-#define SET_BITS_13 0x0
-#define SET_BITS_15 0x0
-#define SET_BITS_30 0x0
+constexpr BYTE SET_BITS_1	= 0x00;
+constexpr BYTE SET_BITS_3	= 0x00;
+constexpr WORD SET_BITS_9	= 0x0000;
+constexpr WORD SET_BITS_13  = 0x0000;
+constexpr WORD SET_BITS_15  = 0x0000;
+constexpr DWORD SET_BITS_30 = 0x00000000;
 
 #pragma pack(push, 1)
 
@@ -36,12 +36,15 @@ struct Prl
 	struct Sprm
 	{
 		WORD ispmd : 9;
-		BYTE fspec : 1;
+		BYTE fSpec : 1;
 		BYTE sgc : 3;
 		BYTE spra : 3;
 
 		Sprm();
 		~Sprm();
+		
+		VOID readSprm(std::ifstream&);
+		
 
 	}; // struct Sprm
 	

@@ -76,7 +76,7 @@ VOID Clx::Pcdt::PlcPcd::Pcd::Prm::readPrmData(std::ifstream &curstream)
 	return;
 }
 
-void Clx::Pcdt::PlcPcd::Pcd::readPcd(std::ifstream &flsrc)
+VOID Clx::Pcdt::PlcPcd::Pcd::readPcd(std::ifstream &flsrc)
 {
 	WORD temp  = 0;
 	WORD mask  = 0xFFFB;
@@ -164,5 +164,23 @@ VOID Clx::Pcdt::readPlcPcd(std::ifstream &strm)
 	strm.read(reinterpret_cast<char *>(&plcPcd.aCP), lcb);
 	plcPcd.aPcd.readPcd(strm);
 
+	return;
+}
+
+VOID Prl::Sprm::readSprm(std::ifstream & stream)
+{
+	WORD tmp = 0x0000;
+	stream.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
+	
+	DWORD msk_ispmd  = 0x1FF;
+	BYTE fS          = 0x200;
+	BYTE msk_sgc     = 0x1C0;
+	BYTE msk_spra    = 0xE00;
+	
+	ispmd = tmp & msk_ispmd;
+	fSpec = (tmp & fS) >> 9;
+	sgc   = (tmp &msk_sgc) >> 10;
+	spra  = (tmp & msk_spra) >> 11;
+	
 	return;
 }
