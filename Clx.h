@@ -30,23 +30,6 @@
 //constexpr WORD sprmCFOle2 = 0x080A;
 //constexpr WORD sprmCHighlight = 0x2A0C;
 //constexpr WORD sprmCFWebHidden = 0x0811;
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
-//constexpr WORD
 
 struct Prl 
 {
