@@ -49,6 +49,54 @@ struct Prl
 	~Prl();
 };
 
+struct Pcd
+{
+	BYTE fNoParaLast : 1;
+	BYTE fR1 : 1;
+	BYTE fDirty : 1;
+	WORD fR2 : 13;
+	struct FcCompressed
+	{
+		DWORD fc : 30;
+		BYTE fCompressed : 1;
+		BYTE r1 : 1;
+
+		FcCompressed();
+		~FcCompressed();
+
+		VOID readFcData(std::ifstream&);
+	} fc; // struct FcCompressed
+	struct Prm
+	{
+		BYTE fComplex : 1;
+		WORD data : 15;
+
+		Prm();
+		~Prm();
+
+		VOID readPrmData(std::ifstream&);
+	} prm; // struct Prm
+
+	void readPcd(std::ifstream&);
+
+	Pcd();
+	~Pcd();
+
+}; // struct Pcd
+
+
+struct PlcPcd
+{
+	DWORD *aCP;
+	Pcd *aPcd;
+
+	PlcPcd();
+	~PlcPcd();
+
+	VOID readPlcPcd(std::ifstream&, DWORD);
+
+}; // struct PlcPcd
+
 struct Clx
 {
 	struct Prc
@@ -72,54 +120,13 @@ struct Clx
 	{
 		BYTE clxt;
 		DWORD lcb;
-		struct PlcPcd
-		{
-			DWORD *aCP;
-			struct Pcd
-			{
-				BYTE fNoParaLast : 1;
-				BYTE fR1 : 1;
-				BYTE fDirty : 1;
-				WORD fR2 : 13;
-				struct FcCompressed
-				{
-					DWORD fc : 30;
-					BYTE fCompressed : 1;
-					BYTE r1 : 1;
-
-					FcCompressed();
-					~FcCompressed();
-
-					VOID readFcData(std::ifstream&);
-				} fc; // struct FcCompressed
-				struct Prm
-				{
-					BYTE fComplex : 1;
-					WORD data : 15;
-
-					Prm();
-					~Prm();
-
-					VOID readPrmData(std::ifstream&);
-				} prm; // struct Prm
-				
-				void readPcd(std::ifstream&);
-
-				Pcd();
-				~Pcd();
-
-			} aPcd; // struct Pcd
-
-			PlcPcd();
-			~PlcPcd();
-
-		} plcPcd; // struct PlcPcd
+		PlcPcd plcPcd;
 
 		Pcdt();
 		~Pcdt();
 
 
-		VOID readPlcPcd(std::ifstream&);
+		inline DWORD calcArrayLength(DWORD);
 		VOID readPcdt(std::ifstream&);
 	} pcdt; // struct Pcdt
 
@@ -127,7 +134,7 @@ struct Clx
 	~Clx();
 
 	
-	VOID readToClx(std::ifstream&, DWORD);
+	VOID readToClx(std::ifstream&);
 
 }; // struct Clx
 
