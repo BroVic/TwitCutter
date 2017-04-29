@@ -7,13 +7,13 @@
 #include <cstdint>
 
 using BYTE      = uint8_t;
+using USHORT    = uint16_t;
+using ULONG     = uint32_t;
+using ULONGLONG = uint64_t;
 using CHAR      = int8_t;
-using WORD      = uint16_t;
-using DWORD     = uint32_t;
 using SHORT     = int16_t;
 using LONG      = int32_t;
 using WCHAR     = char16_t;
-using ULONGLONG = uint64_t;
 using BOOL      = bool;
 using VOID      = void;
 
@@ -21,9 +21,9 @@ constexpr int SET_ZERO = 0x0;
 
 struct CLSID
 {
-	DWORD Data1;
-	WORD Data2;
-	WORD Data3;
+	ULONG Data1;
+	USHORT Data2;
+	USHORT Data3;
 	BYTE Data4[8];
 
 	CLSID();
@@ -32,8 +32,8 @@ struct CLSID
 
 struct FILETIME
 {
-	DWORD dwLowDateTime;
-	DWORD dwHighDateTime;
+	ULONG dwLowDateTime;
+	ULONG dwHighDateTime;
 
 	FILETIME();
 	~FILETIME();

@@ -1,18 +1,18 @@
 #include "Clx.h"
 
-Clx::Prc::PrcData::PrcData()
+Prc::PrcData::PrcData()
 {
 }
 
-Clx::Prc::PrcData::~PrcData()
+Prc::PrcData::~PrcData()
 {
 }
 
-Clx::Prc::Prc()
+Prc::Prc()
 {
 }
 
-Clx::Prc::~Prc()
+Prc::~Prc()
 {
 }
 
@@ -32,6 +32,24 @@ Prl::Sprm::~Sprm()
 {
 }
 
+VOID Prl::Sprm::readSprm(std::ifstream &stream)
+{
+	USHORT tmp = 0x0000;
+	stream.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
+
+	ULONG msk_ispmd = 0x1FF;
+	BYTE fS = 0x200;
+	BYTE msk_sgc = 0x1C00;
+	BYTE msk_spra = 0xE00;
+
+	ispmd = tmp & msk_ispmd;
+	fSpec = (tmp & fS) >> 9;
+	sgc = (tmp & msk_sgc) >> 10;
+	spra = (tmp & msk_spra) >> 13;
+
+	return;
+}
+
 Pcd::FcCompressed::FcCompressed()
 {
 }
@@ -42,8 +60,8 @@ Pcd::FcCompressed::~FcCompressed()
 
 VOID Pcd::FcCompressed::readFcData(std::ifstream &stream)
 {
-	DWORD temp   = 0;
-	DWORD mask   = 0x3FFFFFFF;
+	ULONG temp   = 0;
+	ULONG mask   = 0x3FFFFFFF;
 	BYTE fCmprsd = 0x40000000;
 	BYTE rBit    = 0x80000000;
 
@@ -65,8 +83,8 @@ Pcd::Prm::~Prm()
 
 VOID Pcd::Prm::readPrmData(std::ifstream &curstream)
 {
-	WORD tmp  = 0;
-	WORD mask = 0xFFFE;
+	USHORT tmp  = 0;
+	USHORT mask = 0xFFFE;
 	BYTE fC   = 0x1;
 
 	curstream.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
@@ -78,8 +96,8 @@ VOID Pcd::Prm::readPrmData(std::ifstream &curstream)
 
 void Pcd::readPcd(std::ifstream &flsrc)
 {
-	WORD temp  = 0;
-	WORD mask  = 0xFFFB;
+	USHORT temp  = 0;
+	USHORT mask  = 0xFFFB;
 	BYTE fNPL  = 0x1;
 	BYTE fROne = 0x2;
 	BYTE fD    = 0x4;
@@ -129,14 +147,14 @@ Clx::~Clx()
 {
 }
 
-inline DWORD Clx::Pcdt::calcArrayLength(DWORD cbSz)
+inline ULONG Clx::Pcdt::calcArrayLength(ULONG cbSz)
 {
 	return (cbSz - 4) / (4 + sizeof(Pcd));
 }
 
 VOID Clx::Pcdt::readPcdt(std::ifstream &strm)
 {
-	DWORD numArr = calcArrayLength(lcb);
+	ULONG numArr = calcArrayLength(lcb);
 
 	plcPcd.readPlcPcd(strm, numArr);
 	
@@ -163,11 +181,11 @@ VOID Clx::readToClx(std::ifstream &stream)
 }
 
 
-VOID PlcPcd::readPlcPcd(std::ifstream &strm, DWORD num)
+VOID PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 {
 	for (int i = 0; i < (num +1); i++)
 	{
-		strm.read(reinterpret_cast<char *>(aCP), sizeof(DWORD));
+		strm.read(reinterpret_cast<char *>(aCP), sizeof(ULONG));
 	}
 
 	for (int i = 0; i < num; i++)

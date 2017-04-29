@@ -48,13 +48,13 @@ int main()
 	CFHeader oleBlock;
 	oleBlock.readCFHeader(stream);
 
-	const WORD sectorSize = oleBlock.set_sector_size();
+	const USHORT sectorSize = oleBlock.set_sector_size();
 	DirEntry rootEntry;
 	stream.seekg(oleBlock.DirSect1 * sectorSize, std::ios::cur);
 	rootEntry.readDirEntry(stream);
 
-	// Locate WordDocument stream and read File Information Block
-	std::u16string srchName(u"WordDocument");
+	// Locate USHORTDocument stream and read File Information Block
+	std::u16string srchName(u"USHORTDocument");
 	int offset = rootEntry.find_directory(stream, srchName, sectorSize);
 	stream.seekg(offset, std::ios::beg);
 	offset = -1;
