@@ -33,20 +33,20 @@ struct CFHeader
 	ULONG Reserved2;
 	ULONG NumDirSects;
 	ULONG NumFatSects;
-	static ULONG DirSect1;
+	ULONG DirSect1;
 	ULONG TransactSig;
 	ULONG MiniStrMax;
 	ULONG MiniFatSect1;
 	ULONG NumMiniFatSects;
 	ULONG DifatSect1;
 	ULONG NumDifatSects;
-	static ULONG Difat[109];
+	ULONG Difat[109];
 
 	CFHeader();
 	~CFHeader();
 
 	VOID readCFHeader(std::ifstream&);
-	static std::vector<ULONG> loadFat(std::ifstream&, const USHORT);
+	std::vector<ULONG> loadFat(std::ifstream&, const USHORT);
 	BOOL use_difat_sect();
 	ULONG fat_len(std::ifstream&, const USHORT);
 	

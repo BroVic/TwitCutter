@@ -40,7 +40,7 @@ struct DirEntry
 
 	VOID readDirEntry(std::ifstream &);
 
-	USHORT find_directory(std::ifstream&, std::u16string, const int);
+	USHORT find_directory(std::ifstream&, std::u16string, CFHeader&);
 
 };
 

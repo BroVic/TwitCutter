@@ -15,6 +15,8 @@ constexpr BYTE SET_BITS_13  = 0x0;
 constexpr BYTE SET_BITS_15  = 0x0;
 constexpr BYTE SET_BITS_30  = 0x0;
 
+constexpr ULONG SIZE_OF_PCD = 8;
+
 // Sprm values
 //constexpr USHORT sprmCFRMarkDel = 0x0800;
 //constexpr USHORT sprmCFRMarkIns = 0x0801;
@@ -28,6 +30,8 @@ constexpr BYTE SET_BITS_30  = 0x0;
 //constexpr USHORT sprmCFOle2 = 0x080A;
 //constexpr USHORT sprmCHighlight = 0x2A0C;
 //constexpr USHORT sprmCFWebHidden = 0x0811;
+
+
 
 struct Prl 
 {
@@ -67,6 +71,7 @@ struct Prc
 
 	}; // struct Prc
 
+#pragma pack(push, 1)
 struct Pcd
 {
 	BYTE fNoParaLast : 1;
@@ -95,16 +100,18 @@ struct Pcd
 		VOID readPrmData(std::ifstream&);
 	} prm; // struct Prm
 
-	void readPcd(std::ifstream&);
-
 	Pcd();
 	~Pcd();
 
-}; // struct Pcd
+	Pcd readPcdData(std::ifstream&);
 
+}; // struct Pcd
+#pragma pack(pop)
+
+#pragma pack(push, 1)
 struct PlcPcd
 {
-	ULONG *aCP;
+	ULONG aCP;
 	Pcd *aPcd;
 
 	PlcPcd();
@@ -113,6 +120,7 @@ struct PlcPcd
 	VOID readPlcPcd(std::ifstream&, ULONG);
 
 }; // struct PlcPcd
+#pragma pack(pop)
 
 struct Clx
 {
@@ -128,7 +136,7 @@ struct Clx
 
 
 		inline ULONG calcArrayLength(ULONG);
-		VOID readPcdt(std::ifstream&);
+		VOID readPcdt(std::ifstream &strm, BYTE);
 	} pcdt; // struct Pcdt
 
 	Clx();

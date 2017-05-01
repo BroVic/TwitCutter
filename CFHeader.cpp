@@ -1,9 +1,5 @@
 #include "CFHeader.h"
 
-// static member variables
-ULONG CFHeader::DirSect1;
-ULONG CFHeader::Difat[109];
-
 CFHeader::CFHeader()
 {
 	for (int i = 0; i < 8; i++)
