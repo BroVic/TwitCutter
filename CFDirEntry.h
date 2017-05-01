@@ -8,8 +8,8 @@
 #include "CFHeader.h"
 #include <fstream>
 
-constexpr DWORD MAXREGSID     = 0xFFFFFFFA;
-constexpr DWORD NOSTREAM      = 0xFFFFFFFF;
+constexpr ULONG MAXREGSID     = 0xFFFFFFFA;
+constexpr ULONG NOSTREAM      = 0xFFFFFFFF;
 
 constexpr BYTE RED            = 0x00;
 constexpr BYTE BLACK          = 0x01;
@@ -22,17 +22,17 @@ constexpr BYTE DIR_ROOT       = 0x05;
 struct DirEntry
 {
 	WCHAR      name[32];
-	WORD       nameLength;
+	USHORT       nameLength;
 	BYTE       objType;
 	BYTE       colorFlag;
-	DWORD      leftSibID;
-	DWORD      rightSibID;
-	DWORD      childID;
+	ULONG      leftSibID;
+	ULONG      rightSibID;
+	ULONG      childID;
 	CLSID      clsid;
-	DWORD      stateBits;
+	ULONG      stateBits;
 	FILETIME   creationTime;
 	FILETIME   modTime;
-	DWORD      startSectorLoc;
+	ULONG      startSectorLoc;
 	ULONGLONG  streamSize;
 
 	DirEntry();
@@ -40,7 +40,7 @@ struct DirEntry
 
 	VOID readDirEntry(std::ifstream &);
 
-	WORD find_directory(std::ifstream&, std::u16string, const int);
+	USHORT find_directory(std::ifstream&, std::u16string, CFHeader&);
 
 };
 

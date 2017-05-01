@@ -1,9 +1,5 @@
 #include "CFHeader.h"
 
-// static member variables
-DWORD CFHeader::DirSect1;
-DWORD CFHeader::Difat[109];
-
 CFHeader::CFHeader()
 {
 	for (int i = 0; i < 8; i++)
@@ -61,18 +57,18 @@ VOID CFHeader::readCFHeader(std::ifstream & dcstream)
 	 return;
 }
 
-std::vector<DWORD> CFHeader::loadFat(std::ifstream & stream, const WORD szSect) 
+std::vector<ULONG> CFHeader::loadFat(std::ifstream & stream, const USHORT szSect) 
 {
-	std::vector<DWORD> fat;
+	std::vector<ULONG> fat;
 	
 	int i = 0;
 	while (Difat[i] != FREESECT)
 	{
-		DWORD fatValue;
-		DWORD offset = (Difat[i] + 1) * szSect;
+		ULONG fatValue;
+		ULONG offset = (Difat[i] + 1) * szSect;
 		stream.seekg(offset, std::ios::beg);
-		const DWORD len = szSect / sizeof(fatValue);
-		for (DWORD j = 0; j < len; j++)
+		const ULONG len = szSect / sizeof(fatValue);
+		for (ULONG j = 0; j < len; j++)
 		{
 			stream.read(reinterpret_cast<char *>(&fatValue), sizeof(fatValue));
 			fat.push_back(fatValue);
@@ -92,14 +88,14 @@ BOOL CFHeader::use_difat_sect()
 	
 }
 
-DWORD CFHeader::fat_len(std::ifstream& streams, const WORD sctSz)
+ULONG CFHeader::fat_len(std::ifstream& streams, const USHORT sctSz)
 {
-	DWORD val;
+	ULONG val;
 	val = Difat[0];
 	val = (val - 1) + NumFatSects;
 	val = (val + 1) * sctSz;
 	
-	DWORD temp[128];
+	ULONG temp[128];
 	streams.seekg(val, std::ios::beg);
 	streams.read(reinterpret_cast<char *>(&temp), sctSz);
 	
@@ -113,7 +109,7 @@ DWORD CFHeader::fat_len(std::ifstream& streams, const WORD sctSz)
 	return val;
 }
 
-WORD CFHeader::set_sector_size() const
+USHORT CFHeader::set_sector_size() const
 {
-	return static_cast<WORD>(pow(2, SectorShift));
+	return static_cast<USHORT>(pow(2, SectorShift));
 }
