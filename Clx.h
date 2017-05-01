@@ -5,6 +5,7 @@
 #define CLX_H_INCLUDED
 
 #include <fstream>
+#include <cassert>
 #include "dtypes.h"
 #include "FIB.h"
 
@@ -111,7 +112,7 @@ struct Pcd
 #pragma pack(push, 1)
 struct PlcPcd
 {
-	ULONG aCP;
+	ULONG *aCP;
 	Pcd *aPcd;
 
 	PlcPcd();

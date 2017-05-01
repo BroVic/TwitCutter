@@ -23,11 +23,17 @@
 #define ERR_NOT_GOOD 2
 #define ZERO_OFFSET 0
 
+
+
 int main()
 {
-	
-	std::string filename;
-	filename = "test.doc";
+	/*if (argc != 2)
+	{
+		std::cerr << "Error: Invalid/No arguments" << std::endl;
+		return -1;
+	}
+	std::string filename = argv[1];*/
+	std::string filename = "test2.doc";
 	std::ifstream stream;
 
 	stream.open(filename, std::ios::binary);

@@ -135,6 +135,7 @@ PlcPcd::PlcPcd()
 
 PlcPcd::~PlcPcd()
 {
+
 }
 
 Clx::Pcdt::Pcdt()
@@ -192,10 +193,16 @@ VOID Clx::readToClx(std::ifstream &stream)
 
 VOID PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 {
-	// aCP = new ULONG[num]{};
-	strm.read(reinterpret_cast<char *>(&aCP), sizeof(ULONG) * (num + 1));
+	num++;
+	aCP = new ULONG[num]{};
+	assert(aCP != nullptr);
+	for (size_t i = 0; i < num; i++)
+	{
+		strm.read(reinterpret_cast<char *>(&aCP[i]), sizeof(ULONG));
+	}
 	
 	// strm.read(reinterpret_cast<char *>(&aPcd), sizeof(Pcd) * num);
+	--num;
 	aPcd = new Pcd[num]{};
 	for (size_t i = 0; i < num; i++)
 	{
