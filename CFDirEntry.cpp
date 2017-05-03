@@ -38,13 +38,15 @@ VOID DirEntry::readDirEntry(std::ifstream& flstrm)
 	return;
 }
 
-WORD DirEntry::find_directory(std::ifstream& stream, std::u16string str, const int sctSz)
+USHORT DirEntry::find_directory(std::ifstream& stream, std::u16string str, CFHeader &obj)
 {
-	const int d1 = CFHeader::DirSect1;
-	const int offset = (d1 + 1) * sctSz;
+	const int d1      = obj.DirSect1;
+	const int sctSz   = obj.set_sector_size();
+	const int offset  = (d1 + 1) * sctSz;
 	
-	std::vector<DWORD> fat = CFHeader::loadFat(stream, sctSz);
-	int sectors = d1;
+	std::vector<ULONG> fat  = obj.loadFat(stream, sctSz);
+	int sectors             = d1;
+
 	while (fat[sectors] != ENDOFCHAIN)
 	{
 		sectors++;

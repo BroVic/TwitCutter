@@ -47,17 +47,16 @@ int main()
 	// Read OLE Compound File Header first
 	CFHeader oleBlock;
 	oleBlock.readCFHeader(stream);
-
-	const WORD sectorSize = oleBlock.set_sector_size();
+	
 	DirEntry rootEntry;
+	const USHORT sectorSize = oleBlock.set_sector_size();
 	stream.seekg(oleBlock.DirSect1 * sectorSize, std::ios::cur);
 	rootEntry.readDirEntry(stream);
 
 	// Locate WordDocument stream and read File Information Block
 	std::u16string srchName(u"WordDocument");
-	int offset = rootEntry.find_directory(stream, srchName, sectorSize);
-	stream.seekg(offset, std::ios::beg);
-	offset = -1;
+	const USHORT wdoc_offset = rootEntry.find_directory(stream, srchName, oleBlock);
+	stream.seekg(wdoc_offset, std::ios::beg);
 	
 	Fib fileInfoBlock;
 	fileInfoBlock.readFib(stream);
@@ -67,14 +66,14 @@ int main()
 		srchName = u"1Table";
 	else { srchName = u"0Table"; }
 	
-	offset = rootEntry.find_directory(stream, srchName, sectorSize);
-	stream.seekg(offset, std::ios::beg);
+	const USHORT tabl_offset = rootEntry.find_directory(stream, srchName, oleBlock);
+	stream.seekg(tabl_offset, std::ios::beg);
 
 	Clx charProc;
-	offset = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
-	unsigned int cap = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.lcbClx;
-	stream.seekg(offset, std::ios::cur);
-	charProc.readToClx(stream, cap);
+	const USHORT clx_offset = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
+	const ULONG cap = fileInfoBlock.fibRgFcLcbBlob.fibRgFcLcb97.lcbClx;
+	stream.seekg(clx_offset, std::ios::cur);
+	charProc.readToClx(stream);
 
 	stream.close();
 

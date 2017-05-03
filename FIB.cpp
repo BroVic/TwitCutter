@@ -4,17 +4,17 @@
 #include <cassert>
 
 // nFib values
-constexpr WORD FOR_WORD_97   = 0x00C1;
-constexpr WORD FOR_WORD_2000 = 0x00D9;
-constexpr WORD FOR_WORD_2002 = 0x0101;
-constexpr WORD FOR_WORD_2003 = 0x010C;
-constexpr WORD FOR_WORD_2007 = 0x0112;
+constexpr USHORT FOR_USHORT_97   = 0x00C1;
+constexpr USHORT FOR_USHORT_2000 = 0x00D9;
+constexpr USHORT FOR_USHORT_2002 = 0x0101;
+constexpr USHORT FOR_USHORT_2003 = 0x010C;
+constexpr USHORT FOR_USHORT_2007 = 0x0112;
 
 // static member variables
-WORD Fib::csw;
-WORD Fib::cslw;
-WORD Fib::cbRgFcLcb;
-WORD Fib::cswNew;
+USHORT Fib::csw;
+USHORT Fib::cslw;
+USHORT Fib::cbRgFcLcb;
+USHORT Fib::cswNew;
 
 
 Fib::Fib()
@@ -284,8 +284,8 @@ Fib::FibRgFcLcb::FibRgFcLcb97::FibRgFcLcb97()
 	lcbPlcfTxbxBkd		= SET_ZERO;
 	fcPlcfTxbxHdrBkd	= SET_ZERO;
 	lcbPlcfTxbxHdrBkd	= SET_ZERO;
-	fcDocUndoWord9		= SET_ZERO;
-	lcbDocUndoWord9		= SET_ZERO;
+	fcDocUndoUSHORT9		= SET_ZERO;
+	lcbDocUndoUSHORT9		= SET_ZERO;
 	fcRgbUse			= SET_ZERO;
 	lcbRgbUse			= SET_ZERO;
 	fcUsp				= SET_ZERO;
@@ -649,25 +649,25 @@ VOID Fib::readFib(std::ifstream &docstream)
 	int objSize = sizeof(FibBase);
 	docstream.read(reinterpret_cast<char *>(&base), objSize); // base.readFibBase(docstream);
 
-	docstream.read(reinterpret_cast<char *>(&csw), sizeof(WORD));
+	docstream.read(reinterpret_cast<char *>(&csw), sizeof(USHORT));
 	readSize = csw * 2;
 	objSize = sizeof(FibRgW97);
 	docstream.read(reinterpret_cast<char *>(&fibRgW), objSize); // fibRgW.readFibRgW(docstream); 
 	adjust_file_pointer(docstream, objSize, readSize);
 
-	docstream.read(reinterpret_cast<char *>(&cslw), sizeof(WORD));
+	docstream.read(reinterpret_cast<char *>(&cslw), sizeof(USHORT));
 	readSize = cslw * 4;
 	objSize = sizeof(FibRgLw97);
 	docstream.read(reinterpret_cast<char *>(&fibRgLw), objSize); // fibRgLw.readFibRgLw(docstream);
 	adjust_file_pointer(docstream, objSize, readSize);
 
-	docstream.read(reinterpret_cast<char *>(&cbRgFcLcb), sizeof(WORD));
+	docstream.read(reinterpret_cast<char *>(&cbRgFcLcb), sizeof(USHORT));
 	readSize = cbRgFcLcb * 8;
 	objSize = sizeof(FibRgFcLcb);
 	docstream.read(reinterpret_cast<char *>(&fibRgFcLcbBlob), objSize);
 	adjust_file_pointer(docstream, objSize, readSize);
 	
-	docstream.read(reinterpret_cast<char *>(&cswNew), sizeof(WORD));
+	docstream.read(reinterpret_cast<char *>(&cswNew), sizeof(USHORT));
 	const unsigned int ver = determine_nFib_use();
 	if (cswNew != 0x00)
 	{
@@ -750,7 +750,7 @@ VOID Fib::FibBase::readFibBase(std::ifstream &docfile)
 
 VOID Fib::FibRgLw97::readFibRgLw(std::ifstream & mystream)
 {
-	WORD add_member_sizes = 0;
+	USHORT add_member_sizes = 0;
 
 	mystream.read(reinterpret_cast<char *>(&cbMac), sizeof(cbMac));
 	add_member_sizes += sizeof(cbMac);
@@ -975,8 +975,8 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::readFibRgFcLcb97(std::ifstream & mainstrm)
 	mainstrm.read(reinterpret_cast<char *>(&lcbPlcfTxbxBkd), sizeof(lcbPlcfTxbxBkd));
 	mainstrm.read(reinterpret_cast<char *>(&fcPlcfTxbxHdrBkd), sizeof(fcPlcfTxbxHdrBkd));
 	mainstrm.read(reinterpret_cast<char *>(&lcbPlcfTxbxHdrBkd), sizeof(lcbPlcfTxbxHdrBkd));
-	mainstrm.read(reinterpret_cast<char *>(&fcDocUndoWord9), sizeof(fcDocUndoWord9));
-	mainstrm.read(reinterpret_cast<char *>(&lcbDocUndoWord9), sizeof(lcbDocUndoWord9));
+	mainstrm.read(reinterpret_cast<char *>(&fcDocUndoUSHORT9), sizeof(fcDocUndoUSHORT9));
+	mainstrm.read(reinterpret_cast<char *>(&lcbDocUndoUSHORT9), sizeof(lcbDocUndoUSHORT9));
 	mainstrm.read(reinterpret_cast<char *>(&fcRgbUse), sizeof(fcRgbUse));
 	mainstrm.read(reinterpret_cast<char *>(&lcbRgbUse), sizeof(lcbRgbUse));
 	mainstrm.read(reinterpret_cast<char *>(&fcUsp), sizeof(fcUsp));
@@ -1398,7 +1398,7 @@ inline BYTE Fib::assignBits(BYTE flag, BYTE temp, int shftRt)
 
 
 // Checks which nFib to use for version confirmation
-inline WORD Fib::determine_nFib_use() const
+inline USHORT Fib::determine_nFib_use() const
 {
 	if (cswNew == 0)
 	{
@@ -1411,13 +1411,13 @@ inline WORD Fib::determine_nFib_use() const
 }
 
 // Ignores fields that are not to be read and moves downstream by a given number
-inline VOID Fib::skip_fields(std::ifstream & docustrm, DWORD numSkipped) const
+inline VOID Fib::skip_fields(std::ifstream & docustrm, ULONG numSkipped) const
 {
 	docustrm.seekg(numSkipped, std::ios::cur);
 	return;
 }
 
-inline VOID Fib::adjust_file_pointer(std::ifstream& strm, WORD gvnSize, WORD standard) const
+inline VOID Fib::adjust_file_pointer(std::ifstream& strm, USHORT gvnSize, USHORT standard) const
 {
 	if (gvnSize < standard)
 	{
