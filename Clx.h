@@ -8,6 +8,7 @@
 #include "dtypes.h"
 #include "FIB.h"
 
+
 constexpr BYTE SET_BITS_1   = 0x0;
 constexpr BYTE SET_BITS_3   = 0x0;
 constexpr BYTE SET_BITS_9   = 0x0;
@@ -33,10 +34,11 @@ constexpr ULONG SIZE_OF_PCD = 8;
 
 
 
-struct Prl 
+struct Prl
 {
 	struct Sprm
 	{
+
 		USHORT ispmd : 9;
 		BYTE fSpec : 1;
 		BYTE sgc : 3;
@@ -46,6 +48,8 @@ struct Prl
 		~Sprm();
 
 		VOID readSprm(std::ifstream&);
+
+
 	} sprm; // struct Sprm
 	// operand
 
@@ -142,7 +146,7 @@ struct Clx
 	Clx();
 	~Clx();
 
-	
+
 	VOID readToClx(std::ifstream&);
 
 }; // struct Clx

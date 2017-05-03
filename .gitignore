@@ -6,3 +6,8 @@ test.docx
 test.pdf 
 test.rtf 
 test.txt 
+TwitCutter.cbp
+TwitCutter.depend
+TwitCutter.layout
+bin/Debug
+obj/Debug

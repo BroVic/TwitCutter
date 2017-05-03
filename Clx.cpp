@@ -100,6 +100,7 @@ VOID Pcd::Prm::readPrmData(std::ifstream &curstream)
 	return;
 }
 
+
 Pcd Pcd::readPcdData(std::ifstream &flsrc)
 {
 	USHORT temp  = 0x0000;
@@ -114,7 +115,7 @@ Pcd Pcd::readPcdData(std::ifstream &flsrc)
 	fR1         = (fROne & temp) >> 1;
 	fDirty      = (fD & temp) >> 2;
 	fR2         = (temp & mask) >> 3;
-	
+
 	fc.readFcData(flsrc);
 	prm.readPrmData(flsrc);
 
@@ -162,11 +163,11 @@ VOID Clx::Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
 {
 	clxt = fstVar;
 	strm.read(reinterpret_cast<char *>(&lcb), sizeof(ULONG));
-	
+
 	ULONG numArr = calcArrayLength(lcb);
 
 	plcPcd.readPlcPcd(strm, numArr);
-	
+
 	return;
 }
 
@@ -180,12 +181,12 @@ VOID Clx::readToClx(std::ifstream &stream)
 	{
 		// prc.readPrc(stream, tmpClxt);
 
-		// NB: if this branch is followed, end with a reading of the first 
+		// NB: if this branch is followed, end with a reading of the first
 		// field of the next structure, for a smooth transition
 	}
-	
+
 	pcdt.readPcdt(stream, tmpClxt);
-	
+
 	return;
 }
 
@@ -194,13 +195,31 @@ VOID PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 {
 	// aCP = new ULONG[num]{};
 	strm.read(reinterpret_cast<char *>(&aCP), sizeof(ULONG) * (num + 1));
-	
+
 	// strm.read(reinterpret_cast<char *>(&aPcd), sizeof(Pcd) * num);
 	aPcd = new Pcd[num]{};
 	for (size_t i = 0; i < num; i++)
 	{
 		aPcd[i] = aPcd[i].readPcdData(strm);
 	}
-	
+
 	return;
 }
+
+//VOID Prl::Sprm::readSprm(std::ifstream & stream)
+//{
+//	WORD tmp = 0x0000;
+//	stream.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
+//
+//	DWORD msk_ispmd  = 0x1FF;
+//	BYTE fS          = 0x200;
+//	BYTE msk_sgc     = 0x1C0;
+//	BYTE msk_spra    = 0xE00;
+//
+//	ispmd = tmp & msk_ispmd;
+//	fSpec = (tmp & fS) >> 9;
+//	sgc   = (tmp &msk_sgc) >> 10;
+//	spra  = (tmp & msk_spra) >> 11;
+//
+//	return;
+//}
