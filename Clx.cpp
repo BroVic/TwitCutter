@@ -211,3 +211,13 @@ VOID PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 	
 	return;
 }
+// A function that retrieves text from the WordDocument stream
+std::string PlcPcd::retrieveText(ULONG *cpArr, Pcd *pcdArr)
+{
+	// obtain location of text on the stream
+	// if FcCompressed.fCompressed is zero => UNICODE
+	// else if it is 1 => ANSI
+
+
+	return std::string();
+}

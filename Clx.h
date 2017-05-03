@@ -119,6 +119,7 @@ struct PlcPcd
 	~PlcPcd();
 
 	VOID readPlcPcd(std::ifstream&, ULONG);
+	std::string retrieveText(ULONG*, Pcd*);
 
 }; // struct PlcPcd
 #pragma pack(pop)

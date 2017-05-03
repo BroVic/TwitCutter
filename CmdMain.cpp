@@ -33,7 +33,7 @@ int main()
 		return -1;
 	}
 	std::string filename = argv[1];*/
-	std::string filename = "test2.doc";
+	std::string filename = "test.doc";
 	std::ifstream stream;
 
 	stream.open(filename, std::ios::binary);
