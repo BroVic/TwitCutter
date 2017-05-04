@@ -8,3 +8,7 @@ test.rtf
 test.txt 
 Release/* 
 test2.doc 
+TwitCutter.cbp 
+TwitCutter.layout 
+bin/* 
+obj/* 
