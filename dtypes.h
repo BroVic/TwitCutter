@@ -4,15 +4,13 @@
 #ifndef DTYPES_H_INCLUDED
 #define DTYPES_H_INCLUDED
 
-#include <cstdint>
-
-using BYTE      = uint8_t;
-using USHORT    = uint16_t;
-using ULONG     = uint32_t;
-using ULONGLONG = uint64_t;
-using CHAR      = int8_t;
-using SHORT     = int16_t;
-using LONG      = int32_t;
+using BYTE      = unsigned char;
+using USHORT    = unsigned short;
+using ULONG     = unsigned int;
+using ULONGLONG = unsigned long long;
+using CHAR      = signed char;
+using SHORT     = short;
+using LONG      = int;
 using WCHAR     = char16_t;
 using BOOL      = bool;
 using VOID      = void;
@@ -38,8 +36,5 @@ struct FILETIME
 	FILETIME();
 	~FILETIME();
 };
-
-
-
 #endif // !DTYPES_H_INCLUDED
 

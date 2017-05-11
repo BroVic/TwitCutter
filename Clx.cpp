@@ -1,10 +1,10 @@
 #include "Clx.h"
 
-Prc::PrcData::PrcData()
+PrcData::PrcData()
 {
 }
 
-Prc::PrcData::~PrcData()
+PrcData::~PrcData()
 {
 }
 
@@ -24,15 +24,15 @@ Prl::~Prl()
 {
 }
 
-Prl::Sprm::Sprm()
+Sprm::Sprm()
 {
 }
 
-Prl::Sprm::~Sprm()
+Sprm::~Sprm()
 {
 }
 
-VOID Prl::Sprm::readSprm(std::ifstream &stream)
+VOID Sprm::readSprm(std::ifstream &stream)
 {
 	USHORT tmp = 0x0000;
 	stream.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
@@ -50,15 +50,15 @@ VOID Prl::Sprm::readSprm(std::ifstream &stream)
 	return;
 }
 
-Pcd::FcCompressed::FcCompressed()
+FcCompressed::FcCompressed()
 {
 }
 
-Pcd::FcCompressed::~FcCompressed()
+FcCompressed::~FcCompressed()
 {
 }
 
-VOID Pcd::FcCompressed::readFcData(std::ifstream &stream)
+VOID FcCompressed::readFcData(std::ifstream &stream)
 {
 	ULONG temp    = 0x00000000;
 	ULONG mask    = 0x3FFFFFFF;
@@ -78,16 +78,16 @@ VOID Pcd::FcCompressed::readFcData(std::ifstream &stream)
 
 	return;
 }
-Pcd::Prm::Prm()
+Prm::Prm()
 
 {
 }
 
-Pcd::Prm::~Prm()
+Prm::~Prm()
 {
 }
 
-VOID Pcd::Prm::readPrmData(std::ifstream &curstream)
+VOID Prm::readPrmData(std::ifstream &curstream)
 {
 	USHORT tmp  = 0;
 	USHORT mask = 0xFFFE;
@@ -138,11 +138,11 @@ PlcPcd::~PlcPcd()
 
 }
 
-Clx::Pcdt::Pcdt()
+Pcdt::Pcdt()
 {
 }
 
-Clx::Pcdt::~Pcdt()
+Pcdt::~Pcdt()
 {
 }
 
@@ -154,12 +154,12 @@ Clx::~Clx()
 {
 }
 
-inline ULONG Clx::Pcdt::calcArrayLength(ULONG cbSz)
+inline ULONG Pcdt::calcArrayLength(ULONG cbSz)
 {
 	return (cbSz - 4) / (4 + SIZE_OF_PCD);
 }
 
-VOID Clx::Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
+VOID Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
 {
 	clxt = fstVar;
 	strm.read(reinterpret_cast<char *>(&lcb), sizeof(ULONG));

@@ -12,20 +12,26 @@ VOID DdocProc::process_file(std::ifstream & stream)
 {
 	olehdr.readCFHeader(stream);
 	stream.seekg(DirSect1 * _sectSz, std::ios::cur);
+
 	readDirEntry(stream);
 	_strmName = u"WordDocument";
+
 	_wdocOffset = find_directory(stream, _strmName);
+
 	stream.seekg(_wdocOffset, std::ios::beg);
 	fib.readFib(stream);
 	
 	if (base.fWhichTblStm)
 		_strmName = u"1Table";
 	else { _strmName = u"0Table"; }
-	_tdocOffset = find_directory(stream, _strmName);
-	stream.seekg(_tdocOffset, std::ios::beg);
+
+	_tstrmOffset = find_directory(stream, _strmName);
+
+	stream.seekg(_tstrmOffset, std::ios::beg);
 	
 	_clxOffset = fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
 	stream.seekg(_clxOffset, std::ios::cur);
+
 	readToClx(stream);
 
 	return;
@@ -76,4 +82,12 @@ USHORT DdocProc::find_directory(std::ifstream& stream, std::u16string str)
 		this->readDirEntry(stream);
 	}
 	return 0;
+}
+
+VOID DdocProc::collect_text(std::ifstream &)
+{
+	
+
+
+	return;
 }
