@@ -15,8 +15,6 @@ using WCHAR     = char16_t;
 using BOOL      = bool;
 using VOID      = void;
 
-constexpr int SET_ZERO = 0x0;
-
 struct CLSID
 {
 	ULONG Data1;

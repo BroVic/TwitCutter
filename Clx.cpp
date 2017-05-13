@@ -1,18 +1,16 @@
 #include "Clx.h"
 
-PrcData::PrcData()
+
+
+Sprm::Sprm()
 {
+	ispmd = {};
+	fSpec = {};
+	sgc   = {};
+	spra  = {};
 }
 
-PrcData::~PrcData()
-{
-}
-
-Prc::Prc()
-{
-}
-
-Prc::~Prc()
+Sprm::~Sprm()
 {
 }
 
@@ -24,13 +22,89 @@ Prl::~Prl()
 {
 }
 
-Sprm::Sprm()
+PrcData::PrcData()
+{
+	cbGrpprl = {};
+}
+
+PrcData::~PrcData()
 {
 }
 
-Sprm::~Sprm()
+Prc::Prc()
+{
+	clxt = {};
+}
+
+Prc::~Prc()
 {
 }
+
+Prm::Prm()
+
+{
+	fComplex = {};
+	data     = {};
+}
+
+Prm::~Prm()
+{
+}
+
+FcCompressed::FcCompressed()
+{
+	fc          = {};
+	fCompressed = {};
+	r1          = {};
+}
+
+FcCompressed::~FcCompressed()
+{
+}
+
+Pcd::Pcd()
+{
+	fNoParaLast = {};
+	fR1         = {};
+	fDirty      = {};
+	fR2         = {};
+	fc          = {};
+}
+
+Pcd::~Pcd()
+{
+}
+
+PlcPcd::PlcPcd()
+{
+	aCP  = nullptr;
+	aPcd = nullptr;
+}
+
+PlcPcd::~PlcPcd()
+{
+
+}
+
+Pcdt::Pcdt()
+{
+	clxt = {};
+	lcb = {};
+}
+
+Pcdt::~Pcdt()
+{
+}
+
+Clx::Clx()
+{
+	rgPrc = nullptr;
+}
+
+Clx::~Clx()
+{
+}
+
 
 VOID Sprm::readSprm(std::ifstream &stream)
 {
@@ -50,13 +124,6 @@ VOID Sprm::readSprm(std::ifstream &stream)
 	return;
 }
 
-FcCompressed::FcCompressed()
-{
-}
-
-FcCompressed::~FcCompressed()
-{
-}
 
 VOID FcCompressed::readFcData(std::ifstream &stream)
 {
@@ -77,14 +144,6 @@ VOID FcCompressed::readFcData(std::ifstream &stream)
 	r1 = rBit >> 7;
 
 	return;
-}
-Prm::Prm()
-
-{
-}
-
-Prm::~Prm()
-{
 }
 
 VOID Prm::readPrmData(std::ifstream &curstream)
@@ -121,42 +180,10 @@ Pcd Pcd::readPcdData(std::ifstream &flsrc)
 	return *this;
 }
 
-Pcd::Pcd()
+// Computes the number of elements in a Pcd array
+inline ULONG Pcdt::calcArrayLength()
 {
-}
-
-Pcd::~Pcd()
-{
-}
-
-PlcPcd::PlcPcd()
-{
-}
-
-PlcPcd::~PlcPcd()
-{
-
-}
-
-Pcdt::Pcdt()
-{
-}
-
-Pcdt::~Pcdt()
-{
-}
-
-Clx::Clx()
-{
-}
-
-Clx::~Clx()
-{
-}
-
-inline ULONG Pcdt::calcArrayLength(ULONG cbSz)
-{
-	return (cbSz - 4) / (4 + SIZE_OF_PCD);
+	return (this->lcb - 4) / (4 + SIZE_OF_PCD);
 }
 
 VOID Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
@@ -164,7 +191,7 @@ VOID Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
 	clxt = fstVar;
 	strm.read(reinterpret_cast<char *>(&lcb), sizeof(ULONG));
 	
-	ULONG numArr = calcArrayLength(lcb);
+	ULONG numArr = calcArrayLength();
 
 	plcPcd.readPlcPcd(strm, numArr);
 	
@@ -211,6 +238,7 @@ VOID PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 	
 	return;
 }
+
 // A function that retrieves text from the WordDocument stream
 std::string PlcPcd::retrieveText(ULONG *cpArr, Pcd *pcdArr)
 {

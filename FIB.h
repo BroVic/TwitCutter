@@ -59,7 +59,7 @@ struct Fib
 
 		VOID process_fibBase();
 	} base; // struct FibBase;
-	static USHORT csw;
+	USHORT csw;
 	struct FibRgW97
 	{
 		USHORT reserved1;
@@ -83,7 +83,7 @@ struct Fib
 		VOID readFibRgW(std::ifstream &);
 
 	} fibRgW; // struct FibRgW97	
-	static USHORT cslw;
+	USHORT cslw;
 	struct FibRgLw97
 	{
 		ULONG cbMac;
@@ -116,7 +116,7 @@ struct Fib
 		VOID process_fibRgLw();
 
 	} fibRgLw; // struct FibRgLw97
-	static USHORT cbRgFcLcb;
+	USHORT cbRgFcLcb;
 	union FibRgFcLcb
 	{
 		struct FibRgFcLcb97
@@ -542,7 +542,7 @@ struct Fib
 		~FibRgFcLcb();
 
 	} fibRgFcLcbBlob; // union FibRgFcLcb
-	static USHORT cswNew;
+	USHORT cswNew;
 	struct FibRgCswNew
 	{
 		USHORT nFibNew;
@@ -592,8 +592,6 @@ struct Fib
 	inline VOID skip_fields(std::ifstream&, ULONG) const;
 	inline VOID adjust_file_pointer(std::ifstream&, USHORT, USHORT) const;
 	inline static BYTE assignBits(BYTE, BYTE, int);
-
-
 
 }; // struct Fib
 #pragma pack(pop)

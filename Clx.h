@@ -136,7 +136,7 @@ struct Pcdt
 	Pcdt();
 	~Pcdt();
 
-	inline ULONG calcArrayLength(ULONG);
+	inline ULONG calcArrayLength();
 	VOID readPcdt(std::ifstream &strm, BYTE);
 }; // struct Pcdt
 

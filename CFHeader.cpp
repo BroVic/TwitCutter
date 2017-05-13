@@ -4,27 +4,27 @@ CFHeader::CFHeader()
 {
 	for (int i = 0; i < 8; i++)
 	{
-		Sig[i] = SET_ZERO;
+		Sig[i] = { };
 	}
-	VerMinor          = SET_ZERO;
-	VerDll            = SET_ZERO;
-	ByteOrder         = SET_ZERO;
-	SectorShift       = SET_ZERO;
-	MinSectorShift    = SET_ZERO;
-	Reserved          = SET_ZERO;
-	Reserved2         = SET_ZERO;
-	NumDirSects       = SET_ZERO;
-	NumFatSects       = SET_ZERO;
-	DirSect1          = SET_ZERO;
-	TransactSig       = SET_ZERO;
-	MiniStrMax        = SET_ZERO;
-	MiniFatSect1      = SET_ZERO;
-	NumMiniFatSects   = SET_ZERO;
-	DifatSect1        = SET_ZERO;
-	NumDifatSects     = SET_ZERO;
+	VerMinor          = { };
+	VerDll            = { };
+	ByteOrder         = { };
+	SectorShift       = { };
+	MinSectorShift    = { };
+	Reserved          = { };
+	Reserved2         = { };
+	NumDirSects       = { };
+	NumFatSects       = { };
+	DirSect1          = { };
+	TransactSig       = { };
+	MiniStrMax        = { };
+	MiniFatSect1      = { };
+	NumMiniFatSects   = { };
+	DifatSect1        = { };
+	NumDifatSects     = { };
 	for (int i = 0; i < 109; i++) 
 	{
-		Difat[i] = SET_ZERO; 
+		Difat[i] = { }; 
 	}
 }
 

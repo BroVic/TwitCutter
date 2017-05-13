@@ -3,16 +3,16 @@
 DirEntry::DirEntry()
 {
 	for (int i = 0; i < 32; i++)
-		name[i]		= SET_ZERO;
-	nameLength		= SET_ZERO;
-	objType			= SET_ZERO;
-	colorFlag		= SET_ZERO;
-	leftSibID		= SET_ZERO;
-	rightSibID		= SET_ZERO;
-	childID			= SET_ZERO;
-	stateBits		= SET_ZERO;
-	startSectorLoc	= SET_ZERO;
-	streamSize		= SET_ZERO;
+		name[i]		= { };
+	nameLength		= { };
+	objType			= { };
+	colorFlag		= { };
+	leftSibID		= { };
+	rightSibID		= { };
+	childID			= { };
+	stateBits		= { };
+	startSectorLoc	= { };
+	streamSize		= { };
 }
 
 DirEntry::~DirEntry()

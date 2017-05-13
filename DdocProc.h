@@ -21,6 +21,7 @@
 #include "FIB.h"
 #include "CFDirEntry.h"
 #include "Clx.h"
+#include <sstream>
 #include <fstream>
 #include <string>
 
@@ -31,22 +32,23 @@
 class DdocProc : 
 	private CFHeader, Fib, DirEntry, Clx
 {
-public:
-	// friend void GenericProc::collect_txt(DdocProc&);
-
 private:
 	CFHeader  olehdr;
 	Fib       fib;
 	DirEntry  root;
 	Clx       clxobj;
 	
-	std::u16string _strmName;
-	USHORT    _sectSz;
-	USHORT    _strmOffset;
-	USHORT    _wdocOffset;
-	USHORT    _tstrmOffset;
-	USHORT    _clxOffset;
-	USHORT    _capacity;
+	std::stringstream stringColl;
+	std::u16string  _strmName;
+	wchar_t         _utfChar;
+	unsigned char   _ansiChar;
+	USHORT          _sectSz;
+	USHORT          _wdocStart;
+	USHORT          _tablStart;
+	USHORT          _clxOffset;
+	USHORT          _capacity;
+	ULONG           _strmOffset;
+
 
 public:
 	DdocProc();
@@ -58,17 +60,9 @@ public:
 	USHORT find_directory(std::ifstream&, std::u16string);
 
 	VOID collect_text(std::ifstream&);
-	// Loop 1:
-	// aCP[i] take the value as offset on new stream
-	// collect value from
-	
-	// aPCD[i] use the structure as follows
-		// fc.fc is offset on WordDocument stream
-		// fc.fCompressed to determine whether to read UNICODE or ANSI
-		
-	    // Loop 2:
-		// copy from file stream and onto string stream
 
+	inline VOID transferUTFStreams(std::ifstream&);
+	
 
 };
 
