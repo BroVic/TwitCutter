@@ -6,7 +6,6 @@
 
 #include <fstream>
 #include <cassert>
-#include "dtypes.h"
 #include "FIB.h"
 
 constexpr BYTE SET_BITS_1   = 0x0;
@@ -93,10 +92,8 @@ struct Clx
 
 					FcCompressed();
 					~FcCompressed();
-
 					VOID readFcData(std::ifstream&);
 				} fc; // struct FcCompressed
-
 				struct Prm
 				{
 					BYTE fComplex : 1;
@@ -112,22 +109,24 @@ struct Clx
 				~Pcd();
 
 				VOID readPcdData(std::ifstream&);
+				USHORT defineOffset() const;
+				LONG defineEncoding() const;
+				
 
 			} *aPcd; // struct Pcd
 
 			PlcPcd();
 			~PlcPcd();
-
 			VOID readPlcPcd(std::ifstream&, ULONG);
-			std::string retrieveText(ULONG*, Pcd*);
+			ULONG getCharPos(int);
+			inline ULONG pcdLength(Clx&);
 
 		} plcPcd; // struct PlcPcd
 
 		Pcdt();
 		~Pcdt();
 
-		inline ULONG calcArrayLength();
-		VOID readPcdt(std::ifstream &strm, BYTE);
+		VOID readPcdt(std::ifstream&, BYTE, Clx&);
 	} pcdt; // struct Pcdt
 
 	Clx();

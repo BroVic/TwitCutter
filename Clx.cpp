@@ -177,17 +177,18 @@ VOID Clx::Pcdt::PlcPcd::Pcd::readPcdData(std::ifstream &flsrc)
 }   //
 
 // Computes the number of elements in a Pcd array
-inline ULONG Clx::Pcdt::calcArrayLength()
+inline ULONG Clx::Pcdt::PlcPcd::pcdLength(Clx& cobj)
 {
-	return (this->lcb - 4) / (4 + SIZE_OF_PCD);
+	return (cobj.pcdt.lcb - 4) / (4 + SIZE_OF_PCD);
 }
 
-VOID Clx::Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
+// Reads from filestream into a Pcdt structure
+VOID Clx::Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar, Clx &obj)
 {
 	clxt = fstVar;
 	strm.read(reinterpret_cast<char *>(&lcb), sizeof(ULONG));
 	
-	ULONG numArr = calcArrayLength();
+	ULONG numArr = obj.pcdt.plcPcd.pcdLength(obj);
 
 	plcPcd.readPlcPcd(strm, numArr);
 	
@@ -208,12 +209,12 @@ VOID Clx::readToClx(std::ifstream &stream)
 		// field of the next structure, for a smooth transition
 	}
 	
-	pcdt.readPcdt(stream, tmpClxt);
+	pcdt.readPcdt(stream, tmpClxt, *this);
 	
 	return;
 }
 
-
+// Reads from filestream into a PlPcd structure
 VOID Clx::Pcdt::PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 {
 	num++;
@@ -235,13 +236,20 @@ VOID Clx::Pcdt::PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 	return;
 }
 
-// A function that retrieves text from the WordDocument stream
-std::string Clx::Pcdt::PlcPcd::retrieveText(ULONG *cpArr, Pcd *pcdArr)
+// Gets the stream offset for a specific character position
+USHORT Clx::Pcdt::PlcPcd::Pcd::defineOffset() const
 {
-	// obtain location of text on the stream
-	// if FcCompressed.fCompressed is zero => UNICODE
-	// else if it is 1 => ANSI
+	return fc.fc;	
+}
 
+// Get the encoding to be used
+LONG Clx::Pcdt::PlcPcd::Pcd::defineEncoding() const
+{
+	return static_cast<LONG>(fc.fCompressed);
+}
 
-	return std::string();
+// Gets a character position
+ULONG Clx::Pcdt::PlcPcd::getCharPos(int ind)
+{
+	return aCP[ind];
 }

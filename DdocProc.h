@@ -26,12 +26,11 @@
 #include <string>
 #include <map>
 
-// for decision on encoding
-#define UNICODE  0
-#define ANSI     1
+// For decisions on encoding
+constexpr int UNICODE  = 0;
+constexpr int ANSI     = 1;
 
-class DdocProc : 
-	private CFHeader, Fib, DirEntry, Clx  // is inheritance still necessary???
+class DdocProc //protected CFHeader, Fib, DirEntry, Clx  // is inheritance still necessary???
 {
 private:
 	CFHeader  olehdr;
@@ -40,35 +39,39 @@ private:
 	Clx       clxobj;
 	
 	std::map<uint8_t, uint16_t> _altANSI;
-	std::stringstream           _stringColl;
-	std::u16string              _strmName;
+	std::string                 _stringColl;
+	std::wstring                _wstringColl;
 	wchar_t                     _utfChar;
 	unsigned char               _ansiChar;
-	USHORT                      _sectSz;
-	USHORT                      _wdocStart;
-	USHORT                      _tablStart;
-	USHORT                      _clxOffset;
-	USHORT                      _capacity;
-	ULONG                       _strmOffset;
+	
+	std::u16string  _strmName;
+	uint16_t        _sectSz;
+	USHORT          _wdocStart;
+	USHORT          _tablStart;
+	USHORT          _clxOffset;
+	USHORT          _capacity;
+	ULONG           _strmOffset;
 
-
-public:
-	DdocProc();
-	~DdocProc();
-
-	// Processes .DOC file binary data
-	void process_file(std::ifstream&);
-
+private:
 	// Reads data from the file stream unto objects
 	void read_file_data(std::ifstream&);
 
 	// Collects text from in-memory copy of stream
 	void collect_text(std::ifstream&);
 
-	inline void transferUTFStreams(std::ifstream&);
+	// Move mapped UNICODE or ANSI values to string buffer
+	inline std::wstring transferUTFString(std::ifstream&, int, int);
+	inline std::string transferANSIString(std::ifstream&, int, int);
 	
 	// Sets exceptions to rule for the use of ANSI values
 	void setANSIexceptions();
+
+public:
+	DdocProc();
+	~DdocProc();
+
+	// Processes the entire .DOC file binary data
+	void process_file(std::ifstream&);
 };
 
 #endif // !DDOCPROC_H_INCLUDED
