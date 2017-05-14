@@ -24,13 +24,14 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <map>
 
 // for decision on encoding
 #define UNICODE  0
 #define ANSI     1
 
 class DdocProc : 
-	private CFHeader, Fib, DirEntry, Clx
+	private CFHeader, Fib, DirEntry, Clx  // is inheritance still necessary???
 {
 private:
 	CFHeader  olehdr;
@@ -38,32 +39,36 @@ private:
 	DirEntry  root;
 	Clx       clxobj;
 	
-	std::stringstream stringColl;
-	std::u16string  _strmName;
-	wchar_t         _utfChar;
-	unsigned char   _ansiChar;
-	USHORT          _sectSz;
-	USHORT          _wdocStart;
-	USHORT          _tablStart;
-	USHORT          _clxOffset;
-	USHORT          _capacity;
-	ULONG           _strmOffset;
+	std::map<uint8_t, uint16_t> _altANSI;
+	std::stringstream           _stringColl;
+	std::u16string              _strmName;
+	wchar_t                     _utfChar;
+	unsigned char               _ansiChar;
+	USHORT                      _sectSz;
+	USHORT                      _wdocStart;
+	USHORT                      _tablStart;
+	USHORT                      _clxOffset;
+	USHORT                      _capacity;
+	ULONG                       _strmOffset;
 
 
 public:
 	DdocProc();
 	~DdocProc();
 
-	VOID process_file(std::ifstream&);
+	// Processes .DOC file binary data
+	void process_file(std::ifstream&);
 
-	// Locates and reads directory entry for specified string
-	USHORT find_directory(std::ifstream&, std::u16string);
+	// Reads data from the file stream unto objects
+	void read_file_data(std::ifstream&);
 
-	VOID collect_text(std::ifstream&);
+	// Collects text from in-memory copy of stream
+	void collect_text(std::ifstream&);
 
-	inline VOID transferUTFStreams(std::ifstream&);
+	inline void transferUTFStreams(std::ifstream&);
 	
-
+	// Sets exceptions to rule for the use of ANSI values
+	void setANSIexceptions();
 };
 
 #endif // !DDOCPROC_H_INCLUDED

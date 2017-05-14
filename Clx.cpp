@@ -1,8 +1,6 @@
 #include "Clx.h"
 
-
-
-Sprm::Sprm()
+Clx::Prc::PrcData::Prl::Sprm::Sprm()
 {
 	ispmd = {};
 	fSpec = {};
@@ -10,59 +8,59 @@ Sprm::Sprm()
 	spra  = {};
 }
 
-Sprm::~Sprm()
+Clx::Prc::PrcData::Prl::Sprm::~Sprm()
 {
 }
 
-Prl::Prl()
+Clx::Prc::PrcData::Prl::Prl()
 {
 }
 
-Prl::~Prl()
+Clx::Prc::PrcData::Prl::~Prl()
 {
 }
 
-PrcData::PrcData()
+Clx::Prc::PrcData::PrcData()
 {
 	cbGrpprl = {};
 }
 
-PrcData::~PrcData()
+Clx::Prc::PrcData::~PrcData()
 {
 }
 
-Prc::Prc()
+Clx::Prc::Prc()
 {
 	clxt = {};
 }
 
-Prc::~Prc()
+Clx::Prc::~Prc()
 {
 }
 
-Prm::Prm()
+Clx::Pcdt::PlcPcd::Pcd::Prm::Prm()
 
 {
 	fComplex = {};
 	data     = {};
 }
 
-Prm::~Prm()
+Clx::Pcdt::PlcPcd::Pcd::Prm::~Prm()
 {
 }
 
-FcCompressed::FcCompressed()
+Clx::Pcdt::PlcPcd::Pcd::FcCompressed::FcCompressed()
 {
 	fc          = {};
 	fCompressed = {};
 	r1          = {};
 }
 
-FcCompressed::~FcCompressed()
+Clx::Pcdt::PlcPcd::Pcd::FcCompressed::~FcCompressed()
 {
 }
 
-Pcd::Pcd()
+Clx::Pcdt::PlcPcd::Pcd::Pcd()
 {
 	fNoParaLast = {};
 	fR1         = {};
@@ -71,28 +69,28 @@ Pcd::Pcd()
 	fc          = {};
 }
 
-Pcd::~Pcd()
+Clx::Pcdt::PlcPcd::Pcd::~Pcd()
 {
 }
 
-PlcPcd::PlcPcd()
+Clx::Pcdt::PlcPcd::PlcPcd()
 {
 	aCP  = nullptr;
 	aPcd = nullptr;
 }
 
-PlcPcd::~PlcPcd()
+Clx::Pcdt::PlcPcd::~PlcPcd()
 {
 
 }
 
-Pcdt::Pcdt()
+Clx::Pcdt::Pcdt()
 {
 	clxt = {};
 	lcb = {};
 }
 
-Pcdt::~Pcdt()
+Clx::Pcdt::~Pcdt()
 {
 }
 
@@ -105,8 +103,7 @@ Clx::~Clx()
 {
 }
 
-
-VOID Sprm::readSprm(std::ifstream &stream)
+VOID Clx::Prc::PrcData::Prl::Sprm::readSprm(std::ifstream &stream)
 {
 	USHORT tmp = 0x0000;
 	stream.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
@@ -124,8 +121,7 @@ VOID Sprm::readSprm(std::ifstream &stream)
 	return;
 }
 
-
-VOID FcCompressed::readFcData(std::ifstream &stream)
+VOID Clx::Pcdt::PlcPcd::Pcd::FcCompressed::readFcData(std::ifstream &stream)
 {
 	ULONG temp    = 0x00000000;
 	ULONG mask    = 0x3FFFFFFF;
@@ -146,7 +142,7 @@ VOID FcCompressed::readFcData(std::ifstream &stream)
 	return;
 }
 
-VOID Prm::readPrmData(std::ifstream &curstream)
+VOID Clx::Pcdt::PlcPcd::Pcd::Prm::readPrmData(std::ifstream &curstream)
 {
 	USHORT tmp  = 0;
 	USHORT mask = 0xFFFE;
@@ -159,8 +155,8 @@ VOID Prm::readPrmData(std::ifstream &curstream)
 	return;
 }
 
-Pcd Pcd::readPcdData(std::ifstream &flsrc)
-{
+VOID Clx::Pcdt::PlcPcd::Pcd::readPcdData(std::ifstream &flsrc)
+{    // check this function very well after recent changes
 	USHORT temp  = 0x0000;
 	USHORT mask  = 0xFFF8;
 	BYTE fNPL    = 0x1;
@@ -177,16 +173,16 @@ Pcd Pcd::readPcdData(std::ifstream &flsrc)
 	fc.readFcData(flsrc);
 	prm.readPrmData(flsrc);
 
-	return *this;
-}
+	return;
+}   //
 
 // Computes the number of elements in a Pcd array
-inline ULONG Pcdt::calcArrayLength()
+inline ULONG Clx::Pcdt::calcArrayLength()
 {
 	return (this->lcb - 4) / (4 + SIZE_OF_PCD);
 }
 
-VOID Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
+VOID Clx::Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
 {
 	clxt = fstVar;
 	strm.read(reinterpret_cast<char *>(&lcb), sizeof(ULONG));
@@ -201,7 +197,7 @@ VOID Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
 // Decides on how to start reading the structure
 VOID Clx::readToClx(std::ifstream &stream)
 {
-	BYTE tmpClxt = 0x00;
+	BYTE tmpClxt{};
 	stream.read(reinterpret_cast<char *>(&tmpClxt), sizeof(BYTE));
 
 	if (tmpClxt == 0x01)
@@ -218,7 +214,7 @@ VOID Clx::readToClx(std::ifstream &stream)
 }
 
 
-VOID PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
+VOID Clx::Pcdt::PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 {
 	num++;
 	aCP = new ULONG[num]{};
@@ -233,14 +229,14 @@ VOID PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 	aPcd = new Pcd[num]{};
 	for (size_t i = 0; i < num; i++)
 	{
-		aPcd[i] = aPcd[i].readPcdData(strm);
+		aPcd[i].readPcdData(strm);
 	}
 	
 	return;
 }
 
 // A function that retrieves text from the WordDocument stream
-std::string PlcPcd::retrieveText(ULONG *cpArr, Pcd *pcdArr)
+std::string Clx::Pcdt::PlcPcd::retrieveText(ULONG *cpArr, Pcd *pcdArr)
 {
 	// obtain location of text on the stream
 	// if FcCompressed.fCompressed is zero => UNICODE

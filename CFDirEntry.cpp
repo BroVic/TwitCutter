@@ -38,3 +38,53 @@ VOID DirEntry::readDirEntry(std::ifstream& flstrm)
 	return;
 }
 
+inline unsigned int DirEntry::get_direntry_offset(CFHeader &cfh, const USHORT sZ)
+{
+	return  (cfh.DirSect1 + 1) * sZ;
+}
+
+USHORT DirEntry::find_directory(std::ifstream &stream, CFHeader &header, std::u16string str)
+{
+	const USHORT sectorSize = header.get_sector_size();
+	const unsigned int offset = get_direntry_offset(header, sectorSize);
+	std::vector<ULONG> fat = header.loadFat(stream, header);
+
+	int sectors = header.DirSect1;
+
+	while (fat[sectors] != ENDOFCHAIN)
+	{
+		sectors++;
+	}
+
+	const int n = ((sectors - header.DirSect1) + 1) * (sectorSize / DIRENTRY_SIZE);
+	int id{};
+	for (int i = 1; i <= n; i++)
+	{
+		readDirEntry(stream);
+		if (objType == DIR_ROOT || objType == DIR_STORAGE)
+		{
+			id = childID;
+		}
+		else if (objType == DIR_STREAM)
+		{
+			if (((str.length() + 1) * 2) > nameLength)
+			{
+				id = rightSibID;
+			}
+			else if (((str.length() + 1) * 2) < nameLength)
+			{
+				id = leftSibID;
+			}
+			else
+			{
+				if (str.compare(name) == 0)
+				{
+					return (startSectorLoc + 1) * sectorSize;
+				}
+			}
+		}
+		stream.seekg(offset, std::ios::beg);
+		stream.seekg((id * sizeof(DirEntry)), std::ios::cur);
+	}
+	return 0;
+}

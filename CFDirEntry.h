@@ -7,6 +7,7 @@
 #include "dtypes.h"
 #include "CFHeader.h"
 #include <fstream>
+#include <string>
 
 constexpr ULONG MAXREGSID     = 0xFFFFFFFA;
 constexpr ULONG NOSTREAM      = 0xFFFFFFFF;
@@ -39,9 +40,13 @@ struct DirEntry
 	~DirEntry();
 
 	VOID readDirEntry(std::ifstream &);
+	
+	unsigned short find_directory(std::ifstream&, CFHeader&, std::u16string);
 
+	inline unsigned int get_direntry_offset(CFHeader&, const USHORT);
 
 };
 
 constexpr BYTE DIRENTRY_SIZE = sizeof(DirEntry);
 #endif // !CFDIRENTRY_H_INCLUDED
+

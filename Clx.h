@@ -32,118 +32,103 @@ constexpr ULONG SIZE_OF_PCD = 8;
 //constexpr USHORT sprmCHighlight = 0x2A0C;
 //constexpr USHORT sprmCFWebHidden = 0x0811;
 
-
-struct Sprm
-{
-	USHORT ispmd : 9;
-	BYTE fSpec : 1;
-	BYTE sgc : 3;
-	BYTE spra : 3;
-
-	Sprm();
-	~Sprm();
-
-	VOID readSprm(std::ifstream&);
-}; // struct Sprm
-
-struct Prl 
-{
-	Sprm sprm;
-	// operand
-
-	Prl();
-	~Prl();
-};
-
-struct PrcData
-{
-	SHORT cbGrpprl;
-	Prl *GrpPrl;
-
-	PrcData();
-	~PrcData();
-
-}; // struct PrcData
-
-struct Prc
-{
-	BYTE clxt;
-	PrcData data;
-
-	Prc();
-	~Prc();
-
-}; // struct Prc
-
-struct FcCompressed
-{
-	ULONG fc : 30;
-	BYTE fCompressed : 1;
-	BYTE r1 : 1;
-
-	FcCompressed();
-	~FcCompressed();
-
-	VOID readFcData(std::ifstream&);
-}; // struct FcCompressed
-
-struct Prm
-{
-	BYTE fComplex : 1;
-	USHORT data : 15;
-
-	Prm();
-	~Prm();
-
-	VOID readPrmData(std::ifstream&);
-}; // struct Prm
-
-struct Pcd
-{
-	BYTE fNoParaLast : 1;
-	BYTE fR1 : 1;
-	BYTE fDirty : 1;
-	USHORT fR2 : 13;
-	FcCompressed fc;
-	Prm prm;
-
-	Pcd();
-	~Pcd();
-
-	Pcd readPcdData(std::ifstream&);
-
-}; // struct Pcd
-
-struct PlcPcd
-{
-	ULONG *aCP;
-	Pcd *aPcd;
-
-	PlcPcd();
-	~PlcPcd();
-
-	VOID readPlcPcd(std::ifstream&, ULONG);
-	std::string retrieveText(ULONG*, Pcd*);
-
-}; // struct PlcPcd
-
-struct Pcdt
-{
-	BYTE clxt;
-	ULONG lcb;
-	PlcPcd plcPcd;
-
-	Pcdt();
-	~Pcdt();
-
-	inline ULONG calcArrayLength();
-	VOID readPcdt(std::ifstream &strm, BYTE);
-}; // struct Pcdt
-
+// Nested data structure, Clx, which is found on the Table stream.
+// This stucture contains the character positions and related data.
 struct Clx
 {
-	Prc *rgPrc;
-	Pcdt pcdt;
+	struct Prc
+	{
+		BYTE clxt;
+		struct PrcData
+		{
+			SHORT cbGrpprl;
+			struct Prl
+			{
+				struct Sprm
+				{
+					USHORT ispmd : 9;
+					BYTE fSpec : 1;
+					BYTE sgc : 3;
+					BYTE spra : 3;
+
+					Sprm();
+					~Sprm();
+
+					VOID readSprm(std::ifstream&);
+				} sprm; // struct Sprm
+				// operand
+
+				Prl();
+				~Prl();
+			} *GrpPrl;
+
+			PrcData();
+			~PrcData();
+
+		} data; // struct PrcData
+
+		Prc();
+		~Prc();
+
+	} *rgPrc; // struct Prc
+
+	struct Pcdt
+	{
+		BYTE clxt;
+		ULONG lcb;
+		struct PlcPcd
+		{
+			ULONG *aCP;
+			struct Pcd
+			{
+				BYTE fNoParaLast : 1;
+				BYTE fR1 : 1;
+				BYTE fDirty : 1;
+				USHORT fR2 : 13;
+				struct FcCompressed
+				{
+					ULONG fc : 30;
+					BYTE fCompressed : 1;
+					BYTE r1 : 1;
+
+					FcCompressed();
+					~FcCompressed();
+
+					VOID readFcData(std::ifstream&);
+				} fc; // struct FcCompressed
+
+				struct Prm
+				{
+					BYTE fComplex : 1;
+					USHORT data : 15;
+
+					Prm();
+					~Prm();
+
+					VOID readPrmData(std::ifstream&);
+				} prm; // struct Prm
+
+				Pcd();
+				~Pcd();
+
+				VOID readPcdData(std::ifstream&);
+
+			} *aPcd; // struct Pcd
+
+			PlcPcd();
+			~PlcPcd();
+
+			VOID readPlcPcd(std::ifstream&, ULONG);
+			std::string retrieveText(ULONG*, Pcd*);
+
+		} plcPcd; // struct PlcPcd
+
+		Pcdt();
+		~Pcdt();
+
+		inline ULONG calcArrayLength();
+		VOID readPcdt(std::ifstream &strm, BYTE);
+	} pcdt; // struct Pcdt
 
 	Clx();
 	~Clx();

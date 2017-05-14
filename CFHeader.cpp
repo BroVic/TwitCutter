@@ -57,10 +57,10 @@ VOID CFHeader::readCFHeader(std::ifstream & dcstream)
 	 return;
 }
 
-std::vector<ULONG> CFHeader::loadFat(std::ifstream & stream, const USHORT szSect) 
+std::vector<ULONG> CFHeader::loadFat(std::ifstream & stream, CFHeader &hdr) 
 {
 	std::vector<ULONG> fat;
-	
+	const USHORT szSect = hdr.get_sector_size();
 	int i = 0;
 	while (Difat[i] != FREESECT)
 	{
@@ -109,7 +109,7 @@ ULONG CFHeader::fat_len(std::ifstream& streams, const USHORT sctSz)
 	return val;
 }
 
-USHORT CFHeader::set_sector_size() const
+USHORT CFHeader::get_sector_size() const
 {
 	return static_cast<USHORT>(pow(2, SectorShift));
 }
