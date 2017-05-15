@@ -6,8 +6,10 @@ test.docx
 test.pdf 
 test.rtf 
 test.txt 
-TwitCutter.cbp
-TwitCutter.depend
-TwitCutter.layout
-bin/Debug
-obj/Debug
+Release/* 
+test2.doc 
+TwitCutter.cbp 
+TwitCutter.layout 
+bin/* 
+obj/* 
+

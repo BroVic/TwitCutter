@@ -1,38 +1,109 @@
 #include "Clx.h"
 
-Prc::PrcData::PrcData()
+Clx::Prc::PrcData::Prl::Sprm::Sprm()
+{
+	ispmd = {};
+	fSpec = {};
+	sgc   = {};
+	spra  = {};
+}
+
+Clx::Prc::PrcData::Prl::Sprm::~Sprm()
 {
 }
 
-Prc::PrcData::~PrcData()
+Clx::Prc::PrcData::Prl::Prl()
 {
 }
 
-Prc::Prc()
+Clx::Prc::PrcData::Prl::~Prl()
 {
 }
 
-Prc::~Prc()
+Clx::Prc::PrcData::PrcData()
+{
+	cbGrpprl = {};
+}
+
+Clx::Prc::PrcData::~PrcData()
 {
 }
 
-Prl::Prl()
+Clx::Prc::Prc()
+{
+	clxt = {};
+}
+
+Clx::Prc::~Prc()
 {
 }
 
-Prl::~Prl()
+Clx::Pcdt::PlcPcd::Pcd::Prm::Prm()
+
+{
+	fComplex = {};
+	data     = {};
+}
+
+Clx::Pcdt::PlcPcd::Pcd::Prm::~Prm()
 {
 }
 
-Prl::Sprm::Sprm()
+Clx::Pcdt::PlcPcd::Pcd::FcCompressed::FcCompressed()
+{
+	fc          = {};
+	fCompressed = {};
+	r1          = {};
+}
+
+Clx::Pcdt::PlcPcd::Pcd::FcCompressed::~FcCompressed()
 {
 }
 
-Prl::Sprm::~Sprm()
+Clx::Pcdt::PlcPcd::Pcd::Pcd()
+{
+	fNoParaLast = {};
+	fR1         = {};
+	fDirty      = {};
+	fR2         = {};
+	fc          = {};
+}
+
+Clx::Pcdt::PlcPcd::Pcd::~Pcd()
 {
 }
 
-VOID Prl::Sprm::readSprm(std::ifstream &stream)
+Clx::Pcdt::PlcPcd::PlcPcd()
+{
+	aCP  = nullptr;
+	aPcd = nullptr;
+}
+
+Clx::Pcdt::PlcPcd::~PlcPcd()
+{
+
+}
+
+Clx::Pcdt::Pcdt()
+{
+	clxt = {};
+	lcb = {};
+}
+
+Clx::Pcdt::~Pcdt()
+{
+}
+
+Clx::Clx()
+{
+	rgPrc = nullptr;
+}
+
+Clx::~Clx()
+{
+}
+
+VOID Clx::Prc::PrcData::Prl::Sprm::readSprm(std::ifstream &stream)
 {
 	USHORT tmp = 0x0000;
 	stream.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
@@ -50,15 +121,7 @@ VOID Prl::Sprm::readSprm(std::ifstream &stream)
 	return;
 }
 
-Pcd::FcCompressed::FcCompressed()
-{
-}
-
-Pcd::FcCompressed::~FcCompressed()
-{
-}
-
-VOID Pcd::FcCompressed::readFcData(std::ifstream &stream)
+VOID Clx::Pcdt::PlcPcd::Pcd::FcCompressed::readFcData(std::ifstream &stream)
 {
 	ULONG temp    = 0x00000000;
 	ULONG mask    = 0x3FFFFFFF;
@@ -78,16 +141,8 @@ VOID Pcd::FcCompressed::readFcData(std::ifstream &stream)
 
 	return;
 }
-Pcd::Prm::Prm()
 
-{
-}
-
-Pcd::Prm::~Prm()
-{
-}
-
-VOID Pcd::Prm::readPrmData(std::ifstream &curstream)
+VOID Clx::Pcdt::PlcPcd::Pcd::Prm::readPrmData(std::ifstream &curstream)
 {
 	USHORT tmp  = 0;
 	USHORT mask = 0xFFFE;
@@ -100,9 +155,8 @@ VOID Pcd::Prm::readPrmData(std::ifstream &curstream)
 	return;
 }
 
-
-Pcd Pcd::readPcdData(std::ifstream &flsrc)
-{
+VOID Clx::Pcdt::PlcPcd::Pcd::readPcdData(std::ifstream &flsrc)
+{    // check this function very well after recent changes
 	USHORT temp  = 0x0000;
 	USHORT mask  = 0xFFF8;
 	BYTE fNPL    = 0x1;
@@ -119,52 +173,22 @@ Pcd Pcd::readPcdData(std::ifstream &flsrc)
 	fc.readFcData(flsrc);
 	prm.readPrmData(flsrc);
 
-	return *this;
-}
+	return;
+}   //
 
-Pcd::Pcd()
+// Computes the number of elements in a Pcd array
+inline ULONG Clx::Pcdt::PlcPcd::pcdLength(Clx& cobj)
 {
+	return (cobj.pcdt.lcb - 4) / (4 + SIZE_OF_PCD);
 }
 
-Pcd::~Pcd()
-{
-}
-
-PlcPcd::PlcPcd()
-{
-}
-
-PlcPcd::~PlcPcd()
-{
-}
-
-Clx::Pcdt::Pcdt()
-{
-}
-
-Clx::Pcdt::~Pcdt()
-{
-}
-
-Clx::Clx()
-{
-}
-
-Clx::~Clx()
-{
-}
-
-inline ULONG Clx::Pcdt::calcArrayLength(ULONG cbSz)
-{
-	return (cbSz - 4) / (4 + SIZE_OF_PCD);
-}
-
-VOID Clx::Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
+// Reads from filestream into a Pcdt structure
+VOID Clx::Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar, Clx &obj)
 {
 	clxt = fstVar;
 	strm.read(reinterpret_cast<char *>(&lcb), sizeof(ULONG));
-
-	ULONG numArr = calcArrayLength(lcb);
+	
+	ULONG numArr = obj.pcdt.plcPcd.pcdLength(obj);
 
 	plcPcd.readPlcPcd(strm, numArr);
 
@@ -174,7 +198,7 @@ VOID Clx::Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar)
 // Decides on how to start reading the structure
 VOID Clx::readToClx(std::ifstream &stream)
 {
-	BYTE tmpClxt = 0x00;
+	BYTE tmpClxt{};
 	stream.read(reinterpret_cast<char *>(&tmpClxt), sizeof(BYTE));
 
 	if (tmpClxt == 0x01)
@@ -184,42 +208,48 @@ VOID Clx::readToClx(std::ifstream &stream)
 		// NB: if this branch is followed, end with a reading of the first
 		// field of the next structure, for a smooth transition
 	}
-
-	pcdt.readPcdt(stream, tmpClxt);
-
+	
+	pcdt.readPcdt(stream, tmpClxt, *this);
+	
 	return;
 }
 
-
-VOID PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
+// Reads from filestream into a PlPcd structure
+VOID Clx::Pcdt::PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 {
-	// aCP = new ULONG[num]{};
-	strm.read(reinterpret_cast<char *>(&aCP), sizeof(ULONG) * (num + 1));
-
+	num++;
+	aCP = new ULONG[num]{};
+	assert(aCP != nullptr);
+	for (size_t i = 0; i < num; i++)
+	{
+		strm.read(reinterpret_cast<char *>(&aCP[i]), sizeof(ULONG));
+	}
+	
 	// strm.read(reinterpret_cast<char *>(&aPcd), sizeof(Pcd) * num);
+	--num;
 	aPcd = new Pcd[num]{};
 	for (size_t i = 0; i < num; i++)
 	{
-		aPcd[i] = aPcd[i].readPcdData(strm);
+		aPcd[i].readPcdData(strm);
 	}
 
 	return;
 }
 
-//VOID Prl::Sprm::readSprm(std::ifstream & stream)
-//{
-//	WORD tmp = 0x0000;
-//	stream.read(reinterpret_cast<char *>(&tmp), sizeof(tmp));
-//
-//	DWORD msk_ispmd  = 0x1FF;
-//	BYTE fS          = 0x200;
-//	BYTE msk_sgc     = 0x1C0;
-//	BYTE msk_spra    = 0xE00;
-//
-//	ispmd = tmp & msk_ispmd;
-//	fSpec = (tmp & fS) >> 9;
-//	sgc   = (tmp &msk_sgc) >> 10;
-//	spra  = (tmp & msk_spra) >> 11;
-//
-//	return;
-//}
+// Gets the stream offset for a specific character position
+USHORT Clx::Pcdt::PlcPcd::Pcd::defineOffset() const
+{
+	return fc.fc;	
+}
+
+// Get the encoding to be used
+LONG Clx::Pcdt::PlcPcd::Pcd::defineEncoding() const
+{
+	return static_cast<LONG>(fc.fCompressed);
+}
+
+// Gets a character position
+ULONG Clx::Pcdt::PlcPcd::getCharPos(int ind)
+{
+	return aCP[ind];
+}

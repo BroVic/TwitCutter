@@ -5,7 +5,7 @@
 #define CLX_H_INCLUDED
 
 #include <fstream>
-#include "dtypes.h"
+#include <cassert>
 #include "FIB.h"
 
 
@@ -32,38 +32,35 @@ constexpr ULONG SIZE_OF_PCD = 8;
 //constexpr USHORT sprmCHighlight = 0x2A0C;
 //constexpr USHORT sprmCFWebHidden = 0x0811;
 
-
-
-struct Prl
+// Nested data structure, Clx, which is found on the Table stream.
+// This stucture contains the character positions and related data.
+struct Clx
 {
-	struct Sprm
-	{
-
-		USHORT ispmd : 9;
-		BYTE fSpec : 1;
-		BYTE sgc : 3;
-		BYTE spra : 3;
-
-		Sprm();
-		~Sprm();
-
-		VOID readSprm(std::ifstream&);
-
-
-	} sprm; // struct Sprm
-	// operand
-
-	Prl();
-	~Prl();
-};
-
-struct Prc
+	struct Prc
 	{
 		BYTE clxt;
 		struct PrcData
 		{
 			SHORT cbGrpprl;
-			Prl *GrpPrl;
+			struct Prl
+			{
+				struct Sprm
+				{
+					USHORT ispmd : 9;
+					BYTE fSpec : 1;
+					BYTE sgc : 3;
+					BYTE spra : 3;
+
+					Sprm();
+					~Sprm();
+
+					VOID readSprm(std::ifstream&);
+				} sprm; // struct Sprm
+				// operand
+
+				Prl();
+				~Prl();
+			} *GrpPrl;
 
 			PrcData();
 			~PrcData();
@@ -73,74 +70,64 @@ struct Prc
 		Prc();
 		~Prc();
 
-	}; // struct Prc
+	} *rgPrc; // struct Prc
 
-#pragma pack(push, 1)
-struct Pcd
-{
-	BYTE fNoParaLast : 1;
-	BYTE fR1 : 1;
-	BYTE fDirty : 1;
-	USHORT fR2 : 13;
-	struct FcCompressed
-	{
-		ULONG fc : 30;
-		BYTE fCompressed : 1;
-		BYTE r1 : 1;
-
-		FcCompressed();
-		~FcCompressed();
-
-		VOID readFcData(std::ifstream&);
-	} fc; // struct FcCompressed
-	struct Prm
-	{
-		BYTE fComplex : 1;
-		USHORT data : 15;
-
-		Prm();
-		~Prm();
-
-		VOID readPrmData(std::ifstream&);
-	} prm; // struct Prm
-
-	Pcd();
-	~Pcd();
-
-	Pcd readPcdData(std::ifstream&);
-
-}; // struct Pcd
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-struct PlcPcd
-{
-	ULONG aCP;
-	Pcd *aPcd;
-
-	PlcPcd();
-	~PlcPcd();
-
-	VOID readPlcPcd(std::ifstream&, ULONG);
-
-}; // struct PlcPcd
-#pragma pack(pop)
-
-struct Clx
-{
-	Prc *rgPrc;
 	struct Pcdt
 	{
 		BYTE clxt;
 		ULONG lcb;
-		PlcPcd plcPcd;
+		struct PlcPcd
+		{
+			ULONG *aCP;
+			struct Pcd
+			{
+				BYTE fNoParaLast : 1;
+				BYTE fR1 : 1;
+				BYTE fDirty : 1;
+				USHORT fR2 : 13;
+				struct FcCompressed
+				{
+					ULONG fc : 30;
+					BYTE fCompressed : 1;
+					BYTE r1 : 1;
+
+					FcCompressed();
+					~FcCompressed();
+					VOID readFcData(std::ifstream&);
+				} fc; // struct FcCompressed
+				struct Prm
+				{
+					BYTE fComplex : 1;
+					USHORT data : 15;
+
+					Prm();
+					~Prm();
+
+					VOID readPrmData(std::ifstream&);
+				} prm; // struct Prm
+
+				Pcd();
+				~Pcd();
+
+				VOID readPcdData(std::ifstream&);
+				USHORT defineOffset() const;
+				LONG defineEncoding() const;
+				
+
+			} *aPcd; // struct Pcd
+
+			PlcPcd();
+			~PlcPcd();
+			VOID readPlcPcd(std::ifstream&, ULONG);
+			ULONG getCharPos(int);
+			inline ULONG pcdLength(Clx&);
+
+		} plcPcd; // struct PlcPcd
 
 		Pcdt();
 		~Pcdt();
 
-
-		inline ULONG calcArrayLength(ULONG);
-		VOID readPcdt(std::ifstream &strm, BYTE);
+		VOID readPcdt(std::ifstream&, BYTE, Clx&);
 	} pcdt; // struct Pcdt
 
 	Clx();
@@ -148,7 +135,6 @@ struct Clx
 
 
 	VOID readToClx(std::ifstream&);
-
 }; // struct Clx
 
 #endif // !CLX_H_INCLUDED

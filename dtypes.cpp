@@ -2,12 +2,12 @@
 
 CLSID::CLSID()
 {
-	Data1 = SET_ZERO;
-	Data2 = SET_ZERO;
-	Data3 = SET_ZERO;
+	Data1 = { };
+	Data2 = { };
+	Data3 = { };
 	for (int i = 0; i < 8; ++i)
 	{
-		Data4[i] = SET_ZERO;
+		Data4[i] = { };
 	}
 }
 
@@ -17,8 +17,8 @@ CLSID::~CLSID()
 
 FILETIME::FILETIME()
 {
-	dwLowDateTime = SET_ZERO;
-	dwHighDateTime = SET_ZERO;
+	dwLowDateTime = { };
+	dwHighDateTime = { };
 }
 
 FILETIME::~FILETIME()

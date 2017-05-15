@@ -3,16 +3,16 @@
 DirEntry::DirEntry()
 {
 	for (int i = 0; i < 32; i++)
-		name[i]		= SET_ZERO;
-	nameLength		= SET_ZERO;
-	objType			= SET_ZERO;
-	colorFlag		= SET_ZERO;
-	leftSibID		= SET_ZERO;
-	rightSibID		= SET_ZERO;
-	childID			= SET_ZERO;
-	stateBits		= SET_ZERO;
-	startSectorLoc	= SET_ZERO;
-	streamSize		= SET_ZERO;
+		name[i]		= { };
+	nameLength		= { };
+	objType			= { };
+	colorFlag		= { };
+	leftSibID		= { };
+	rightSibID		= { };
+	childID			= { };
+	stateBits		= { };
+	startSectorLoc	= { };
+	streamSize		= { };
 }
 
 DirEntry::~DirEntry()
@@ -38,49 +38,53 @@ VOID DirEntry::readDirEntry(std::ifstream& flstrm)
 	return;
 }
 
-USHORT DirEntry::find_directory(std::ifstream& stream, std::u16string str, CFHeader &obj)
+inline unsigned int DirEntry::get_direntry_offset(CFHeader &cfh, const USHORT sZ)
 {
-	const int d1      = obj.DirSect1;
-	const int sctSz   = obj.set_sector_size();
-	const int offset  = (d1 + 1) * sctSz;
-	
-	std::vector<ULONG> fat  = obj.loadFat(stream, sctSz);
-	int sectors             = d1;
+	return  (cfh.DirSect1 + 1) * sZ;
+}
+
+USHORT DirEntry::find_directory(std::ifstream &stream, CFHeader &header, std::u16string str)
+{
+	const USHORT sectorSize = header.get_sector_size();
+	const unsigned int offset = get_direntry_offset(header, sectorSize);
+	std::vector<ULONG> fat = header.loadFat(stream, header);
+
+	int sectors = header.DirSect1;
 
 	while (fat[sectors] != ENDOFCHAIN)
 	{
 		sectors++;
 	}
 
-	const int n = ((sectors - d1) + 1) * (sctSz / DIRENTRY_SIZE);
-	int id = 0;
+	const int n = ((sectors - header.DirSect1) + 1) * (sectorSize / DIRENTRY_SIZE);
+	int id{};
 	for (int i = 1; i <= n; i++)
 	{
-		if (this->objType == DIR_ROOT || this->objType == DIR_STORAGE)
+		readDirEntry(stream);
+		if (objType == DIR_ROOT || objType == DIR_STORAGE)
 		{
-			id = this->childID;
+			id = childID;
 		}
-		else if (this->objType == DIR_STREAM)
+		else if (objType == DIR_STREAM)
 		{
-			if (((str.length() + 1) * 2) > this->nameLength)
+			if (((str.length() + 1) * 2) > nameLength)
 			{
-				id = this->rightSibID;
+				id = rightSibID;
 			}
-			else if (((str.length() + 1) * 2) < this->nameLength)
+			else if (((str.length() + 1) * 2) < nameLength)
 			{
-				id = this->leftSibID;
+				id = leftSibID;
 			}
 			else
 			{
-				if (str.compare(this->name) == 0)
+				if (str.compare(name) == 0)
 				{
-					return (this->startSectorLoc + 1) * sctSz;
+					return (startSectorLoc + 1) * sectorSize;
 				}
 			}
-		} 
+		}
 		stream.seekg(offset, std::ios::beg);
 		stream.seekg((id * sizeof(DirEntry)), std::ios::cur);
-		this->readDirEntry(stream);
 	}
 	return 0;
 }

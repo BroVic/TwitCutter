@@ -46,11 +46,11 @@ struct CFHeader
 	~CFHeader();
 
 	VOID readCFHeader(std::ifstream&);
-	std::vector<ULONG> loadFat(std::ifstream&, const USHORT);
+	std::vector<ULONG> loadFat(std::ifstream&, CFHeader&);
 	BOOL use_difat_sect();
 	ULONG fat_len(std::ifstream&, const USHORT);
 	
-	USHORT set_sector_size() const;
+	USHORT get_sector_size() const;
 
 
 }; // struct CFHeader
