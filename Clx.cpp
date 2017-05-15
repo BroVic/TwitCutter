@@ -169,7 +169,7 @@ VOID Clx::Pcdt::PlcPcd::Pcd::readPcdData(std::ifstream &flsrc)
 	fR1         = (fROne & temp) >> 1;
 	fDirty      = (fD & temp) >> 2;
 	fR2         = (temp & mask) >> 3;
-	
+
 	fc.readFcData(flsrc);
 	prm.readPrmData(flsrc);
 
@@ -191,7 +191,7 @@ VOID Clx::Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar, Clx &obj)
 	ULONG numArr = obj.pcdt.plcPcd.pcdLength(obj);
 
 	plcPcd.readPlcPcd(strm, numArr);
-	
+
 	return;
 }
 
@@ -205,7 +205,7 @@ VOID Clx::readToClx(std::ifstream &stream)
 	{
 		// prc.readPrc(stream, tmpClxt);
 
-		// NB: if this branch is followed, end with a reading of the first 
+		// NB: if this branch is followed, end with a reading of the first
 		// field of the next structure, for a smooth transition
 	}
 	
@@ -232,7 +232,7 @@ VOID Clx::Pcdt::PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 	{
 		aPcd[i].readPcdData(strm);
 	}
-	
+
 	return;
 }
 

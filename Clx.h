@@ -8,6 +8,7 @@
 #include <cassert>
 #include "FIB.h"
 
+
 constexpr BYTE SET_BITS_1   = 0x0;
 constexpr BYTE SET_BITS_3   = 0x0;
 constexpr BYTE SET_BITS_9   = 0x0;
@@ -131,6 +132,7 @@ struct Clx
 
 	Clx();
 	~Clx();
+
 
 	VOID readToClx(std::ifstream&);
 }; // struct Clx
