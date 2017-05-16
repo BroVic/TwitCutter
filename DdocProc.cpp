@@ -9,6 +9,19 @@ DdocProc::~DdocProc()
 {	
 }
 
+void DdocProc::process_file(std::ifstream & strm)
+{
+	this->read_file_data(strm);
+	this->collect_text(strm);
+
+	return;
+}
+
+std::string DdocProc::getCollectedString() const
+{
+	return this->_stringColl;
+}
+
 void DdocProc::read_file_data(std::ifstream &stream)
 {
 	olehdr.readCFHeader(stream);
@@ -111,7 +124,7 @@ inline std::string DdocProc::transferANSIString(std::ifstream &giv, int cur, int
 
 }
 
-void DdocProc::setANSIexceptions()
+inline void DdocProc::setANSIexceptions()
 {
 	_altANSI[0x82] = 0x201A;
 	_altANSI[0x83] = 0x0192;
@@ -137,14 +150,6 @@ void DdocProc::setANSIexceptions()
 	_altANSI[0x9B] = 0x2034;
 	_altANSI[0x9C] = 0x0153;
 	_altANSI[0x9F] = 0x0178;
-
-	return;
-}
-
-void DdocProc::process_file(std::ifstream & strm)
-{
-	this->read_file_data(strm);
-	this->collect_text(strm);
 
 	return;
 }
