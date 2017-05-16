@@ -39,7 +39,6 @@ Clx::Prc::~Prc()
 }
 
 Clx::Pcdt::PlcPcd::Pcd::Prm::Prm()
-
 {
 	fComplex = {};
 	data     = {};
@@ -81,7 +80,8 @@ Clx::Pcdt::PlcPcd::PlcPcd()
 
 Clx::Pcdt::PlcPcd::~PlcPcd()
 {
-
+	delete aCP;
+	delete aPcd;
 }
 
 Clx::Pcdt::Pcdt()
@@ -156,7 +156,7 @@ VOID Clx::Pcdt::PlcPcd::Pcd::Prm::readPrmData(std::ifstream &curstream)
 }
 
 VOID Clx::Pcdt::PlcPcd::Pcd::readPcdData(std::ifstream &flsrc)
-{    // check this function very well after recent changes
+{
 	USHORT temp  = 0x0000;
 	USHORT mask  = 0xFFF8;
 	BYTE fNPL    = 0x1;
@@ -174,7 +174,7 @@ VOID Clx::Pcdt::PlcPcd::Pcd::readPcdData(std::ifstream &flsrc)
 	prm.readPrmData(flsrc);
 
 	return;
-}   //
+}
 
 // Computes the number of elements in a Pcd array
 inline ULONG Clx::Pcdt::PlcPcd::pcdLength(Clx& cobj)
@@ -187,9 +187,7 @@ VOID Clx::Pcdt::readPcdt(std::ifstream &strm, BYTE fstVar, Clx &obj)
 {
 	clxt = fstVar;
 	strm.read(reinterpret_cast<char *>(&lcb), sizeof(ULONG));
-	
 	ULONG numArr = obj.pcdt.plcPcd.pcdLength(obj);
-
 	plcPcd.readPlcPcd(strm, numArr);
 
 	return;
@@ -218,16 +216,25 @@ VOID Clx::readToClx(std::ifstream &stream)
 VOID Clx::Pcdt::PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 {
 	num++;
-	aCP = new ULONG[num]{};
-	assert(aCP != nullptr);
+	aCP = new (std::nothrow) ULONG[num]{};
+	if (aCP == 0)
+	{
+		std::cerr << "Requested memory could not be allocated" << std::endl;
+	}
+
 	for (size_t i = 0; i < num; i++)
 	{
 		strm.read(reinterpret_cast<char *>(&aCP[i]), sizeof(ULONG));
 	}
 	
-	// strm.read(reinterpret_cast<char *>(&aPcd), sizeof(Pcd) * num);
 	--num;
 	aPcd = new Pcd[num]{};
+	aPcd = new (std::nothrow) Pcd[num]{};
+	if (aPcd == 0)
+	{
+		std::cerr << "Requested memory could not be allocated" << std::endl;
+	}
+
 	for (size_t i = 0; i < num; i++)
 	{
 		aPcd[i].readPcdData(strm);

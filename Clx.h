@@ -8,14 +8,6 @@
 #include <cassert>
 #include "FIB.h"
 
-
-constexpr BYTE SET_BITS_1   = 0x0;
-constexpr BYTE SET_BITS_3   = 0x0;
-constexpr BYTE SET_BITS_9   = 0x0;
-constexpr BYTE SET_BITS_13  = 0x0;
-constexpr BYTE SET_BITS_15  = 0x0;
-constexpr BYTE SET_BITS_30  = 0x0;
-
 constexpr ULONG SIZE_OF_PCD = 8;
 
 // Sprm values
@@ -55,11 +47,13 @@ struct Clx
 					~Sprm();
 
 					VOID readSprm(std::ifstream&);
+
 				} sprm; // struct Sprm
 				// operand
 
 				Prl();
 				~Prl();
+
 			} *GrpPrl;
 
 			PrcData();
@@ -71,7 +65,6 @@ struct Clx
 		~Prc();
 
 	} *rgPrc; // struct Prc
-
 	struct Pcdt
 	{
 		BYTE clxt;
@@ -93,7 +86,9 @@ struct Clx
 
 					FcCompressed();
 					~FcCompressed();
+
 					VOID readFcData(std::ifstream&);
+
 				} fc; // struct FcCompressed
 				struct Prm
 				{
@@ -104,6 +99,7 @@ struct Clx
 					~Prm();
 
 					VOID readPrmData(std::ifstream&);
+
 				} prm; // struct Prm
 
 				Pcd();
@@ -113,11 +109,11 @@ struct Clx
 				USHORT defineOffset() const;
 				LONG defineEncoding() const;
 				
-
 			} *aPcd; // struct Pcd
 
 			PlcPcd();
 			~PlcPcd();
+
 			VOID readPlcPcd(std::ifstream&, ULONG);
 			ULONG getCharPos(int);
 			inline ULONG pcdLength(Clx&);
@@ -128,13 +124,14 @@ struct Clx
 		~Pcdt();
 
 		VOID readPcdt(std::ifstream&, BYTE, Clx&);
+
 	} pcdt; // struct Pcdt
 
 	Clx();
 	~Clx();
 
-
 	VOID readToClx(std::ifstream&);
+
 }; // struct Clx
 
 #endif // !CLX_H_INCLUDED
