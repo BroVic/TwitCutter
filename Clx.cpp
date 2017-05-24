@@ -80,8 +80,6 @@ Clx::Pcdt::PlcPcd::PlcPcd()
 
 Clx::Pcdt::PlcPcd::~PlcPcd()
 {
-	delete aCP;
-	delete aPcd;
 }
 
 Clx::Pcdt::Pcdt()
@@ -228,7 +226,6 @@ VOID Clx::Pcdt::PlcPcd::readPlcPcd(std::ifstream &strm, ULONG num)
 	}
 	
 	--num;
-	aPcd = new Pcd[num]{};
 	aPcd = new (std::nothrow) Pcd[num]{};
 	if (aPcd == 0)
 	{
