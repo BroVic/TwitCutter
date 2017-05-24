@@ -11,13 +11,15 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 #include <fstream>
 #include "TxtProc.h"
 #include "DdocProc.h"
 
-#define ERR_NO_OPEN   1
-#define ERR_NOT_GOOD  2
-#define ZERO_OFFSET   0
+constexpr int ERR_NO_OPEN   = 1;
+constexpr int ERR_NOT_GOOD  = 2;
+
+constexpr int ZERO_OFFSET = 0;
 
 // For numbering text blocks
 constexpr char OPEN_TAG   = '(';
@@ -46,11 +48,11 @@ private:
 	// Estimates the number of tweets in the string
 	void estimateTweetNum();
 	
-	// Splits up the string
 	void spliceString();
 	
-	// Creates a chain of tweets
 	void makeChain();
+
+	void printChain();
 
 public:
 	GenericProc();

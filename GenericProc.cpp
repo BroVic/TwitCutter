@@ -33,6 +33,8 @@ int GenericProc::globalProcess(std::string filename)
 	// Produces chain
 	makeChain();
 
+	printChain();
+
 	return 0;
 }
 
@@ -99,6 +101,33 @@ void GenericProc::makeChain()
 	
 	spliceString();
 	
+	
+	return;
+}
+
+void GenericProc::printChain()
+{
+	std::cout << "Commencing printing of available text blocks." << std::endl
+		<< std::endl;
+	
+	int numb = chain.size();
+	int i = 0;
+	while (i < numb)
+	{
+		std::cout << i + 1 << " " << this->chain[i] << std::endl
+			<< std::endl;
+		i++;
+	}
+	
+	if (i == numb)
+	{
+		std::cout << "All available tweets have been displayed/printed." << std::endl
+			<< std::endl;
+	}
+	else
+	{
+		std::cerr << "There was a problem counting/printing the text blocks." << std::endl;
+	}
 	
 	return;
 }
