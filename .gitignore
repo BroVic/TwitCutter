@@ -13,3 +13,6 @@ TwitCutter.layout
 bin/* 
 obj/* 
 
+twtcut.exe 
+Makefile.mak 
+wkernelbase.pdb 
