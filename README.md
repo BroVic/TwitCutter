@@ -12,4 +12,13 @@
 		- Locate the *Table* stream.
 		- Locate the Clx using data available on the FIB.
 		- Read the Clx from the stream.
-		- ...
+		- Make arrays for the character positions (CPs) and Pcds.
+		- Retrieve the text from the *WordDocument* stream; build a string with same.
+* Splice
+	+ string is split into chunks
+		- Set limits (less than 120 characters)
+		- Add pagination
+* Display
+	+ send to stdout
+	+ send to file
+	+ ...
