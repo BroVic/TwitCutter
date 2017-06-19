@@ -12,8 +12,16 @@ TwitCutter.cbp
 TwitCutter.layout 
 bin/* 
 obj/* 
-
 twtcut.exe 
 Makefile.mak 
 wkernelbase.pdb 
 twtcut_vc/* 
+test.doc 
+test.docx 
+test.pdf 
+test.rtf 
+test.txt 
+test2.doc 
+test3.docx 
+test3.docx.zip
+ 
