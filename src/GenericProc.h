@@ -54,6 +54,10 @@ private:
 
 	void printChain();
 
+	void writeChain();
+
+	void printLine();
+
 public:
 	GenericProc();
 	~GenericProc();

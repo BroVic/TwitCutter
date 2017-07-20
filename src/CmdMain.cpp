@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 			// TODO: Optionally allow the application to run even without the
 			//  supply of command line arguments. This could be a help file or
 			//  just a notice (e.g. copyright, usage hint, etc
-			path = "test2.doc";
+			path = "C:/Users/Admn/Documents/7-NESREA/SA/WMG/TwitCutter/test2.doc";
 			std::cout << "Help file is under development.\n\n";
 		}
 		else if (argc > 2)
