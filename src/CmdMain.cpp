@@ -2,12 +2,21 @@
 //
 // CmdMain.cpp
 // Main source file for command-line access to the application
+
+// A document file is passed as an argument at the command line
+// twtcut.exe [file]
+// TwitCutter's main function is all about the initial preparation of the file
+// such that it checks the file whether it is in a format that can be treated 
+// and, if so, culminates in passing the path of the file to an generic
+// processor object of class 'GenericProc' for appropriate handling. An attempt
+// has been made at making this an interactive experience for the user.
+
 #include <string>
 #include <iostream>
 #include <cstdio>
 #include "GenericProc.h"
 
-enum AppControls
+enum AppControls				// Control 
 {
 	APP_CONT  = -1,
 	APP_ERR   = 0,
@@ -15,7 +24,7 @@ enum AppControls
 	APP_RESET = 999
 };
 
-enum Extensions
+enum Extensions					// 
 {
 	NOFILE,
 	DOC,
@@ -26,37 +35,38 @@ enum Extensions
 	// etc.
 };
 
-int check_opt(char);
-int check_ext(std::string&);
+int check_opt(char);			// Checks input options that control main loop
+int check_ext(std::string&);	// Checks file extension
 
 int main(int argc, char** argv)
 {
 	int control(APP_RESET);
 	std::string path;
 
-	while (true)
+	while (true)				// TODO: Work towards brevity.
 	{
 		if (argc == 1)
 		{
-			// Invoke Copyright notice
-			std::cout << "File path: ";
-			std::getline(std::cin, path);
-			std::cout << std::endl;
+			// TODO: Optionally allow the application to run even without the
+			//  supply of command line arguments. This could be a help file or
+			//  just a notice (e.g. copyright, usage hint, etc
+			path = "test2.doc";
+			std::cout << "Help file is under development.\n\n";
 		}
 		else if (argc > 2)
 		{
-			std::cerr << "Illegal number of arguments." << std::endl;
+			std::cerr << "Too many arguments supplied (more than 2)." << std::endl;
 			return 1;
 		}
 		else
 		{
 			path = argv[1];
-		}
 
-		if (path.length() > FILENAME_MAX)
-		{
-			std::cerr << "Path is too long for this application." << std::endl;
-			return 2;
+			if (path.length() > FILENAME_MAX)
+			{
+				std::cerr << "Path is too long for this application." << std::endl;
+				return 2;
+			}
 		}
 
 		// Parse file extension
@@ -125,7 +135,7 @@ int check_ext(std::string &str)
 		return -1;
 	}
 	
-	// Ensure all lower-case
+	// Ensure all are lower-case
 	for (int i = 0; i < len; ++i)
 	{
 		tempstr[i] = tolower(str[i]);
@@ -144,7 +154,8 @@ int check_ext(std::string &str)
 	}
 	else
 	{
-		std::cerr << "App does not handle '" << str << "' files!" << std::endl;
+		std::cerr << "Application does not handle '" << str << "' files!"
+			<< std::endl;
 	}
 	return 0;
 }
