@@ -35,6 +35,8 @@ int GenericProc::globalProcess(std::string filename)
 
 	printChain();
 
+	writeChain();
+
 	return 0;
 }
 
@@ -114,15 +116,15 @@ void GenericProc::printChain()
 	int i = 0;
 	while (i < numb)
 	{
-		std::cout << i + 1 << " " << this->chain[i] << std::endl
-			<< std::endl;
+		std::cout << i + 1 << " " << this->chain[i] << std::endl;
+		printLine();
 		i++;
 	}
 	
 	if (i == numb)
 	{
-		std::cout << "All available tweets have been displayed/printed." << std::endl
-			<< std::endl;
+		std::cout << "--- All available tweets have been displayed/printed. ---" << std::endl;
+		printLine();
 	}
 	else
 	{
@@ -130,4 +132,60 @@ void GenericProc::printChain()
 	}
 	
 	return;
+}
+
+void GenericProc::writeChain()
+{
+	char response{};
+	std::cout << "\nWrite tweets to disk? (Y/N)";
+	std::cin >> response;
+	if (tolower(response) == 'n')
+	{
+		return;
+	}
+	else if (tolower(response) == 'y')
+	{
+		// generate a file name
+		std::string filename;
+		std::cout << "Provide a filename (defaults to '.TXT'): ";
+		std::getline(std::cin, filename);
+		filename.append(".txt");
+
+		std::ofstream outfile;
+		outfile.open(filename.c_str());
+		if (!outfile.is_open())
+		{
+			std::cerr << "Could not open '" << filename.c_str() << "'." << std::endl;
+			return;
+		}
+		// write the chain to the file
+		int len = chain.size();
+		int i = 0;
+		while (i < len)
+		{
+			outfile << i + 1 << this->chain[i] << std::endl;
+			i++;
+		}
+		if (i == len)
+		{
+			std::cout << "--- All available tweets have been displayed/printed. ---" << std::endl;
+			printLine();
+		}
+				
+		outfile.close();
+	}
+	else
+	{
+		std::cerr << "Invalid response." << std::endl;
+	}
+}
+
+void GenericProc::printLine()
+{
+	char dash{ '-' };
+	for (size_t i = 0; i < 50; i++)
+	{
+		std::cout << dash;
+	}
+	std::cout << '\n';
 }
