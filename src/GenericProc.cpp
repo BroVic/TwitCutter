@@ -123,7 +123,7 @@ void GenericProc::printChain()
 	
 	if (i == numb)
 	{
-		std::cout << "--- All available tweets have been displayed/printed. ---" << std::endl;
+		std::cout << "--- All available tweets have been displayed. ---" << std::endl;
 		printLine();
 	}
 	else
@@ -137,7 +137,7 @@ void GenericProc::printChain()
 void GenericProc::writeChain()
 {
 	char response{};
-	std::cout << "\nWrite tweets to disk? (Y/N)";
+	std::cout << "\nWrite tweets to disk? (Y/N) ";
 	std::cin >> response;
 	if (tolower(response) == 'n')
 	{
@@ -148,7 +148,7 @@ void GenericProc::writeChain()
 		// generate a file name
 		std::string filename;
 		std::cout << "Provide a filename (defaults to '.TXT'): ";
-		std::getline(std::cin, filename);
+		std::cin >> filename;
 		filename.append(".txt");
 
 		std::ofstream outfile;
@@ -183,9 +183,9 @@ void GenericProc::writeChain()
 void GenericProc::printLine()
 {
 	char dash{ '-' };
-	for (size_t i = 0; i < 50; i++)
+	for (size_t i = 0; i < 10; i++)
 	{
 		std::cout << dash;
 	}
-	std::cout << '\n';
+	std::cout << std::endl;
 }
