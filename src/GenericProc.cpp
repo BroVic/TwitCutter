@@ -35,7 +35,7 @@ int GenericProc::globalProcess(std::string filename)
 
 	printChain();
 
-	writeChain();
+	writeChainToDisk();
 
 	return 0;
 }
@@ -134,7 +134,7 @@ void GenericProc::printChain()
 	return;
 }
 
-void GenericProc::writeChain()
+void GenericProc::writeChainToDisk()
 {
 	char response{};
 	std::cout << "\nWrite tweets to disk? (Y/N) ";

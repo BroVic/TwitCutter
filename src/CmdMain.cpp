@@ -16,15 +16,15 @@
 #include <cstdio>
 #include "GenericProc.h"
 
-enum AppControls				// Control 
+enum ErrorCodes
 {
-	APP_CONT  = -1,
-	APP_ERR   = 0,
-	APP_OUT   = 1,
-	APP_RESET = 999
+	SUCCESS			= 0,
+	TOO_MANY_ARGS,
+	WRONG_FILE,
+	PATH_TOO_LONG
 };
 
-enum Extensions					// 
+enum FileExtensions	
 {
 	NOFILE,
 	DOC,
@@ -35,96 +35,8 @@ enum Extensions					//
 	// etc.
 };
 
-int check_opt(char);			// Checks input options that control main loop
-int check_ext(std::string&);	// Checks file extension
-
-int main(int argc, char** argv)
-{
-	int control(APP_RESET);
-	std::string path;
-
-	while (true)				// TODO: Work towards brevity.
-	{
-		if (argc == 1)
-		{
-			// TODO: Optionally allow the application to run even without the
-			//  supply of command line arguments. This could be a help file or
-			//  just a notice (e.g. copyright, usage hint, etc
-			path = "C:/Users/Admn/Documents/7-NESREA/SA/WMG/TwitCutter/test2.doc";
-			std::cout << "Help file is under development.\n\n";
-		}
-		else if (argc > 2)
-		{
-			std::cerr << "Too many arguments supplied (more than 2)." << std::endl;
-			return 1;
-		}
-		else
-		{
-			path = argv[1];
-
-			if (path.length() > FILENAME_MAX)
-			{
-				std::cerr << "Path is too long for this application." << std::endl;
-				return 2;
-			}
-		}
-
-		// Parse file extension
-		std::string::size_type dot = path.rfind('.');
-		std::string exte = path.substr(dot);
-
-		int tag = check_ext(exte);			// sink this value into processor?
-		if (tag == NOFILE)
-		{
-			break;
-		}
-
-		// Process file contents
-		GenericProc docjob;
-		docjob.globalProcess(path);
-
-		// Global control options
-		char opt{};
-		std::cout << "Operation completed." << std::endl;
-		std::cout << "Quit? (Y/N): ";
-		std::cin >> opt;
-
-		control = check_opt(opt);
-
-		if (control == APP_OUT)
-		{
-			break;
-		}
-		else if (control == APP_CONT || control == APP_ERR)
-		{
-			if (control == APP_ERR)
-			{
-				std::cerr << "Invalid. Repeating prompt..." << std::endl;
-			}
-
-			continue;
-		}
-	}
-	
-	return 0;
-}
-
-// Checks input options that control main loop
-int check_opt(char c)
-{
-	if (tolower(c) == 'y')
-	{
-		return 1;
-	}
-	else if (tolower(c) == 'n')
-	{
-		return -1;
-	}
-	return 0;
-}
-
 // Checks file extension
-int check_ext(std::string &str)
+int check_extension(std::string &str)
 {
 	int len = str.length() + 1;
 	char *tempstr = new (std::nothrow) char[len];
@@ -134,7 +46,7 @@ int check_ext(std::string &str)
 		delete[] tempstr;
 		return -1;
 	}
-	
+
 	// Ensure all are lower-case
 	for (int i = 0; i < len; ++i)
 	{
@@ -152,10 +64,53 @@ int check_ext(std::string &str)
 	{
 		return TXT;
 	}
+	return 0;
+}
+
+int main(int argc, char** argv)
+{
+	std::cout << "** Welcome to TwitCutter! **" << std::endl;
+
+	std::string path;
+	if (argc < 2)
+	{
+		std::cout << "Enter the path of the file you want to parse: ";
+		std::cin >> path;
+	}
+	else if (argc > 2)
+	{
+		std::cerr << "Invalid entry. Accepts no more than 2 args" << std::endl;
+		return TOO_MANY_ARGS;
+	}
 	else
 	{
-		std::cerr << "Application does not handle '" << str << "' files!"
-			<< std::endl;
+		path = argv[1];
 	}
-	return 0;
+	
+	if (path.length() > FILENAME_MAX)
+	{
+		std::cerr << "Path is too long for this application." << std::endl;
+		return PATH_TOO_LONG;
+	}
+
+	// Ascertain file extension
+	std::string::size_type dot = path.rfind('.');
+	std::string exte = path.substr(dot);
+
+	int tag = check_extension(exte);			// TODO: Use for switching
+	if (tag == NOFILE)
+	{
+		std::cerr << "Application currently handles '.DOC' files, only."
+			<< std::endl;
+		std::cerr << "Exiting the program." << std::endl;
+		return WRONG_FILE;
+	}
+
+	// Process file contents
+	GenericProc docjob;
+	docjob.globalProcess(path);
+
+	std::cout << "\nOPERATION COMPLETED." << std::endl;
+	
+	return SUCCESS;
 }
