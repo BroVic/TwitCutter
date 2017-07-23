@@ -54,9 +54,12 @@ private:
 
 	void printChain();
 
-	void writeChain();
+	void writeChainToDisk();
 
 	void printLine();
+
+	/*template <typename T>
+	void iterate_and_stream(&T);*/
 
 public:
 	GenericProc();

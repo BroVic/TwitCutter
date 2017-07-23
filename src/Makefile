@@ -1,3 +1,5 @@
+# Makefile for TwitCutter (twitcut.exe)
+
 OBJS= CFDirEntry.o \
       Clx.o \
 	  DdocProc.o \
@@ -9,9 +11,9 @@ OBJS= CFDirEntry.o \
 	  TxtProc.o
 CC=g++
 CPP_FLAGS= -g -std=c++11 -Wall -pedantic
-PROG=twitcutter
+PROG=twitcut
 $(PROG): $(OBJS)
-	$(CC) $(CPP_FLAGS) -g -o twitcutter $(OBJS)
+	$(CC) $(CPP_FLAGS) -g -o twitcut $(OBJS)
 
 CmdMain.o: GenericProc.h
 	$(CC) $(CPP_FLAGS) -c CmdMain.cpp
