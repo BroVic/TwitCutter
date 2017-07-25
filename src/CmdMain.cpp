@@ -18,7 +18,7 @@
 
 enum ErrorCodes
 {
-	SUCCESS			= 0,
+	SUCCESS,
 	TOO_MANY_ARGS,
 	WRONG_FILE,
 	PATH_TOO_LONG
