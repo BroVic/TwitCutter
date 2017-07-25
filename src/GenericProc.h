@@ -30,10 +30,11 @@ constexpr unsigned int MAX_LIMIT  = 140;
 constexpr unsigned int SET_LIMIT  = 120;
 
 class GenericProc
-{
+{	// A generic class for the processing of files
 	unsigned short         _denom;
 	unsigned short         _twtNumb;
 	std::ifstream          _docstream;
+	std::ofstream          _printer;
 	std::string            _fullText;
 	std::string            _piece;
 	std::string::iterator  _it;
@@ -45,21 +46,21 @@ public:
 	std::vector<std::string> chain;	
 
 private:
-	// Estimates the number of tweets in the string
 	void estimateTweetNum();
 	
 	void spliceString();
 	
 	void makeChain();
 
-	void printChain();
+	template <class T>
+	void printChain(T&);
+
+	void displayChainInConsole();
 
 	void writeChainToDisk();
 
-	void printLine();
-
-	/*template <typename T>
-	void iterate_and_stream(&T);*/
+	template <class T>
+	void printLine(T&);
 
 public:
 	GenericProc();
