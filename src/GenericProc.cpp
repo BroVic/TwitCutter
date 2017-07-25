@@ -1,4 +1,6 @@
-#include "GenericProc.h"
+// genericproc.cpp
+
+#include "genericproc.h"
 
 GenericProc::GenericProc()
 {
@@ -33,14 +35,13 @@ int GenericProc::globalProcess(std::string filename)
 	// Produces chain
 	makeChain();
 
-	printChain();
+	displayChainInConsole();
 
 	writeChainToDisk();
 
 	return 0;
 }
 
-// Estimate number of tweets from the string
 void GenericProc::estimateTweetNum()
 {
 	int len = _fullText.length();
@@ -91,8 +92,6 @@ void GenericProc::spliceString()
 		
 		_fullText = _fullText.erase(0, cutoff);
 	}
-	
-	return;
 }
 
 void GenericProc::makeChain()
@@ -102,36 +101,37 @@ void GenericProc::makeChain()
 	estimateTweetNum();
 	
 	spliceString();
-	
-	
-	return;
 }
 
-void GenericProc::printChain()
+template<class T>
+inline void GenericProc::printChain(T &obj)
 {
-	std::cout << "Commencing printing of available text blocks." << std::endl
+	std::cout << "Printing available text blocks..." << std::endl
 		<< std::endl;
 	
 	int numb = chain.size();
 	int i = 0;
 	while (i < numb)
 	{
-		std::cout << i + 1 << " " << this->chain[i] << std::endl;
-		printLine();
+		obj << i + 1 << " " << this->chain[i] << std::endl;
+		printLine(obj);
 		i++;
 	}
 	
 	if (i == numb)
 	{
-		std::cout << "--- All available tweets have been displayed. ---" << std::endl;
-		printLine();
+		obj << "--- All available tweets have been displayed. ---" << std::endl;
+		printLine(obj);
 	}
 	else
 	{
-		std::cerr << "There was a problem counting/printing the text blocks." << std::endl;
+		obj << "There was a problem counting/printing the text blocks." << std::endl;
 	}
-	
-	return;
+}
+
+void GenericProc::displayChainInConsole()
+{
+	printChain(std::cout);
 }
 
 void GenericProc::writeChainToDisk()
@@ -151,28 +151,16 @@ void GenericProc::writeChainToDisk()
 		std::cin >> filename;
 		filename.append(".txt");
 
-		std::ofstream outfile;
-		outfile.open(filename.c_str());
-		if (!outfile.is_open())
+		_printer.open(filename.c_str());
+		if (!_printer.is_open())
 		{
 			std::cerr << "Could not open '" << filename.c_str() << "'." << std::endl;
 			return;
 		}
-		// write the chain to the file
-		int len = chain.size();
-		int i = 0;
-		while (i < len)
-		{
-			outfile << i + 1 << this->chain[i] << std::endl;
-			i++;
-		}
-		if (i == len)
-		{
-			std::cout << "--- All available tweets have been displayed/printed. ---" << std::endl;
-			printLine();
-		}
+		
+		printChain(_printer);
 				
-		outfile.close();
+		_printer.close();
 	}
 	else
 	{
@@ -180,12 +168,13 @@ void GenericProc::writeChainToDisk()
 	}
 }
 
-void GenericProc::printLine()
+template<class T>
+void GenericProc::printLine(T &t)
 {
 	char dash{ '-' };
 	for (size_t i = 0; i < 10; i++)
 	{
-		std::cout << dash;
+		t << dash;
 	}
-	std::cout << std::endl;
+	t << std::endl;
 }
