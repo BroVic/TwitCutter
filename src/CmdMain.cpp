@@ -7,65 +7,17 @@
 // twtcut.exe [file]
 // TwitCutter's main function is all about the initial preparation of the file
 // such that it checks the file whether it is in a format that can be treated 
-// and, if so, culminates in passing the path of the file to an generic
+// and, if so, culminates in passing the path of the file to a generic
 // processor object of class 'GenericProc' for appropriate handling. An attempt
 // has been made at making this an interactive experience for the user.
 
 #include <string>
 #include <iostream>
 #include <cstdio>
-#include "GenericProc.h"
 
-enum ErrorCodes
-{
-	SUCCESS,
-	TOO_MANY_ARGS,
-	WRONG_FILE,
-	PATH_TOO_LONG
-};
-
-enum FileExtensions	
-{
-	NOFILE,
-	DOC,
-	TXT
-	// PDF,
-	// DOCX,
-	// RTF,
-	// etc.
-};
-
-// Checks file extension
-int check_extension(std::string &str)
-{
-	int len = str.length() + 1;
-	char *tempstr = new (std::nothrow) char[len];
-	if (tempstr == nullptr)
-	{
-		std::cerr << "Unable to allocate memory." << std::endl;
-		delete[] tempstr;
-		return -1;
-	}
-
-	// Ensure all are lower-case
-	for (int i = 0; i < len; ++i)
-	{
-		tempstr[i] = tolower(str[i]);
-	}
-	tempstr[len] = '\0';
-
-	str.assign(tempstr);
-
-	if (str == ".doc")
-	{
-		return DOC;
-	}
-	else if (str == ".txt")
-	{
-		return TXT;
-	}
-	return 0;
-}
+#include "genericproc.h"
+#include "txtproc.h"
+#include "cmdctrl.h"
 
 int main(int argc, char** argv)
 {
@@ -97,18 +49,35 @@ int main(int argc, char** argv)
 	std::string::size_type dot = path.rfind('.');
 	std::string exte = path.substr(dot);
 
-	int tag = check_extension(exte);			// TODO: Use for switching
-	if (tag == NOFILE)
+	// Use the file
+	int tag;
+	try
 	{
-		std::cerr << "Application currently handles '.DOC' files, only."
-			<< std::endl;
-		std::cerr << "Exiting the program." << std::endl;
-		return WRONG_FILE;
+		tag = check_extension(exte);
 	}
+	catch (const char* excep)
+	{
+		std::cerr << "A exception was caught." << excep << std::endl;
+	}
+	
+	switch (tag)
+	{
+	case NOFILE:
+		std::cerr << "Unrecognized file format.\nExiting the program." << std::endl;
+		return WRONG_FILE;
+	case DOC:
+	{
+		GenericProc docjob;
+		docjob.globalProcess(path);
+		break;
+	}
+	/*case TXT:
+	{
+		TxtProc txtjob;
+		break;
+	}*/
 
-	// Process file contents
-	GenericProc docjob;
-	docjob.globalProcess(path);
+	}
 
 	std::cout << "\nOPERATION COMPLETED." << std::endl;
 	
