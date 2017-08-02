@@ -7,10 +7,10 @@ int check_extension(std::string &str)
 {
 	int len = str.length() + 1;
 	char *tempstr = new (std::nothrow) char[len];
-	if (tempstr == nullptr)
+	/*if (tempstr == nullptr)
 	{
 		throw "Unable to allocate memory.";
-	}
+	}*/
 
 	// Ensure all are lower-case
 	for (int i = 0; i < len; ++i)

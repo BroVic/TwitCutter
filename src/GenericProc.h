@@ -13,7 +13,6 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "TxtProc.h"
 #include "DdocProc.h"
 
 constexpr int ERR_NO_OPEN   = 1;
@@ -40,7 +39,7 @@ class GenericProc
 	std::string::iterator  _it;
 	
 	DdocProc ddocProcessor;
-	TxtProc  txtProcessor;
+	// TxtProc  txtProcessor;
 
 public:
 	std::vector<std::string> chain;	

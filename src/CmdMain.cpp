@@ -16,7 +16,6 @@
 #include <cstdio>
 
 #include "genericproc.h"
-#include "txtproc.h"
 #include "cmdctrl.h"
 
 int main(int argc, char** argv)
