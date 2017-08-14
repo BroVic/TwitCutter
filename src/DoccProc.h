@@ -18,9 +18,6 @@ constexpr int ANSI     = 1;
 
 class DoccProc
 {
-public:
-	static std::string          stringColl;
-
 private:
 	CFHeader                    _olehdr;
 	Fib                         _fib;
@@ -28,6 +25,7 @@ private:
 	Clx                         _clxobj;
 	
 	std::map<uint8_t, uint16_t> _altANSI;
+	std::string                 _stringColl;
 	std::wstring                _wstringColl;
 	wchar_t                     _utfChar;
 	unsigned char               _ansiChar;

@@ -24,16 +24,9 @@
 //constexpr int ERR_NO_OPEN = 1;
 //constexpr int ERR_NOT_GOOD = 2;
 
-enum ErrorCodes
-{
-	SUCCESS,
-	TOO_MANY_ARGS,
-	WRONG_FILE,
-	PATH_TOO_LONG
-};
-
 enum FileExtension
 {
+	STATIC = -1,
 	NOFILE,
 	DOC,
 	TXT
@@ -46,7 +39,7 @@ private:
 	std::string   _fName;
 	std::string   _exte;
 
-	friend class DocSelectorStart;
+	friend class MasterSelector;
 
 public:
 	Receiver();
@@ -59,20 +52,18 @@ private:
 	void get_file_ext();
 };
 
-class DocSelectorStart
+class MasterSelector
 {		// Decides on format-specific processing
 private:
-	DoccProc doccProcessor;
 	// TxtProc  txtProcessor;
 	// DocxProc docxProcessor;
-	
-	static int fType;
+	int fType;
 
 public:
-	DocSelectorStart();
-	~DocSelectorStart();
+	MasterSelector();
+	~MasterSelector();
 
-	void chooseFormat(Receiver&);
+	void enable_options(Receiver&);
 
 private:
 	int check_extension(Receiver&);
@@ -98,18 +89,6 @@ constexpr char CLOSE_TAG  = ')';
 constexpr unsigned int MAX_LIMIT  = 140;
 constexpr unsigned int SET_LIMIT  = 120;
 
-class DocSelectorFinish
-	: public DocSelectorStart
-{
-	friend class TwtProcessor;
-
-public:
-	DocSelectorFinish();
-	~DocSelectorFinish();
-
-private:
-	
-};
 
 class TwtProcessor
 {        // To process retrieved text and store the pieces in a chain.
@@ -127,13 +106,14 @@ private:
 	
 	void spliceStr();
 	
-	void collectStr();
+	// void collectStr();
 
 public:
 	TwtProcessor();
 	~TwtProcessor();
 
 	void mkChain();
+	void setFulltxt(std::string);
 	
 };
 
@@ -151,7 +131,6 @@ public:
 	void publish();
 
 private:
-
 	template <class T>
 	void printALine(T&);
 

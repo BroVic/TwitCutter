@@ -40,7 +40,6 @@ void Receiver::activate_stream()
 	}
 	if (!_docstream.tellg() == ZERO_OFFSET)
 		_docstream.seekg(ZERO_OFFSET, std::ios::beg);
-
 }
 
 void Receiver::get_file_ext()
@@ -51,18 +50,17 @@ void Receiver::get_file_ext()
 
 //--- Class DocSelector (friend class of Receiver) ---//
 
-int DocSelectorStart::fType = -1;
-
-DocSelectorStart::DocSelectorStart()
+MasterSelector::MasterSelector()
 {
+	fType = STATIC;
 }
 
-DocSelectorStart::~DocSelectorStart()
+MasterSelector::~MasterSelector()
 {
 
 }
 
-int DocSelectorStart::check_extension(Receiver &obj)
+int MasterSelector::check_extension(Receiver &obj)
 {
 	int tag;
 	try
@@ -76,13 +74,12 @@ int DocSelectorStart::check_extension(Receiver &obj)
 
 	if (tag == NOFILE)
 	{
-		std::cerr << "Unrecognized file format.\nExiting the program." << std::endl;
-		return WRONG_FILE;
+		throw "Unrecognized file format.\nExiting the program.";
 	}
 	return tag;
 }
 
-int DocSelectorStart::select_extension(Receiver &obj)
+int MasterSelector::select_extension(Receiver &obj)
 {
 	std::string temp(obj._exte);
 	int len = temp.length() + 1;
@@ -115,26 +112,31 @@ int DocSelectorStart::select_extension(Receiver &obj)
 	}
 }
 
-void DocSelectorStart::chooseFormat(Receiver &obj)
+void MasterSelector::enable_options(Receiver &obj)
 {		// Decision on file processing
-	
+	TwtPrinter twtPr;
 	fType = check_extension(obj);
-
 	switch (fType)
 	{
 	case NOFILE:
 		throw "Unsupported file format.";
 		break;
 	case DOC:
-		doccProcessor.process_file(obj._docstream);
-		break;
+	{
+		DoccProc doccPr;
+		doccPr.process_file(obj._docstream);
+		twtPr.setFulltxt(doccPr.getString());
+	}
+	break;
 	case TXT:
 		// txtProcessor.process_file(obj._docstream);
 		break;
 	/*default:
 		break;*/
 	}
+	twtPr.mkChain();
 	
+	twtPr.publish();
 }
 
        //////////////////// -oo-  ////////////////////////////
@@ -209,18 +211,25 @@ void TwtProcessor::spliceStr()
 	}
 }
 
-void TwtProcessor::collectStr()
-{		// Collects extracted string from various document formats
-	_fullText.assign(DoccProc::stringColl);
-}
+//void TwtProcessor::collectStr()
+//{		// Collects extracted string from various document formats
+//	_fullText.assign(_stringColl);
+//}
 
 void TwtProcessor::mkChain()
 {
-	collectStr();
+	// collectStr();
 
 	estimTwtNum();
 	
 	spliceStr();
+
+
+}
+
+void TwtProcessor::setFulltxt(std::string s_in)
+{
+	_fullText.assign(s_in);
 }
 
 
@@ -235,9 +244,9 @@ TwtPrinter::~TwtPrinter()
 
 void TwtPrinter::publish()
 {
-	displayInConsole();
+	this->displayInConsole();
 
-	writeToDisk();
+	this->writeToDisk();
 }
 
 template<class T>
@@ -316,11 +325,3 @@ void TwtPrinter::printALine(T &t)
 }
 
          ////////////////// -oo- //////////////////////////
-
-DocSelectorFinish::DocSelectorFinish()
-{
-}
-
-DocSelectorFinish::~DocSelectorFinish()
-{
-}

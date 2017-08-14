@@ -1,7 +1,5 @@
 #include "DoccProc.h"
 
-std::string DoccProc::stringColl;
-
 DoccProc::DoccProc()
 {
 	this->setANSIexceptions();
@@ -19,7 +17,7 @@ void DoccProc::process_file(std::ifstream & strm)
 
 std::string DoccProc::getString() const
 {
-	return DoccProc::stringColl;
+	return _stringColl;
 }
 
 void DoccProc::read_file_data(std::ifstream &stream)
@@ -89,7 +87,7 @@ void DoccProc::collect_text(std::ifstream &filestrm)
 			temp = transferANSIString(filestrm, currentCP, nextCP);
 		}
 		
-		stringColl.append(temp);
+		_stringColl.append(temp);
 			
 		index++;
 	}

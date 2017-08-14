@@ -13,48 +13,28 @@
 
 #include <string>
 #include <iostream>
-#include <cstdio>
-
 #include "genericproc.h"
+#include "starters.h"
 
 int main(int argc, char** argv)
 {
-	std::cout << "** Welcome to TwitCutter! **" << std::endl;
-
+	Parser prs;
 	std::string path;
-	if (argc < 2)
+	try
 	{
-		std::cout << "Enter the path of the file you want to parse: ";
-		std::cin >> path;
+		path = prs.validate_args(argc, argv[1]);
 	}
-	else if (argc > 2)
+	catch (const char* issue)
 	{
-		std::cerr << "Invalid entry. Accepts no more than 2 args" << std::endl;
-		return TOO_MANY_ARGS;
-	}
-	else
-	{
-		path = argv[1];
+		std::cerr << "Error: " << issue << std::endl;
 	}
 	
-	if (path.length() > FILENAME_MAX)
-	{
-		std::cerr << "Path is too long for this application." << std::endl;
-		return PATH_TOO_LONG;
-	}
-
 	// Work proper
 	Receiver jobIn;
 	jobIn.startJob(path);
 
-	DocSelectorStart rel;
-	rel.chooseFormat(jobIn);
-
-	TwtProcessor roundup;
-	roundup.mkChain();
-
-	TwtPrinter jobOut;
-	jobOut.publish();
+	MasterSelector sel;
+	sel.enable_options(jobIn);
 
 	std::cout << "OPERATION COMPLETED." << std::endl;
 	
