@@ -2,47 +2,162 @@
 
 #include "genericproc.h"
 
-GenericProc::GenericProc()
+//////////////////////////////////////////////////////////////////
+///////////////         INPUT CLASS         //////////////////////
+//////////////////////////////////////////////////////////////////
+
+//--- Class Receiver ---//
+Receiver::Receiver()
+{
+}
+
+Receiver::~Receiver()
+{
+	_docstream.close();
+}
+
+void Receiver::startJob(const std::string &file)
+{
+	_fName.assign(file);
+	if (_fName.length() != file.length())
+	{
+		throw "There was a problem reading the filename.";
+	}
+	activate_stream();
+	get_file_ext();
+}
+
+void Receiver::activate_stream()
+{
+	_docstream.open(_fName, std::ios::binary);
+	if (!_docstream.is_open())
+	{
+		throw "Could not open the file." ;
+	}
+	if (!_docstream.good())
+	{
+		throw "The file is probably corrupted.";
+	}
+	if (!_docstream.tellg() == ZERO_OFFSET)
+		_docstream.seekg(ZERO_OFFSET, std::ios::beg);
+
+}
+
+void Receiver::get_file_ext()
+{
+	std::string::size_type dot = _fName.rfind('.');
+	_exte = _fName.substr(dot);
+}
+
+//--- Class DocSelector (friend class of Receiver) ---//
+
+int DocSelectorStart::fType = -1;
+
+DocSelectorStart::DocSelectorStart()
+{
+}
+
+DocSelectorStart::~DocSelectorStart()
+{
+
+}
+
+int DocSelectorStart::check_extension(Receiver &obj)
+{
+	int tag;
+	try
+	{
+		tag = select_extension(obj);
+	}
+	catch (const char* excep)
+	{
+		std::cerr << "An exception was caught." << excep << std::endl;
+	}
+
+	if (tag == NOFILE)
+	{
+		std::cerr << "Unrecognized file format.\nExiting the program." << std::endl;
+		return WRONG_FILE;
+	}
+	return tag;
+}
+
+int DocSelectorStart::select_extension(Receiver &obj)
+{
+	std::string temp(obj._exte);
+	int len = temp.length() + 1;
+	char *tempstr = new (std::nothrow) char[len];
+	/*if (tempstr == nullptr)
+	{
+	throw "Unable to allocate memory.";
+	}*/
+
+	// Ensure all are lower-case
+	for (int i = 0; i < len; ++i)
+	{
+		tempstr[i] = tolower(temp[i]);
+	}
+	tempstr[len] = '\0';
+
+	temp.assign(tempstr);
+
+	if (temp.compare(".doc") == 0)
+	{
+		return DOC;
+	}
+	else if (temp.compare(".txt") == 0)
+	{
+		return TXT;
+	}
+	else
+	{
+		return NOFILE;
+	}
+}
+
+void DocSelectorStart::chooseFormat(Receiver &obj)
+{		// Decision on file processing
+	
+	fType = check_extension(obj);
+
+	switch (fType)
+	{
+	case NOFILE:
+		throw "Unsupported file format.";
+		break;
+	case DOC:
+		doccProcessor.process_file(obj._docstream);
+		break;
+	case TXT:
+		// txtProcessor.process_file(obj._docstream);
+		break;
+	/*default:
+		break;*/
+	}
+	
+}
+
+       //////////////////// -oo-  ////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////
+///////////////         OUTPUT CLASSES        //////////////////////
+////////////////////////////////////////////////////////////////////
+
+// Methods for Class TwtProcessor (definitions)
+TwtProcessor::TwtProcessor()
 {
 	_denom    = {};
 	_twtNumb  = {};
 }
 
-GenericProc::~GenericProc()
+TwtProcessor::~TwtProcessor()
 {
-	_docstream.close();
 }
 
-int GenericProc::globalProcess(std::string filename)
-{
-	_docstream.open(filename, std::ios::binary);
-	if (!_docstream.is_open())
-	{
-		std::cerr << "Could not open the file." << std::endl;
-		return ERR_NO_OPEN;
-	}
-	if (!_docstream.good())
-	{
-		std::cerr << "The file is probably corrupted." << std::endl;
-		return ERR_NOT_GOOD;
-	}
-	if (!_docstream.tellg() == ZERO_OFFSET)
-		_docstream.seekg(ZERO_OFFSET, std::ios::beg);
 
-	// Receives stream
-	ddocProcessor.process_file(_docstream);
-
-	// Produces chain
-	makeChain();
-
-	displayChainInConsole();
-
-	writeChainToDisk();
-
-	return 0;
-}
-
-void GenericProc::estimateTweetNum()
+void TwtProcessor::estimTwtNum()
 {
 	int len = _fullText.length();
 	if (len > SET_LIMIT)
@@ -56,7 +171,7 @@ void GenericProc::estimateTweetNum()
 	return;
 }
 
-void GenericProc::spliceString()
+void TwtProcessor::spliceStr()
 {
 	unsigned int cutoff{};
 	
@@ -94,17 +209,39 @@ void GenericProc::spliceString()
 	}
 }
 
-void GenericProc::makeChain()
+void TwtProcessor::collectStr()
+{		// Collects extracted string from various document formats
+	_fullText.assign(DoccProc::stringColl);
+}
+
+void TwtProcessor::mkChain()
 {
-	_fullText = ddocProcessor.getCollectedString();
+	collectStr();
+
+	estimTwtNum();
 	
-	estimateTweetNum();
-	
-	spliceString();
+	spliceStr();
+}
+
+
+// Methods for Class TwtPrinter (definitions)
+TwtPrinter::TwtPrinter()
+{
+}
+
+TwtPrinter::~TwtPrinter()
+{
+}
+
+void TwtPrinter::publish()
+{
+	displayInConsole();
+
+	writeToDisk();
 }
 
 template<class T>
-inline void GenericProc::printChain(T &obj)
+inline void TwtPrinter::printChain(T &obj)
 {
 	std::cout << "Printing available text blocks..." << std::endl
 		<< std::endl;
@@ -114,14 +251,14 @@ inline void GenericProc::printChain(T &obj)
 	while (i < numb)
 	{
 		obj << i + 1 << " " << this->chain[i] << std::endl;
-		printLine(obj);
+		printALine(obj);
 		i++;
 	}
 	
 	if (i == numb)
 	{
 		obj << "--- All available tweets have been displayed. ---" << std::endl;
-		printLine(obj);
+		printALine(obj);
 	}
 	else
 	{
@@ -129,12 +266,12 @@ inline void GenericProc::printChain(T &obj)
 	}
 }
 
-void GenericProc::displayChainInConsole()
+void TwtPrinter::displayInConsole()
 {
 	printChain(std::cout);
 }
 
-void GenericProc::writeChainToDisk()
+void TwtPrinter::writeToDisk()
 {
 	char response{};
 	std::cout << "\nWrite tweets to disk? (Y/N) ";
@@ -145,7 +282,6 @@ void GenericProc::writeChainToDisk()
 	}
 	else if (tolower(response) == 'y')
 	{
-		// generate a file name
 		std::string filename;
 		std::cout << "Provide a filename (defaults to '.TXT'): ";
 		std::cin >> filename;
@@ -169,7 +305,7 @@ void GenericProc::writeChainToDisk()
 }
 
 template<class T>
-void GenericProc::printLine(T &t)
+void TwtPrinter::printALine(T &t)
 {
 	char dash{ '-' };
 	for (size_t i = 0; i < 10; i++)
@@ -177,4 +313,14 @@ void GenericProc::printLine(T &t)
 		t << dash;
 	}
 	t << std::endl;
+}
+
+         ////////////////// -oo- //////////////////////////
+
+DocSelectorFinish::DocSelectorFinish()
+{
+}
+
+DocSelectorFinish::~DocSelectorFinish()
+{
 }

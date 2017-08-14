@@ -1,7 +1,7 @@
 // DdocProc.h: A Class for processing .DOC files
 
-#ifndef DDOCPROC_H_INCLUDED
-#define DDOCPROC_H_INCLUDED
+#ifndef DOCCPROC_H_INCLUDED
+#define DOCCPROC_H_INCLUDED
 
 #include <fstream>
 #include <string>
@@ -10,21 +10,24 @@
 #include "FIB.h"
 #include "CFDirEntry.h"
 #include "Clx.h"
+#include "GenericProc.h"
 
 // For decisions on encoding
 constexpr int UNICODE  = 0;
 constexpr int ANSI     = 1;
 
-class DdocProc
+class DoccProc
 {
+public:
+	static std::string          stringColl;
+
 private:
-	CFHeader  olehdr;
-	Fib       fib;
-	DirEntry  root;
-	Clx       clxobj;
+	CFHeader                    _olehdr;
+	Fib                         _fib;
+	DirEntry                    _root;
+	Clx                         _clxobj;
 	
 	std::map<uint8_t, uint16_t> _altANSI;
-	std::string                 _stringColl;
 	std::wstring                _wstringColl;
 	wchar_t                     _utfChar;
 	unsigned char               _ansiChar;
@@ -37,28 +40,22 @@ private:
 	ULONG           _strmOffset;
 
 public:
-	DdocProc();
-	~DdocProc();
+	DoccProc();
+	~DoccProc();
 
-	// Processes the entire .DOC file binary data
 	void process_file(std::ifstream&);
-
-	std::string getCollectedString() const;
+	std::string getString() const;
 
 private:
-	// Reads data from the file stream unto objects
 	void read_file_data(std::ifstream&);
 
-	// Collects text from in-memory copy of stream
 	void collect_text(std::ifstream&);
 
-	// Move mapped UNICODE or ANSI values to string buffer
 	inline std::wstring transferUTFString(std::ifstream&, int, int);
 	inline std::string transferANSIString(std::ifstream&, int, int);
 	
-	// Sets exceptions to rule for the use of ANSI values
 	void setANSIexceptions();
 };
-#endif // !DDOCPROC_H_INCLUDED
+#endif // !DOCCPROC_H_INCLUDED
 
 

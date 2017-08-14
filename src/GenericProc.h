@@ -13,58 +13,157 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "DdocProc.h"
+#include "DoccProc.h"
+// #include "txtproc.h"
+// #include "docxproc.h"
 
-constexpr int ERR_NO_OPEN   = 1;
-constexpr int ERR_NOT_GOOD  = 2;
+///////////////////////////////////////////////////////////////////
+///////////////         INPUT CLASSES         /////////////////////
+///////////////////////////////////////////////////////////////////
+
+//constexpr int ERR_NO_OPEN = 1;
+//constexpr int ERR_NOT_GOOD = 2;
+
+enum ErrorCodes
+{
+	SUCCESS,
+	TOO_MANY_ARGS,
+	WRONG_FILE,
+	PATH_TOO_LONG
+};
+
+enum FileExtension
+{
+	NOFILE,
+	DOC,
+	TXT
+};
+
+class Receiver
+{		// Processor of the original input file
+private:
+	std::ifstream _docstream;
+	std::string   _fName;
+	std::string   _exte;
+
+	friend class DocSelectorStart;
+
+public:
+	Receiver();
+	~Receiver();
+
+	void startJob(const std::string&);
+
+private:
+	void activate_stream();
+	void get_file_ext();
+};
+
+class DocSelectorStart
+{		// Decides on format-specific processing
+private:
+	DoccProc doccProcessor;
+	// TxtProc  txtProcessor;
+	// DocxProc docxProcessor;
+	
+	static int fType;
+
+public:
+	DocSelectorStart();
+	~DocSelectorStart();
+
+	void chooseFormat(Receiver&);
+
+private:
+	int check_extension(Receiver&);
+	int select_extension(Receiver&);
+
+};
+                   //////////////////////////
+
+
+
+///////////////////////////////////////////////////////////////////
+///////////////         OUTPUT CLASSES        /////////////////////
+///////////////////////////////////////////////////////////////////
 
 constexpr int ZERO_OFFSET = 0;
 
-// For numbering text blocks
+// For pagination
 constexpr char OPEN_TAG   = '(';
 constexpr char DIVISOR    = '/';
 constexpr char CLOSE_TAG  = ')';
 
+// Character limits for text blocs
 constexpr unsigned int MAX_LIMIT  = 140;
 constexpr unsigned int SET_LIMIT  = 120;
 
-class GenericProc
-{	// A generic class for the processing of files
+class DocSelectorFinish
+	: public DocSelectorStart
+{
+	friend class TwtProcessor;
+
+public:
+	DocSelectorFinish();
+	~DocSelectorFinish();
+
+private:
+	
+};
+
+class TwtProcessor
+{        // To process retrieved text and store the pieces in a chain.
 	unsigned short         _denom;
 	unsigned short         _twtNumb;
-	std::ifstream          _docstream;
-	std::ofstream          _printer;
 	std::string            _fullText;
 	std::string            _piece;
 	std::string::iterator  _it;
-	
-	DdocProc ddocProcessor;
-	// TxtProc  txtProcessor;
 
 public:
 	std::vector<std::string> chain;	
 
 private:
-	void estimateTweetNum();
+	void estimTwtNum();
 	
-	void spliceString();
+	void spliceStr();
 	
-	void makeChain();
+	void collectStr();
+
+public:
+	TwtProcessor();
+	~TwtProcessor();
+
+	void mkChain();
+	
+};
+
+
+class TwtPrinter
+	: public TwtProcessor
+{        // To provide various options for displaying the tweets
+private:
+	std::ofstream _printer;
+
+public:
+	TwtPrinter();
+	~TwtPrinter();
+
+	void publish();
+
+private:
+
+	template <class T>
+	void printALine(T&);
 
 	template <class T>
 	void printChain(T&);
 
-	void displayChainInConsole();
+	void displayInConsole();
 
-	void writeChainToDisk();
-
-	template <class T>
-	void printLine(T&);
-
-public:
-	GenericProc();
-	~GenericProc();
-	
-	int globalProcess(std::string filename);
+	void writeToDisk();
 };
+
+                   ////////////////////////           
+
 #endif // !GENERICPROC_H_INCLUDED
+

@@ -1,41 +1,41 @@
-#include "DdocProc.h"
+#include "DoccProc.h"
 
-DdocProc::DdocProc()
+std::string DoccProc::stringColl;
+
+DoccProc::DoccProc()
 {
 	this->setANSIexceptions();
 }
 
-DdocProc::~DdocProc()
+DoccProc::~DoccProc()
 {	
 }
 
-void DdocProc::process_file(std::ifstream & strm)
+void DoccProc::process_file(std::ifstream & strm)
 {
 	this->read_file_data(strm);
 	this->collect_text(strm);
-
-	return;
 }
 
-std::string DdocProc::getCollectedString() const
+std::string DoccProc::getString() const
 {
-	return this->_stringColl;
+	return DoccProc::stringColl;
 }
 
-void DdocProc::read_file_data(std::ifstream &stream)
+void DoccProc::read_file_data(std::ifstream &stream)
 {
-	olehdr.readCFHeader(stream);
-	_sectSz = olehdr.get_sector_size();
-	stream.seekg(olehdr.DirSect1 * _sectSz, std::ios::cur);
+	_olehdr.readCFHeader(stream);
+	_sectSz = _olehdr.get_sector_size();
+	stream.seekg(_olehdr.DirSect1 * _sectSz, std::ios::cur);
 
-	root.readDirEntry(stream);
+	_root.readDirEntry(stream);
 	_strmName = u"WordDocument";
 
-	_wdocStart = root.find_directory(stream, olehdr, _strmName);
+	_wdocStart = _root.find_directory(stream, _olehdr, _strmName);
 	stream.seekg(_wdocStart, std::ios::beg);
 	
-	fib.readFib(stream);
-	if (fib.base.fWhichTblStm)
+	_fib.readFib(stream);
+	if (_fib.base.fWhichTblStm)
 	{
 		_strmName = u"1Table";
 	}
@@ -44,29 +44,29 @@ void DdocProc::read_file_data(std::ifstream &stream)
 		_strmName = u"0Table";
 	}
 
-	_tablStart = root.find_directory(stream, olehdr, _strmName);
+	_tablStart = _root.find_directory(stream, _olehdr, _strmName);
 
 	stream.seekg(_tablStart, std::ios::beg);
 	
-	_clxOffset = fib.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
+	_clxOffset = _fib.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
 	stream.seekg(_clxOffset, std::ios::cur);
 
-	clxobj.readToClx(stream);
+	_clxobj.readToClx(stream);
 
 	return;
 }
 
-void DdocProc::collect_text(std::ifstream &filestrm)
+void DoccProc::collect_text(std::ifstream &filestrm)
 {	
-	const unsigned int numElem = clxobj.pcdt.plcPcd.pcdLength(clxobj);
+	const unsigned int numElem = _clxobj.pcdt.plcPcd.pcdLength(_clxobj);
 	int encoding{};
 	size_t index{};
 
 	while (index < numElem)
 	{
-		this->_strmOffset = clxobj.pcdt.plcPcd.aPcd[index].defineOffset();
+		this->_strmOffset = _clxobj.pcdt.plcPcd.aPcd[index].defineOffset();
 		
-		encoding = clxobj.pcdt.plcPcd.aPcd[index].defineEncoding();
+		encoding = _clxobj.pcdt.plcPcd.aPcd[index].defineEncoding();
 		if (encoding == ANSI)
 		{
 			this->_strmOffset /= 2;
@@ -76,8 +76,8 @@ void DdocProc::collect_text(std::ifstream &filestrm)
 		filestrm.seekg(_strmOffset, std::ios::cur);
 
 		// Build string object
-		int currentCP = clxobj.pcdt.plcPcd.getCharPos(index);
-		int nextCP = clxobj.pcdt.plcPcd.getCharPos(index + 1);
+		int currentCP = _clxobj.pcdt.plcPcd.getCharPos(index);
+		int nextCP = _clxobj.pcdt.plcPcd.getCharPos(index + 1);
 		std::string temp;
 		if (encoding == UNICODE)
 		{
@@ -89,15 +89,13 @@ void DdocProc::collect_text(std::ifstream &filestrm)
 			temp = transferANSIString(filestrm, currentCP, nextCP);
 		}
 		
-		this->_stringColl.append(temp);
+		stringColl.append(temp);
 			
 		index++;
 	}
-
-	return;
 }
 
-inline std::wstring DdocProc::transferUTFString(std::ifstream &giv, int cur, int nxt)
+inline std::wstring DoccProc::transferUTFString(std::ifstream &giv, int cur, int nxt)
 {
 	std::wstring wstr;
 	while (cur < nxt)
@@ -110,7 +108,7 @@ inline std::wstring DdocProc::transferUTFString(std::ifstream &giv, int cur, int
 	return wstr;
 }
 
-inline std::string DdocProc::transferANSIString(std::ifstream &giv, int cur, int nxt)
+inline std::string DoccProc::transferANSIString(std::ifstream &giv, int cur, int nxt)
 {
 	std::string str;
 	while ( cur < nxt)
@@ -124,7 +122,7 @@ inline std::string DdocProc::transferANSIString(std::ifstream &giv, int cur, int
 
 }
 
-inline void DdocProc::setANSIexceptions()
+inline void DoccProc::setANSIexceptions()
 {
 	_altANSI[0x82] = 0x201A;
 	_altANSI[0x83] = 0x0192;
