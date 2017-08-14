@@ -8,14 +8,15 @@ OBJS= CFDirEntry.o \
 	  FIB.o \
 	  CFHeader.o \
 	  dtypes.o \
-	  TxtProc.o
+          cmdctrl.o
 CC=g++
-CPP_FLAGS= -g -std=c++11 -Wall -pedantic
+CPP_FLAGS= -std=c++11 -g -Wall -pedantic
 PROG=twitcut
-$(PROG): $(OBJS)
-	$(CC) $(CPP_FLAGS) -g -o twitcut $(OBJS)
 
-CmdMain.o: GenericProc.h
+$(PROG): $(OBJS)
+	$(CC) $(CPP_FLAGS) -o $(PROG) $(OBJS)
+
+CmdMain.o: GenericProc.h cmdctrl.h
 	$(CC) $(CPP_FLAGS) -c CmdMain.cpp
 
 dtypes.o: dtypes.h
@@ -23,7 +24,7 @@ dtypes.o: dtypes.h
 
 CFHeader.o: CFHeader.h
 	$(CC) $(CPP_FLAGS) -c CFHeader.cpp
-	
+
 CFDirEntry.o: CFDirEntry.h
 	$(CC) $(CPP_FLAGS) -c CFDirEntry.cpp
 
@@ -38,6 +39,9 @@ GenericProc.o: GenericProc.h
 
 DdocProc.o: DdocProc.h
 	$(CC) $(CPP_FLAGS) -c DdocProc.cpp
+
+cmdctrl.o: cmdctrl.h
+	$(CC) $(CPPS_FLAGS) -c cmdctrl.cpp
 
 .Phony: clean
 clean:
