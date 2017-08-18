@@ -48,7 +48,7 @@ void Receiver::get_file_ext()
 	_exte = _fName.substr(dot);
 }
 
-//--- Class DocSelector (friend class of Receiver) ---//
+//--- Class MasterSelector(friend class of Receiver) ---//
 
 MasterSelector::MasterSelector()
 {
@@ -129,11 +129,15 @@ void MasterSelector::enable_options(Receiver &obj)
 	}
 	break;
 	case TXT:
-		// txtProcessor.process_file(obj._docstream);
-		break;
-	/*default:
-		break;*/
+	{
+		TxtProc txtPr;
+		txtPr.process_file(obj._docstream);
+		twtPr.setFulltxt(txtPr.getString());
 	}
+	break;
+	
+	}
+	
 	twtPr.mkChain();
 	
 	twtPr.publish();
