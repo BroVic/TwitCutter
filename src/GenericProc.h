@@ -14,7 +14,7 @@
 #include <iostream>
 #include <fstream>
 #include "DoccProc.h"
-// #include "txtproc.h"
+#include "txtproc.h"
 // #include "docxproc.h"
 
 ///////////////////////////////////////////////////////////////////
@@ -55,8 +55,6 @@ private:
 class MasterSelector
 {		// Decides on format-specific processing
 private:
-	// TxtProc  txtProcessor;
-	// DocxProc docxProcessor;
 	int fType;
 
 public:
