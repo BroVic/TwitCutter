@@ -36,3 +36,6 @@ windows/vs/twitcut/.vs/twitcut/v14/.suo
 windows/vs/twitcut/twitcut/twitcut.vcxproj.filters
 windows/vs/twitcut/twitcut.VC.db
 windows/vs/twitcut/twitcut_master/twitcut_master.vcxproj.filters
+windows/codeblocks/obj/Debug/src
+windows/codeblocks/bin
+windows/codeblocks/TwitCutter.depend
