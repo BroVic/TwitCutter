@@ -7,13 +7,13 @@
 class TxtProc
 {
 	std::string _textString;
-	std::ifstream _textStream;
 
 public:
 	TxtProc();
 	~TxtProc();
 
-	std::string getCollectedString();
+	void read_txtfile(std::ifstream&);
+	std::string getString();
 };
 #endif // !TXTPROC_H_INCLUDED
 
