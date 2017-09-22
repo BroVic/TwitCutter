@@ -31,6 +31,27 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="../../src/CFDirEntry.cpp" />
+		<Unit filename="../../src/CFDirEntry.h" />
+		<Unit filename="../../src/CFHeader.cpp" />
+		<Unit filename="../../src/CFHeader.h" />
+		<Unit filename="../../src/Clx.cpp" />
+		<Unit filename="../../src/Clx.h" />
+		<Unit filename="../../src/CmdMain.cpp" />
+		<Unit filename="../../src/DoccProc.cpp" />
+		<Unit filename="../../src/DoccProc.h" />
+		<Unit filename="../../src/FIB.cpp" />
+		<Unit filename="../../src/FIB.h" />
+		<Unit filename="../../src/GenericProc.cpp" />
+		<Unit filename="../../src/GenericProc.h" />
+		<Unit filename="../../src/StreamPrep.cpp" />
+		<Unit filename="../../src/StreamPrep.h" />
+		<Unit filename="../../src/TextProc.cpp" />
+		<Unit filename="../../src/TextProc.h" />
+		<Unit filename="../../src/dtypes.cpp" />
+		<Unit filename="../../src/dtypes.h" />
+		<Unit filename="../../src/starters.cpp" />
+		<Unit filename="../../src/starters.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
