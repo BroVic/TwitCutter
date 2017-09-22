@@ -114,7 +114,7 @@ int MasterSelector::select_extension(Receiver &obj)
 
 void MasterSelector::enable_options(Receiver &obj)
 {		// Decision on file processing
-	TwtPrinter twtPr;
+	TwitPrinter twitPr;
 	fType = check_extension(obj);
 	switch (fType)
 	{
@@ -125,22 +125,22 @@ void MasterSelector::enable_options(Receiver &obj)
 	{
 		DoccProc doccPr;
 		doccPr.process_file(obj._docstream);
-		twtPr.setFulltxt(doccPr.getString());
+		twitPr.setFulltxt(doccPr.getString());
 	}
 	break;
 	case TXT:
 	{
-		TxtProc txtPr;
-		txtPr.process_file(obj._docstream);
-		twtPr.setFulltxt(txtPr.getString());
+		TextProc textPr;
+		textPr.read_textfile(obj._docstream);
+		twitPr.setFulltxt(textPr.getString());
 	}
 	break;
-	
+
 	}
-	
-	twtPr.mkChain();
-	
-	twtPr.publish();
+
+	twitPr.mkChain();
+
+	twitPr.publish();
 }
 
        //////////////////// -oo-  ////////////////////////////
@@ -180,7 +180,7 @@ void TwtProcessor::estimTwtNum()
 void TwtProcessor::spliceStr()
 {
 	unsigned int cutoff{};
-	
+
 	while(!_fullText.empty())
 	{
 		if (MAX_LIMIT - SET_LIMIT > 5)
@@ -191,9 +191,9 @@ void TwtProcessor::spliceStr()
 		{
 			std::cerr << "The string length are too high" << std::endl;
 		}
-		
+
 		_piece = _fullText.substr(0, cutoff);
-		
+
 		if (!_piece.empty())
 		{
 			++_denom;
@@ -210,7 +210,7 @@ void TwtProcessor::spliceStr()
 		{
 			return;
 		}
-		
+
 		_fullText = _fullText.erase(0, cutoff);
 	}
 }
@@ -225,7 +225,7 @@ void TwtProcessor::mkChain()
 	// collectStr();
 
 	estimTwtNum();
-	
+
 	spliceStr();
 
 
@@ -238,15 +238,15 @@ void TwtProcessor::setFulltxt(std::string s_in)
 
 
 // Methods for Class TwtPrinter (definitions)
-TwtPrinter::TwtPrinter()
+TwitPrinter::TwitPrinter()
 {
 }
 
-TwtPrinter::~TwtPrinter()
+TwitPrinter::~TwitPrinter()
 {
 }
 
-void TwtPrinter::publish()
+void TwitPrinter::publish()
 {
 	this->displayInConsole();
 
@@ -254,11 +254,11 @@ void TwtPrinter::publish()
 }
 
 template<class T>
-inline void TwtPrinter::printChain(T &obj)
+inline void TwitPrinter::printChain(T &obj)
 {
 	std::cout << "Printing available text blocks..." << std::endl
 		<< std::endl;
-	
+
 	int numb = chain.size();
 	int i = 0;
 	while (i < numb)
@@ -267,7 +267,7 @@ inline void TwtPrinter::printChain(T &obj)
 		printALine(obj);
 		i++;
 	}
-	
+
 	if (i == numb)
 	{
 		obj << "--- All available tweets have been displayed. ---" << std::endl;
@@ -279,12 +279,12 @@ inline void TwtPrinter::printChain(T &obj)
 	}
 }
 
-void TwtPrinter::displayInConsole()
+void TwitPrinter::displayInConsole()
 {
 	printChain(std::cout);
 }
 
-void TwtPrinter::writeToDisk()
+void TwitPrinter::writeToDisk()
 {
 	char response{};
 	std::cout << "\nWrite tweets to disk? (Y/N) ";
@@ -306,9 +306,9 @@ void TwtPrinter::writeToDisk()
 			std::cerr << "Could not open '" << filename.c_str() << "'." << std::endl;
 			return;
 		}
-		
+
 		printChain(_printer);
-				
+
 		_printer.close();
 	}
 	else
@@ -318,7 +318,7 @@ void TwtPrinter::writeToDisk()
 }
 
 template<class T>
-void TwtPrinter::printALine(T &t)
+void TwitPrinter::printALine(T &t)
 {
 	char dash{ '-' };
 	for (size_t i = 0; i < 10; i++)

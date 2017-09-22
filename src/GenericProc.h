@@ -14,7 +14,7 @@
 #include <iostream>
 #include <fstream>
 #include "DoccProc.h"
-#include "txtproc.h"
+#include "textproc.h"
 // #include "docxproc.h"
 
 ///////////////////////////////////////////////////////////////////
@@ -97,13 +97,13 @@ class TwtProcessor
 	std::string::iterator  _it;
 
 public:
-	std::vector<std::string> chain;	
+	std::vector<std::string> chain;
 
 private:
 	void estimTwtNum();
-	
+
 	void spliceStr();
-	
+
 	// void collectStr();
 
 public:
@@ -112,19 +112,19 @@ public:
 
 	void mkChain();
 	void setFulltxt(std::string);
-	
+
 };
 
 
-class TwtPrinter
+class TwitPrinter
 	: public TwtProcessor
 {        // To provide various options for displaying the tweets
 private:
 	std::ofstream _printer;
 
 public:
-	TwtPrinter();
-	~TwtPrinter();
+	TwitPrinter();
+	~TwitPrinter();
 
 	void publish();
 
@@ -140,7 +140,7 @@ private:
 	void writeToDisk();
 };
 
-                   ////////////////////////           
+                   ////////////////////////
 
 #endif // !GENERICPROC_H_INCLUDED
 

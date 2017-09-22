@@ -3,16 +3,17 @@
 
 #include <string>
 #include <fstream>
+#include <cassert>
 
-class TxtProc
+class TextProc
 {
 	std::string _textString;
 
 public:
-	TxtProc();
-	~TxtProc();
+	TextProc();
+	~TextProc();
 
-	void read_txtfile(std::ifstream&);
+	void read_textfile(std::ifstream&);
 	std::string getString();
 };
 #endif // !TXTPROC_H_INCLUDED
