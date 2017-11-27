@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="TwitCutter" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/TwitCutter" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/TwitCutter" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../../src/CFDirEntry.cpp" />
+		<Unit filename="../../src/CFDirEntry.h" />
+		<Unit filename="../../src/CFHeader.cpp" />
+		<Unit filename="../../src/CFHeader.h" />
+		<Unit filename="../../src/Clx.cpp" />
+		<Unit filename="../../src/Clx.h" />
+		<Unit filename="../../src/CmdMain.cpp" />
+		<Unit filename="../../src/DoccProc.cpp" />
+		<Unit filename="../../src/DoccProc.h" />
+		<Unit filename="../../src/FIB.cpp" />
+		<Unit filename="../../src/FIB.h" />
+		<Unit filename="../../src/GenericProc.cpp" />
+		<Unit filename="../../src/GenericProc.h" />
+		<Unit filename="../../src/StreamPrep.cpp" />
+		<Unit filename="../../src/StreamPrep.h" />
+		<Unit filename="../../src/TextProc.cpp" />
+		<Unit filename="../../src/TextProc.h" />
+		<Unit filename="../../src/dtypes.cpp" />
+		<Unit filename="../../src/dtypes.h" />
+		<Unit filename="../../src/starters.cpp" />
+		<Unit filename="../../src/starters.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
