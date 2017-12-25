@@ -4,6 +4,6 @@ project(twtcut)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES CmdMain.cpp GenericProc.cpp DdocProc.cpp TxtProc.cpp dtypes.cpp CFHeader.cpp CFDirEntry.cpp FIB.cpp Clx.cpp)
+set(SOURCE_FILES cmdmain.cpp genericProc.cpp doccProc.cpp textProc.cpp dtypes.cpp cfHeader.cpp cfDirEntry.cpp fib.cpp clx.cpp)
 
 add_executable(twtcut ${SOURCE_FILES})

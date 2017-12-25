@@ -14,10 +14,10 @@ constexpr USHORT FOR_USHORT_2007 = 0x0112;
 
 Fib::Fib()
 {
-	csw = {};
-	cslw		= { };
-	cbRgFcLcb	= { };
-	cswNew		= { };
+	csw         = { };
+	cslw	    = { };
+	cbRgFcLcb   = { };
+	cswNew	    = { };
 }
 
 Fib::~Fib()
@@ -26,37 +26,37 @@ Fib::~Fib()
 
 Fib::FibBase::FibBase()
 {
-	wIdent					= { };
-	nFib					= { };
-	unused					= { };
-	lid						= { };
-	pnNext					= { };
-	fDot					= _SET_BITS_1;
-	fGlsy					= _SET_BITS_1;
-	fComplex				= _SET_BITS_1;
-	fHasPic					= _SET_BITS_1;
-	cQuickSaves				= _SET_BITS_4;
-	fEncrypted				= _SET_BITS_1;
-	fWhichTblStm			= _SET_BITS_1;
-	fReadOnlyRecommended	= _SET_BITS_1;
-	fWriteReservation		= _SET_BITS_1;
-	fExtChar				= _SET_BITS_1;
-	fLoadOverride			= _SET_BITS_1;
-	fFarEast				= _SET_BITS_1;
-	fObfuscated				= _SET_BITS_1;
-	nFibBack				= { };
-	lkey					= { };
-	envr					= { };
-	fMac					= _SET_BITS_1;
-	fEmptySpecial			= _SET_BITS_1;
-	fLoadOverridePage		= _SET_BITS_1;
-	reserved1				= _SET_BITS_1;
-	reserved2				= _SET_BITS_1;
-	fSpare0					= _SET_BITS_3;
-	reserved3				= { };
-	reserved4				= { };
-	reserved5				= { };
-	reserved6				= { };
+	wIdent		       = { };
+	nFib		       = { };
+	unused		       = { };
+	lid		       = { };
+	pnNext		       = { };
+	fDot		       = _SET_BITS_1;
+	fGlsy		       = _SET_BITS_1;
+	fComplex	       = _SET_BITS_1;
+	fHasPic		       = _SET_BITS_1;
+	cQuickSaves	       = _SET_BITS_4;
+	fEncrypted	       = _SET_BITS_1;
+	fWhichTblStm	       = _SET_BITS_1;
+	fReadOnlyRecommended   = _SET_BITS_1;
+	fWriteReservation      = _SET_BITS_1;
+	fExtChar	       = _SET_BITS_1;
+	fLoadOverride	       = _SET_BITS_1;
+	fFarEast	       = _SET_BITS_1;
+	fObfuscated	       = _SET_BITS_1;
+	nFibBack	       = { };
+	lkey		       = { };
+	envr		       = { };
+	fMac		       = _SET_BITS_1;
+	fEmptySpecial	       = _SET_BITS_1;
+	fLoadOverridePage      = _SET_BITS_1;
+	reserved1	       = _SET_BITS_1;
+	reserved2	       = _SET_BITS_1;
+	fSpare0		       = _SET_BITS_3;
+	reserved3	       = { };
+	reserved4	       = { };
+	reserved5	       = { };
+	reserved6	       = { };
 }
 
 Fib::FibBase::~FibBase()
@@ -78,7 +78,7 @@ Fib::FibRgW97::FibRgW97()
 	reserved11	= { };
 	reserved12	= { };
 	reserved13	= { };
-	lidFE = { };
+	lidFE           = { };
 }
 
 Fib::FibRgW97::~FibRgW97()
