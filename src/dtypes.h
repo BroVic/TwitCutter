@@ -1,5 +1,11 @@
 // dtypes.h
-// A header file containing definitions of all the major data used
+
+// Definition of the major data types used
+
+// PURPOSE:
+// For consistency, those parts of this application that interact
+// directly with Microsoft APIs will use the same nomenclature for
+// basic data types. These have been defined in this file.
 
 #ifndef DTYPES_H_INCLUDED
 #define DTYPES_H_INCLUDED
@@ -17,22 +23,22 @@ using VOID      = void;
 
 struct CLSID
 {
-	ULONG Data1;
-	USHORT Data2;
-	USHORT Data3;
-	BYTE Data4[8];
+  ULONG Data1;
+  USHORT Data2;
+  USHORT Data3;
+  BYTE Data4[8];
 
-	CLSID();
-	~CLSID();
+  CLSID();
+  ~CLSID();
 }; // struct CLSID
 
 struct FILETIME
 {
-	ULONG dwLowDateTime;
-	ULONG dwHighDateTime;
+  ULONG dwLowDateTime;
+  ULONG dwHighDateTime;
 
-	FILETIME();
-	~FILETIME();
+  FILETIME();
+  ~FILETIME();
 };
 #endif // !DTYPES_H_INCLUDED
 
