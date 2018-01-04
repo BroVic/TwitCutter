@@ -1492,9 +1492,9 @@ VOID Fib::FibBase::process_FibBase()
     throw "Fle is either corrupted or not of the specidied format.";
   }
   
-  if (nFib == NFIB_SPECIAL || nFib == NFIB_BIDI_BLD)
+  if (this->nFib == NFIB_SPECIAL || this->nFib == NFIB_BIDI_BLD)
   {
-    nFib = NFIB_FOR_97;
+    this->nFib = NFIB_FOR_97;
   }
 
   if (this->nFib >= NFIB_FOR_2000)
@@ -1589,7 +1589,7 @@ VOID Fib::FibBase::process_FibBase()
   
   if (this->nFib >= NFIB_FOR_2000)
   {
-    if (cQuickSaves != 0xF)
+    if (this->cQuickSaves != 0xF)
     {
       throw "cQuickSaves is not equal to 0xF.";
     }
@@ -2118,11 +2118,15 @@ VOID Fib::FibRgCswNew::process_FibRgCswNew(const USHORT ver)
 
 VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::process_FibRgCswNewData2000()
 {
-  assert(cQuickSavesNew >= 0 && cQuickSavesNew <= 0x000F);
+  if (this->cQuickSavesNew < 0 || this->cQuickSavesNew > 0x000F)
+  {
+    throw "'cQuickSavesNew' should be between 0 and 0x000F, inclusively.";
+  }
 }
 
 VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::process_FibRgCswNewData2007()
 {
+  rgCswNewData2000.process_FibRgCswNewData2000();
 }
 
 // Assigns values from stream to bit fields
