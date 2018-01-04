@@ -167,6 +167,11 @@ struct Fib
     
     struct FibRgFcLcb97
     {
+      FibRgFcLcb97();
+      ~FibRgFcLcb97();
+      VOID readFibRgFcLcb97(std::ifstream &);
+      VOID process_FibRgFcLcb97();
+
       ULONG fcStshfOrig;
       ULONG lcbStshfOrig;
       ULONG fcStshf;
@@ -353,11 +358,6 @@ struct Fib
       ULONG lcbSttbListNames;
       ULONG fcSttbfUssr;
       ULONG lcbSttbfUssr;
-
-      FibRgFcLcb97();
-      ~FibRgFcLcb97();
-      VOID readFibRgFcLcb97(std::ifstream &);
-      VOID process_FibRgFcLcb97();
     } fibRgFcLcb97;          // !struct FibRgFcLcb97
 
     struct FibRgFcLcb2000
@@ -402,6 +402,11 @@ struct Fib
 
     struct FibRgFcLcb2002
     {
+      FibRgFcLcb2002();
+      ~FibRgFcLcb2002();
+      VOID readFibRgFcLcb2002(std::ifstream &);
+      VOID process_FibRgFcLcb2002();
+      
       FibRgFcLcb2000 rgFcLcb2000;
       ULONG fcUnused1;
       ULONG lcbUnused1;
@@ -459,15 +464,15 @@ struct Fib
       ULONG lcbPlcflvcNewXP;
       ULONG fcPlcflvcMixedXP;
       ULONG lcbPlcflvcMixedXP;
-
-      FibRgFcLcb2002();
-      ~FibRgFcLcb2002();
-      VOID readFibRgFcLcb2002(std::ifstream &);
-      VOID process_FibRgFcLcb2002();
     } fibRgFcLcb2002;    // !struct FibRgFcLcb2002
 
     struct FibRgFcLcb2003
     {
+      FibRgFcLcb2003();
+      ~FibRgFcLcb2003();
+      VOID readFibRgFcLcb2003(std::ifstream &);
+      VOID process_FibRgFcLcb2003();
+      
       FibRgFcLcb2002 rgFcLcb2002;
       ULONG fcHplxsdr;
       ULONG lcbHplxsdr;
@@ -525,15 +530,15 @@ struct Fib
       ULONG lcbAfdEdn;
       ULONG fcAfd;
       ULONG lcbAfd;
-
-      FibRgFcLcb2003();
-      ~FibRgFcLcb2003();
-      VOID readFibRgFcLcb2003(std::ifstream &);
-      VOID process_FibRgFcLcb2003();
     } fibRgFcLcb2003;    // !struct FibRgFcLcb2003
 
     struct FibRgFcLcb2007
     {
+      FibRgFcLcb2007();
+      ~FibRgFcLcb2007();
+      VOID readFibRgFcLcb2007(std::ifstream &);
+      VOID process_FibRgFcLcb2007();
+
       FibRgFcLcb2003 rgFcLcb2003;
       ULONG fcPlcfmthd;
       ULONG lcbPlcfmthd;
@@ -573,11 +578,6 @@ struct Fib
       ULONG lcbOssTheme;
       ULONG fcColorSchemeMapping;
       ULONG lcbColorSchemeMapping;
-
-      FibRgFcLcb2007();
-      ~FibRgFcLcb2007();
-      VOID readFibRgFcLcb2007(std::ifstream &);
-      VOID process_FibRgFcLcb2007();
     } fibRgFcLcb2007;    // !struct FibRgFcLcb2007
   } fibRgFcLcbBlob; // !union FibRgFcLcb
 

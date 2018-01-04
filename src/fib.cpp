@@ -1672,59 +1672,435 @@ VOID Fib::FibRgFcLcb::process_FibRgFcLcbBlob(const USHORT version);
 
 VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
 {
-  assert(lcbStshf != 0);
-  assert(fcPlcfBteChpx > 0);
-  assert(lcbPlcfBteChpx > 0);
-  assert(fcPlcfBtePapx > 0);
-  assert(lcbPlcfBtePapx > 0);
-  assert(lcbPlcfSea == 0);
-  assert(lcbPlcfFldMcr == 0);
-  assert(lcbDop != 0);
-  assert(lcbSttbfAssoc != 0);
-  assert(lcbClx > 0);
-  assert(lcbUnused2 == 0);
-  assert(lcbUnused3 == 0);
-  assert(lcbFormFldSttbs == 0);
-  assert(lcbUnused4 == 0);
+  if (this->lcbStshf == 0)
+  {
+    throw "lcbShshf must be a non-zero value.";
+  }
+
+  if ((fibRgLw.ccpFtn == 0 && this->lcbPlcffndTxt != 0) ||
+      (fibRgLw.ccpFtn != 0 && this->lcbPlcffndTxt == 0))
+  {
+    throw "FibRgFcLcb97.lcbPlcffndTxt must be zero when"
+      "FibRgLw97.ccpFtn is zero and vice versa.";
+  }
+
+  if ((fibRgLw.ccpAtn == 0 && this->lcbPlcfandTxt != 0) ||
+      (fibRgLw.ccpAtn != 0 && this->lcbPlcfandTxt == 0))
+  {
+    throw "FibRgFcLcb97.lcbPlcfandTxt must be zero when"
+      "FibRgLw97.ccpAtn is zero and vice versa.";
+  }
+
+  if (this->lcbPlcPad != 0)
+  {
+    throw "FibRgFcLcb97.lcbPlcPad must be zero.";
+  }
+
+  if (base.fGlsy == 0)
+  {
+    if (this->lcbSttbfGlsy != 0)
+    {
+      throw "FibRgFcLcb97.lcbSttbfGlsy must be zero when base.fGlsy is zero";
+    }
+
+    if (this->lcbPlcfGlsy != 0)
+    {
+      throw "FibRgFcLcb97.lcbPlcfGlsy must be zero when base.fGlsy is zero";
+    }
+
+    if (this->lcbSttbGlsyStyle != 0)
+    {
+      throw "FibRgFcLcb97.lcbSttbGlsyStyle must be zero when base.fGlsy is zero";
+    }
+  }
+  else
+  {
+    if (this->lcbSttbGlsyStyle == 0)
+    {
+      throw "'FibRgFcLcb97.lcbSttbGlsyStyle' should be non-zero.";
+    }
+  }
+
+  if (this->fcPlcfBteChpx <= 0 || this->lcbPlcfBteChpx <= 0)
+  {
+    throw "Both fcPlcfBteChpx and lcbPlcfBteChpx of FibRgFcLcb97 must be > 0.";
+  }
+
+  if (this->fcPlcfBtePapx <= 0 || this->lcbPlcfBtePapx <= 0)
+  {
+    throw "Both fcPlcfBtePapx and lcbPlcfBtePapx of FibRgFcLcb97 must be > 0.";
+  }
+
+  if (this->lcbPlcfSea != 0)
+  {
+    throw "'lcbPlcSea' must be zero.";
+  }
+  
+  if (this->lcbPlcfFldMcr != 0)
+  {
+    throw "'lcbPlcfFldMcr' must be zero.";
+  }
+
+  if (this->lcbUnused1 != 0)
+  {
+    throw "'lcbUnused1' must be zero.";
+  }
+
+  if (this->lcbSttbfMcr != 0)
+  {
+    throw "'lcbSttbfMcr' must be zero.";
+  }
+  
+  if (this->lcbDop == 0)
+  {
+    throw "'lcbDop must not be zero.";
+  }
+
+  
+  if (this->lcbSttbfAssoc == 0)
+  {
+    throw "'lcbSttbfAssoc' must not be zero.";
+  }
+  
+  if (this->lcbClx <= 0)
+  {
+    throw "'lcbClx' must be greater than ZERO.";
+  }
+
+  if (this->lcbPlcfPgdFtn != 0)
+  {
+    throw "'lcbPlcfPgdFtn' must be ZERO.";
+  }
+
+  if (this->lcbAutosaveSource != 0)
+  {
+    throw "'lcbAutosaveSource' must be ZERO.";
+  }
+  
+  if (this->lcbUnused2 != 0 || this->lcbUnused3 != 0)
+  {
+    throw "'lcbUnsed2 /-3 must be ZERO.";
+  }
+  
+  if (this->lcbFormFldSttbs != 0)
+  {
+    throw "'lcbFormFldSttbs' must be ZERO.";
+  }
+
+  if ((fibRgLw.ccpEdn == 0 && this->lcbPlcfendTxt != 0) ||
+      (fibRgLw.ccpEdn != 0 && this->lcbPlcfendTxt == 0))
+  {
+    throw "FibRgFcLcb97.lcbPlcfendTxt must be zero when"
+      "FibRgLw97.ccpEdn is zero and vice versa.";
+  }
+
+  if (lcbUnused4 != 0)
+  {
+    throw "'lcbUnused4' must be ZERO.";
+  }
+
+  if (base.fDot == 0)
+  {
+    if (this->lcbSttbfCaption != 0)
+    {
+      throw "'lcbSttbfCaption' must be ZERO when base.fDot is also zero.";
+    }
+
+    if (this->lcbSttbfAutoCaption != 0)
+    {
+      throw "'lcbSttbfAutoCaption' must be ZERO when base.fDot is also zero.";
+    }
+  }
+
+  if (fibRgLw.ccpTxbx == 0)
+  {
+    if (this->lcbPlcftxbxTxt != 0)
+    {
+      throw "lcbPlcftxbxTxt' should be ZERO.";
+    }
+
+    if (this->lcbPlcfTxbxBkd != 0)
+    {
+      throw "'lcbPlcfTxbxBkd should be ZERO.";
+    }
+  }
+  else
+  {
+    if (this->lcbPlcftxbxTxt == 0)
+    {
+      throw "lcbPlcftxbxTxt' should not be ZERO.";
+    }
+
+    if (this->lcbPlcfTxbxBkd == 0)
+    {
+      throw "'lcbPlcfTxbxBkd should not be ZERO.";
+    }
+  }
+  
+  if ((fibRgLw.ccpHdrTxbx == 0 && this->lcbPlcfHdrtxbxTxt != 0) ||
+      (fibRgLw.ccpHdrTxbx != 0 && this->lcbPlcfHdrtxbxTxt != 0))
+  {
+    throw "FibRgFcLcb97.lcbPlcfHdrtxbxTxt must be zero when"
+      "FibRgLw97.ccpHdrTxbx is zero and vice versa.";
+  }
+
+  if (fibRgLw.ccpHdrTxbx == 0)
+  {
+    if (this->lcbPlcfHdrtxbxTxt != 0)
+    {
+      throw "lcbPlcfHdrtxbxTxt' should be ZERO.";
+    }
+
+    if (this->lcbPlcfTxbxHdrBkd != 0)
+    {
+      throw "lcbPlcfTxbxHdrBkd' should be ZERO.";
+    }
+  }
+  else
+  {
+    if (this->lcbPlcfHdrtxbxTxt == 0)
+    {
+      throw "lcbPlcfHdrtxbxTxt' should not be ZERO.";
+    }
+
+    if (this->lcbPlcfTxbxHdrBkd == 0)
+    {
+      throw "lcbPlcfTxbxHdrBkd' should be ZERO.";
+    }
+  }
+  
+  if (this->lcbSttbfIntlFld != 0)
+  {
+    throw "'lcbSttbfIntlFld' must be ZERO.";
+  }
+
+  if (base.nFib > NFIB_FOR_2000)
+  {
+    if (this->lcbSttbSavedBy != 0)
+    {
+      throw "'lcbSttbSavedBy' should be ZERO for tis version of Word";
+    }
+
+    if (this->lcbPlcfLvcPre10 != 0)
+    {
+      throw "'lcbPlcfLvcPre10' should be ZERO for this version of Word.";
+    }
+  }
+
+  if (base.nFib == NFIB_FOR_2007)
+  {
+    if (this->lcbPlcfBteLvc != 0)
+    {
+      throw "'lcbPlcfBteLvc' should be zero in the version of Word.";
+    }
+  }  
 }
  
 VOID Fib::FibRgFcLcb::FibRgFcLcb2000::process_FibRgFcLcb2000()
 {
-    assert(lcbRmdThreading != 0);
+  rgFcLcb97.process_FibRgFcLcb97();
+
+  if (this->lcbRmdThreading == 0)
+  {
+    throw "'lcbRmdThreading' must not be ZERO.";
+  }
 }
 
 VOID Fib::FibRgFcLcb::FibRgFcLcb2002::process_FibRgFcLcb2002()
 {
-  assert(lcbUnused1 == 0);
-  return;
+  rgFcLcb2000.process_FibRgFcLcb2000();
+
+  if (this->lcbUnused1 != 0)
+  {
+    throw "; lcbUnused1' must be ZERO.";
+  }
+
+  if (base.nFib < NFIB_FOR_2002)
+  {
+    if (this->lcbPlcfpmiOldXP != 0)
+    {
+      throw "'lcbPlcfpmiOldXP' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcfpmiNewXP != 0)
+    {
+      throw "'lcbPlcfpmiNewXP'should be zero for tis version of Word.";
+    }
+
+    if (this->lcbPlcfpmiMixedXP != 0)
+    {
+      throw "'lcbPlcfpmiMixedXP' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcflvcOldXP != 0)
+    {
+      throw "'lcbPlcflvcOldXP' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcflvcNewXP != 0)
+    {
+      throw "'lcbPlcflvcNewXP' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcflvcMixedXP != 0)
+    {
+      throw "'lcbPlcflvcMixedXP' should be zero for this version of Word.";
+    }
+  }
+
+  if (this->lcbUnused2 != 0)
+  {
+    throw "'lcbUnused2' should be ZERO.";
+  }
 }
 
 VOID Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003()
 {
-  assert(lcbCustomXForm <= 4168 && lcbCustomXForm % 2 == 0);
-  assert(fcUnused == 0);
-  assert(lcbUnused == 0);
+  rgFcLcb2002.process_FibRgFcLcb2002();
+  
+  if (this->lcbCustomXForm > 4168
+      && this->lcbCustomXForm % 2 != 0)
+  {
+    throw "'lcbCustomXForm' must be less than or equal to 4168 & an even number.";
+  }
+
+  if (this->fcUnused != 0 && this->lcbUnused != 0)
+  {
+    throw "'fcUnusded' and 'lcbUnused' must be ZERO.";
+  }
+
+  if (base.nFib > NFIB_FOR_2003)
+  {
+    if (this->lcbPlcfpmiOld != 0)
+    {
+      throw "'lcbPlcfpmiOld' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcfpmiOldInline != 0)
+    {
+      throw "'lcbPlcfpmiOldInline' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcfpmiNew != 0)
+    {
+      throw "'lcbPlcfpmiNew' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcfpmiNewInline != 0)
+    {
+      throw "'lcbPlcfpmiNewInline' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcflvcOld != 0)
+    {
+      throw "'lcbPlcflvcOld' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcflvcOldInline != 0)
+    {
+      throw "'lcbPlcflvcOldInline' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcflvcNew != 0)
+    {
+      throw "'lcbPlcflvcNew' should be zero for this version of Word.";
+    }
+
+    if (this->lcbPlcflvcNewInline != 0)
+    {
+      throw "'lcbPlcflvcNewInline' should be zero for this version of Word.";
+    }
+  }
 }
 
 VOID Fib::FibRgFcLcb::FibRgFcLcb2007::process_FibRgFcLcb2007()
 {
-  assert(lcbPlcfmthd == 0);
-  assert(lcbSttbfBkmkMoveFrom == 0);
-  assert(lcbPlcfBkfMoveFrom == 0);
-  assert(lcbPlcfBklMoveFrom == 0);
-  assert(lcbSttbfBkmkMoveTo == 0);
-  assert(lcbPlcfBkfMoveTo == 0);
-  assert(lcbPlcfBklMoveTo == 0);
-  assert(lcbUnused1 == 0);
-  assert(lcbUnused2 == 0);
-  assert(lcbUnused3 == 0);
-  assert(lcbSttbfBkmkArto == 0);
-  assert(lcbPlcfBkfArto == 0);
-  assert(lcbPlcfBklArto == 0);
-  assert(lcbArtoData == 0);
-  assert(lcbUnused4 == 0);
-  assert(lcbUnused5 == 0);
-  assert(lcbUnused6 == 0);
+  rgFcLcb2003.process_FibRgFcLcb2003();
+  
+  if (this->lcbPlcfmthd != 0)
+  {
+    throw "'lcbPlcfmthd' must be zero.";
+  }
+  
+  if (this->lcbSttbfBkmkMoveFrom != 0)
+  {
+    throw "'lcbSttbfBkmkMoveFrom' must be zero.";
+  }
+  
+  if (this->lcbPlcfBkfMoveFrom != 0)
+  {
+    throw "'lcbPlcfBkfMoveFrom' must be zero.";
+  }
+  
+  if (this->lcbPlcfBklMoveFrom != 0)
+  {
+    throw "'lcbPlcfBklMoveFrom' must be zero.";
+  }
+  
+  if (this->lcbSttbfBkmkMoveTo != 0)
+  {
+    throw "'lcbSttbfBkmkMoveTo' must be zero.";
+  }
+  
+  if (this->lcbPlcfBkfMoveTo != 0)
+  {
+    throw "'lcbPlcfBkfMoveTo' must be zero.";
+  }
+  
+  if (this->lcbPlcfBklMoveTo != 0)
+  {
+    throw "'lcbPlcfBklMoveTo' must be zero.";
+  }
+  
+  if (this->lcbUnused1 != 0)
+  {
+    throw "'lcbUnused1' must be zero.";
+  }
+  
+  if (this->lcbUnused2 != 0)
+  {
+    throw "'lcbUnused2' must be zero.";
+  }
+  
+  if (this->lcbUnused3 != 0)
+    {
+    throw "'lcbUnused3' must be zero.";
+  }
+  
+  if (this->lcbSttbfBkmkArto != 0)
+  {
+    throw "'lcbSttbfBkmkArto' must be zero.";
+  }
+  
+  if (this->lcbPlcfBkfArto != 0)
+  {
+    throw "'lcbPlcfBkfArto' must be zero.";
+  }
+  
+  if (this->lcbPlcfBklArto != 0)
+  {
+    throw "'lcbPlcfBklArto' must be zero.";
+  }
+  
+  if (this->lcbArtoData != 0)
+  {
+    throw "'lcbArtoData' must be zero.";
+  }
+  
+  if (this->lcbUnused4 != 0)
+  {
+    throw "'lcbUnused4' must be zero.";
+  }
+  
+  if (this->lcbUnused5 != 0)
+  {
+    throw "'lcbUnused5' must be zero.";
+  }
+  
+  if (this->lcbUnused6 != 0)
+  {
+    throw "'lcbUnused6' must be zero.";
+  }
 }
 
 VOID Fib::FibRgCswNew::process_FibRgCswNew(const USHORT ver)
