@@ -43,11 +43,13 @@ constexpr USHORT NFIB_BIDI_BLD = 0x00C2;
 
 constexpr USHORT EXPECTED_CSW             = 0x000E;
 constexpr USHORT EXPECTED_CSLW            = 0x0016;
+
 constexpr USHORT EXPECTED_CBRGFCLCB_97    = 0x005D;
 constexpr USHORT EXPECTED_CBRGFCLCB_2000  = 0x006C;
 constexpr USHORT EXPECTED_CBRGFCLCB_2002  = 0x0088;
 constexpr USHORT EXPECTED_CBRGFCLCB_2003  = 0x00A4;
 constexpr USHORT EXPECTED_CBRGFCLCB_2007  = 0x00B7;
+
 constexpr USHORT EXPECTED_CSWNEW_97       = 0x0000;
 constexpr USHORT EXPECTED_CSWNEW_2000     = 0x0002;
 constexpr USHORT EXPECTED_CSWNEW_2002     = 0x0002;
@@ -279,28 +281,28 @@ Fib::FibBase::FibBase()
   unused		 = { };
   lid		         = { };
   pnNext		 = { };
-  fDot		         = _SET_BITS_1;
-  fGlsy		         = _SET_BITS_1;
-  fComplex	         = _SET_BITS_1;
-  fHasPic	         = _SET_BITS_1;
-  cQuickSaves	         = _SET_BITS_4;
-  fEncrypted	         = _SET_BITS_1;
-  fWhichTblStm           = _SET_BITS_1;
-  fReadOnlyRecommended   = _SET_BITS_1;
-  fWriteReservation      = _SET_BITS_1;
-  fExtChar	         = _SET_BITS_1;
-  fLoadOverride	         = _SET_BITS_1;
-  fFarEast	         = _SET_BITS_1;
-  fObfuscated	         = _SET_BITS_1;
+  fDot		         = 0;
+  fGlsy		         = 0;
+  fComplex	         = 0;
+  fHasPic	         = 0;
+  cQuickSaves	         = 0;
+  fEncrypted	         = 0;
+  fWhichTblStm           = 0;
+  fReadOnlyRecommended   = 0;
+  fWriteReservation      = 0;
+  fExtChar	         = 0;
+  fLoadOverride	         = 0;
+  fFarEast	         = 0;
+  fObfuscated	         = 0;
   nFibBack	         = { };
   lkey		         = { };
   envr		         = { };
-  fMac		         = _SET_BITS_1;
-  fEmptySpecial	         = _SET_BITS_1;
-  fLoadOverridePage      = _SET_BITS_1;
-  reserved1	         = _SET_BITS_1;
-  reserved2	         = _SET_BITS_1;
-  fSpare0		 = _SET_BITS_3;
+  fMac		         = 0;
+  fEmptySpecial	         = 0;
+  fLoadOverridePage      = 0;
+  reserved1	         = 0;
+  reserved2	         = 0;
+  fSpare0		 = 0;
   reserved3	         = { };
   reserved4	         = { };
   reserved5	         = { };
@@ -818,34 +820,19 @@ Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::~FibRgCswNewData2007()
 // parts of the FIB.
 VOID Fib::readFib(std::ifstream &docstream)
 {
-  base.readFibBase(docstream);
-  
+  base.readFibBase(docstream);  
   docstream.read(reinterpret_cast<char *>(&csw), sizeof(USHORT));
-  verifyValues(csw, EXPECTED_CSW);
-  
   fibRgW.readFibRgW(docstream);
-    USHORT readSize = computeStructSize(fibRgW, csw, EXPECTED_CSW, MULTIPLIER_FOR_CSW);
-  adjust_file_pointer(docstream, objSize, readSize);
-
   docstream.read(reinterpret_cast<char *>(&cslw), sizeof(USHORT));
-  verifyValues(cslw, EXPECTED_CSLW);
-
   fibRgLw.readFibRgLw(docstream);
-  readSize = computeStructSize(fibRgLw, cslw, EXPECTED_CSLW, MULTIPLIER_FOR_CSLW);
-  adjust_file_pointer(docstream, objSize, readSize);
-			       
   docstream.read(reinterpret_cast<char *>(&cbRgFcLcb), sizeof(USHORT));
-  USHORT expCbVal = fibRgFcLcbBlob.readRgFcLcbBlob(docstream, base.nFib);
-  verifyValues(cbRgFcLcb, expCbVal);
-
-  readSize = computeStructSize(fibRgFcLcbBlob, cbRgFcLcb, expCbVal, MULTIPLIER_FOR_CBRGFCLCB);
-  adjust_file_pointer(docstream, objSize, readSize);
-  
+  fibRgFcLcbBlob.readFibRgFcLcbBlob(docstream, cbRgFcLcb);
   docstream.read(reinterpret_cast<char *>(&cswNew), sizeof(USHORT));
-  expCbVal = fibRgCswNew.readFibRgCswNew(docstream, cswNew);
-  verifyValues(cswNew, expCbVal);
-  readSize = computeStructSize(fibRgCswNew, cswNew, expCbVal, MULTIPLIER_FOR_CSWNEW);
-  adjust_file_pointer(docstream, objSize, readSize);
+  fibRgCswNew.readFibRgCswNew(docstream, cswNew);
+  if (cswNew != EXPECTED_CSWNEW_97)
+  {
+    base.nFib = fibRgCswNew.nFibNew;
+  }
 }
 
 // Reads the FibBase from the WordDocument Stream
@@ -918,293 +905,288 @@ VOID Fib::FibBase::readFibBase(std::ifstream &docfile)
 }
 
 VOID Fib::FibRgLw97::readFibRgLw(std::ifstream & mystream)
-{
-  USHORT add_member_sizes = 0;
+{ // TODO: Clean this thing up!
+  USHORT add_member_sizes = 0;   // What on earth was I thinking???
 
-  mystream.read(reinterpret_cast<char *>(&cbMac), sizeof(cbMac));
-  add_member_sizes += sizeof(cbMac);
-  mystream.read(reinterpret_cast<char *>(&reserved1), sizeof(reserved1));
+  mystream.read(reinterpret_cast<char *>(&cbMac), sizeof(ULONG));
+  add_member_sizes += sizeof(cbMac);  // these lines! What the heck?
+  mystream.read(reinterpret_cast<char *>(&reserved1), sizeof(ULONG));
   add_member_sizes += sizeof(reserved1);
-  mystream.read(reinterpret_cast<char *>(&reserved2), sizeof(reserved2));
+  mystream.read(reinterpret_cast<char *>(&reserved2), sizeof(ULONG));
   add_member_sizes += sizeof(reserved2);
-  mystream.read(reinterpret_cast<char *>(&ccpText), sizeof(ccpText));
+  mystream.read(reinterpret_cast<char *>(&ccpText), sizeof(ULONG));
   add_member_sizes += sizeof(ccpText);
-  mystream.read(reinterpret_cast<char *>(&ccpFtn), sizeof(ccpFtn));
+  mystream.read(reinterpret_cast<char *>(&ccpFtn), sizeof(ULONG));
   add_member_sizes += sizeof(ccpFtn);
-  mystream.read(reinterpret_cast<char *>(&ccpHdd), sizeof(ccpHdd));
+  mystream.read(reinterpret_cast<char *>(&ccpHdd), sizeof(ULONG));
   add_member_sizes += sizeof(ccpHdd);
-  mystream.read(reinterpret_cast<char *>(&reserved3), sizeof(reserved3));
+  mystream.read(reinterpret_cast<char *>(&reserved3), sizeof(ULONG));
   add_member_sizes += sizeof(reserved3);
-  mystream.read(reinterpret_cast<char *>(&ccpAtn), sizeof(ccpAtn));
-v  add_member_sizes += sizeof(ccpAtn);
-  mystream.read(reinterpret_cast<char *>(&ccpEdn), sizeof(ccpEdn));
+  mystream.read(reinterpret_cast<char *>(&ccpAtn), sizeof(ULONG));
+  add_member_sizes += sizeof(ccpAtn);
+  mystream.read(reinterpret_cast<char *>(&ccpEdn), sizeof(ULONG));
   add_member_sizes += sizeof(ccpEdn);
-  mystream.read(reinterpret_cast<char *>(&ccpTxbx), sizeof(ccpTxbx));
+  mystream.read(reinterpret_cast<char *>(&ccpTxbx), sizeof(ULONG));
   add_member_sizes += sizeof(ccpTxbx);
-  mystream.read(reinterpret_cast<char *>(&ccpHdrTxbx), sizeof(ccpHdrTxbx));
+  mystream.read(reinterpret_cast<char *>(&ccpHdrTxbx), sizeof(ULONG));
   add_member_sizes += sizeof(ccpHdrTxbx);
-  mystream.read(reinterpret_cast<char *>(&reserved4), sizeof(reserved4));
+  mystream.read(reinterpret_cast<char *>(&reserved4), sizeof(ULONG));
   add_member_sizes += sizeof(reserved4);
-  mystream.read(reinterpret_cast<char *>(&reserved5), sizeof(reserved5));
+  mystream.read(reinterpret_cast<char *>(&reserved5), sizeof(ULONG));
   add_member_sizes += sizeof(reserved5);
-  mystream.read(reinterpret_cast<char *>(&reserved6), sizeof(reserved6));
+  mystream.read(reinterpret_cast<char *>(&reserved6), sizeof(ULONG));
   add_member_sizes += sizeof(reserved6);
-  mystream.read(reinterpret_cast<char *>(&reserved7), sizeof(reserved7));
+  mystream.read(reinterpret_cast<char *>(&reserved7), sizeof(ULONG));
   add_member_sizes += sizeof(reserved7);
-  mystream.read(reinterpret_cast<char *>(&reserved8), sizeof(reserved8));
+  mystream.read(reinterpret_cast<char *>(&reserved8), sizeof(ULONG));
   add_member_sizes += sizeof(reserved8);
-  mystream.read(reinterpret_cast<char *>(&reserved9), sizeof(reserved9));
+  mystream.read(reinterpret_cast<char *>(&reserved9), sizeof(ULONG));
   add_member_sizes += sizeof(reserved9);
-  mystream.read(reinterpret_cast<char *>(&reserved10), sizeof(reserved10));
+  mystream.read(reinterpret_cast<char *>(&reserved10), sizeof(ULONG));
   add_member_sizes += sizeof(reserved10);
-  mystream.read(reinterpret_cast<char *>(&reserved11), sizeof(reserved11));
+  mystream.read(reinterpret_cast<char *>(&reserved11), sizeof(ULONG));
   add_member_sizes += sizeof(reserved11);
-  mystream.read(reinterpret_cast<char *>(&reserved12), sizeof(reserved12));
+  mystream.read(reinterpret_cast<char *>(&reserved12), sizeof(ULONG));
   add_member_sizes += sizeof(reserved12);
-  mystream.read(reinterpret_cast<char *>(&reserved13), sizeof(reserved13));
+  mystream.read(reinterpret_cast<char *>(&reserved13), sizeof(ULONG));
   add_member_sizes += sizeof(reserved13);
-  mystream.read(reinterpret_cast<char *>(&reserved14), sizeof(reserved14));
+  mystream.read(reinterpret_cast<char *>(&reserved14), sizeof(ULONG));
   add_member_sizes += sizeof(reserved14);
 }
 
 VOID Fib::FibRgW97::readFibRgW(std::ifstream & filestrm)
 {
-  filestrm.read(reinterpret_cast<char *>(&reserved1), sizeof(reserved1));
-  filestrm.read(reinterpret_cast<char *>(&reserved2), sizeof(reserved2));
-  filestrm.read(reinterpret_cast<char *>(&reserved3), sizeof(reserved3));
-  filestrm.read(reinterpret_cast<char *>(&reserved4), sizeof(reserved4));
-  filestrm.read(reinterpret_cast<char *>(&reserved5), sizeof(reserved5));
-  filestrm.read(reinterpret_cast<char *>(&reserved6), sizeof(reserved6));
-  filestrm.read(reinterpret_cast<char *>(&reserved7), sizeof(reserved7));
-  filestrm.read(reinterpret_cast<char *>(&reserved8), sizeof(reserved8));
-  filestrm.read(reinterpret_cast<char *>(&reserved9), sizeof(reserved9));
-  filestrm.read(reinterpret_cast<char *>(&reserved10), sizeof(reserved10));
-  filestrm.read(reinterpret_cast<char *>(&reserved11), sizeof(reserved11));
-  filestrm.read(reinterpret_cast<char *>(&reserved12), sizeof(reserved12));
-  filestrm.read(reinterpret_cast<char *>(&reserved13), sizeof(reserved13));
-  filestrm.read(reinterpret_cast<char *>(&lidFE), sizeof(lidFE));
+  filestrm.read(reinterpret_cast<char *>(&reserved1), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved2), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved3), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved4), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved5), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved6), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved7), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved8), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved9), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved10), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved11), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved12), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&reserved13), sizeof(USHORT));
+  filestrm.read(reinterpret_cast<char *>(&lidFE), sizeof(USHORT));
 }
 
 // Reads the value of a part of the FIB that varies in content and structure
   // with different versions of Word (97 - 2007). The nFib (a member of the FibBase
   // data structure) is what determines which version is used.
-USHORT Fib::FibRgFcLcb::readFibRgFcLcbBlob(const std::ifstream& flStream, const USHORT version)
+VOID Fib::FibRgFcLcb::readFibRgFcLcbBlob(std::ifstream& flStream, const USHORT newVer)
 {
-  if ((nFib == NFIB_FOR_97 && this->cbRgFcLcb == EXPECTED_CBRGFCLCB_97)
-      || (nFib == NFIB_FOR_2000 && this->cbRgFcLcb == EXPECTED_CBRGFCLCB_2000)
-      || (nFib == NFIB_FOR_2002 && this->cbRgFcLcb == EXPECTED_CBRGFCLCB_2002)
-      || (nFib == NFIB_FOR_2003 && this->cbRgFcLcb == EXPECTED_CBRGFCLCB_2003)
-      || (nFib == NFIB_FOR_2007 && this->cbRgFcLcb == EXPECTED_CBRGFCLCB_2007))
+  switch (newVer)
   {
-    switch (version)
-    {
-    case NFIB_FOR_97:
-      fibRgFcLcbBlob.fibRgFcLcb97.readFibRgFcLcb97(flStream);
-      return EXPECTED_CBRGFCLCB_97;
-    case NFIB_FOR_2000:
-      fibRgFcLcbBlob.fibRgFcLcb2000.readFibRgFcLcb2000(flStream);
-      return EXPECTED_CBRGFCLCB_2000;
-    case NFIB_FOR_2002:
-      fibRgFcLcbBlob.fibRgFcLcb2002.readFibRgFcLcb2002(flStream);
-      return EXPECTED_CBRGFCLCB_2002;
-    case NFIB_FOR_2003:
-      fibRgFcLcbBlob.fibRgFcLcb2003.readFibRgFcLcb2003(flStream);
-      return EXPECTED_CBRGFCLCB_2003;
-    case NFIB_FOR_2007:
-      fibRgFcLcbBlob.fibRgFcLcb2007.readFibRgFcLcb2007(flStream);
-      return EXPECTED_CBRGFCLCB_2007;
-    }
+  case EXPECTED_CBRGFCLCB_97:
+    this->fibRgFcLcb97.readFibRgFcLcb97(flStream);
+    break;
+  case EXPECTED_CBRGFCLCB_2000:
+    this->fibRgFcLcb2000.readFibRgFcLcb2000(flStream);
+    break;
+  case EXPECTED_CBRGFCLCB_2002:
+    this->fibRgFcLcb2002.readFibRgFcLcb2002(flStream);
+    break;
+  case EXPECTED_CBRGFCLCB_2003:
+    this->fibRgFcLcb2003.readFibRgFcLcb2003(flStream);
+    break;
+  case EXPECTED_CBRGFCLCB_2007:
+    this->fibRgFcLcb2007.readFibRgFcLcb2007(flStream);
+    break;
+  default:
+    throw "çbRgFcLbc' is holding an invalid value.";
   }
 }
 
 VOID Fib::FibRgFcLcb::FibRgFcLcb97::readFibRgFcLcb97(std::ifstream & mainstrm)
 {
-  mainstrm.read(reinterpret_cast<char *>(&fcStshfOrig), sizeof(fcStshfOrig));
-  mainstrm.read(reinterpret_cast<char *>(&lcbStshfOrig), sizeof(lcbStshfOrig));
-  mainstrm.read(reinterpret_cast<char *>(&fcStshf), sizeof(fcStshf));
-  mainstrm.read(reinterpret_cast<char *>(&lcbStshf), sizeof(lcbStshf));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcffndRef), sizeof(fcPlcffndRef));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcffndRef), sizeof(lcbPlcffndRef));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcffndTxt), sizeof(fcPlcffndTxt));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcffndTxt), sizeof(lcbPlcffndTxt));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfandRef), sizeof(fcPlcfandRef));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfandRef), sizeof(lcbPlcfandRef));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfandTxt), sizeof(fcPlcfandTxt));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfandTxt), sizeof(lcbPlcfandTxt));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfSed), sizeof(fcPlcfSed));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfSed), sizeof(lcbPlcfSed));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcPad), sizeof(fcPlcPad));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcPad), sizeof(lcbPlcPad));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfPhe), sizeof(fcPlcfPhe));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfPhe), sizeof(lcbPlcfPhe));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfGlsy), sizeof(fcSttbfGlsy));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfGlsy), sizeof(lcbSttbfGlsy));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfGlsy), sizeof(fcPlcfGlsy));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfGlsy), sizeof(lcbPlcfGlsy));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfHdd), sizeof(fcPlcfHdd));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfHdd), sizeof(lcbPlcfHdd));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfBteChpx), sizeof(fcPlcfBteChpx));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBteChpx), sizeof(lcbPlcfBteChpx));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfBtePapx), sizeof(fcPlcfBtePapx));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBtePapx), sizeof(lcbPlcfBtePapx));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfSea), sizeof(fcPlcfSea));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfSea), sizeof(lcbPlcfSea));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfFfn), sizeof(fcSttbfFfn));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfFfn), sizeof(lcbSttbfFfn));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldMom), sizeof(fcPlcfFldMom));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldMom), sizeof(lcbPlcfFldMom));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldHdr), sizeof(fcPlcfFldHdr));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldHdr), sizeof(lcbPlcfFldHdr));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldFtn), sizeof(fcPlcfFldFtn));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldFtn), sizeof(lcbPlcfFldFtn));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldAtn), sizeof(fcPlcfFldAtn));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldAtn), sizeof(lcbPlcfFldAtn));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldMcr), sizeof(fcPlcfFldMcr));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldMcr), sizeof(lcbPlcfFldMcr));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfBkmk), sizeof(fcSttbfBkmk));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfBkmk), sizeof(lcbSttbfBkmk));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfBkf), sizeof(fcPlcfBkf));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBkf), sizeof(lcbPlcfBkf));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfBkl), sizeof(fcPlcfBkl));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBkl), sizeof(lcbPlcfBkl));
-  mainstrm.read(reinterpret_cast<char *>(&fcCmds), sizeof(fcCmds));
-  mainstrm.read(reinterpret_cast<char *>(&lcbCmds), sizeof(lcbCmds));
-  mainstrm.read(reinterpret_cast<char *>(&fcUnused1), sizeof(fcUnused1));
-  mainstrm.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(lcbUnused1));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfMcr), sizeof(fcSttbfMcr));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfMcr), sizeof(lcbSttbfMcr));
-  mainstrm.read(reinterpret_cast<char *>(&fcPrDrvr), sizeof(fcPrDrvr));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPrDrvr), sizeof(lcbPrDrvr));
-  mainstrm.read(reinterpret_cast<char *>(&fcPrEnvPort), sizeof(fcPrEnvPort));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPrEnvPort), sizeof(lcbPrEnvPort));
-  mainstrm.read(reinterpret_cast<char *>(&fcPrEnvLand), sizeof(fcPrEnvLand));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPrEnvLand), sizeof(lcbPrEnvLand));
-  mainstrm.read(reinterpret_cast<char *>(&fcWss), sizeof(fcWss));
-  mainstrm.read(reinterpret_cast<char *>(&lcbWss), sizeof(lcbWss));
-  mainstrm.read(reinterpret_cast<char *>(&fcDop), sizeof(fcDop));
-  mainstrm.read(reinterpret_cast<char *>(&lcbDop), sizeof(lcbDop));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfAssoc), sizeof(fcSttbfAssoc));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfAssoc), sizeof(lcbSttbfAssoc));
-  mainstrm.read(reinterpret_cast<char *>(&fcClx), sizeof(fcClx));
-  mainstrm.read(reinterpret_cast<char *>(&lcbClx), sizeof(lcbClx));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfPgdFtn), sizeof(fcPlcfPgdFtn));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfPgdFtn), sizeof(lcbPlcfPgdFtn));
-  mainstrm.read(reinterpret_cast<char *>(&fcAutosaveSource), sizeof(fcAutosaveSource));
-  mainstrm.read(reinterpret_cast<char *>(&lcbAutosaveSource), sizeof(lcbAutosaveSource));
-  mainstrm.read(reinterpret_cast<char *>(&fcGrpXstAtnOwners), sizeof(fcGrpXstAtnOwners));
-  mainstrm.read(reinterpret_cast<char *>(&lcbGrpXstAtnOwners), sizeof(lcbGrpXstAtnOwners));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfAtnBkmk), sizeof(fcSttbfAtnBkmk));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfAtnBkmk), sizeof(lcbSttbfAtnBkmk));
-  mainstrm.read(reinterpret_cast<char *>(&fcUnused2), sizeof(fcUnused2));
-  mainstrm.read(reinterpret_cast<char *>(&lcbUnused2), sizeof(lcbUnused2));
-  mainstrm.read(reinterpret_cast<char *>(&fcUnused3), sizeof(fcUnused3));
-  mainstrm.read(reinterpret_cast<char *>(&lcbUnused3), sizeof(lcbUnused3));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcSpaMom), sizeof(fcPlcSpaMom));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcSpaMom), sizeof(lcbPlcSpaMom));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcSpaHdr), sizeof(fcPlcSpaHdr));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcSpaHdr), sizeof(lcbPlcSpaHdr));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfAtnBkf), sizeof(fcPlcfAtnBkf));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfAtnBkf), sizeof(lcbPlcfAtnBkf));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfAtnBkl), sizeof(fcPlcfAtnBkl));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfAtnBkl), sizeof(lcbPlcfAtnBkl));
-  mainstrm.read(reinterpret_cast<char *>(&fcPms), sizeof(fcPms));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPms), sizeof(lcbPms));
-  mainstrm.read(reinterpret_cast<char *>(&fcFormFldSttbs), sizeof(fcFormFldSttbs));
-  mainstrm.read(reinterpret_cast<char *>(&lcbFormFldSttbs), sizeof(lcbFormFldSttbs));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfendRef), sizeof(fcPlcfendRef));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfendRef), sizeof(lcbPlcfendRef));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfendTxt), sizeof(fcPlcfendTxt));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfendTxt), sizeof(lcbPlcfendTxt));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldEdn), sizeof(fcPlcfFldEdn));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldEdn), sizeof(lcbPlcfFldEdn));
-  mainstrm.read(reinterpret_cast<char *>(&fcUnused4), sizeof(fcUnused4));
-  mainstrm.read(reinterpret_cast<char *>(&lcbUnused4), sizeof(lcbUnused4));
-  mainstrm.read(reinterpret_cast<char *>(&fcDggInfo), sizeof(fcDggInfo));
-  mainstrm.read(reinterpret_cast<char *>(&lcbDggInfo), sizeof(lcbDggInfo));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfRMark), sizeof(fcSttbfRMark));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfRMark), sizeof(lcbSttbfRMark));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfCaption), sizeof(fcSttbfCaption));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfCaption), sizeof(lcbSttbfCaption));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfAutoCaption), sizeof(fcSttbfAutoCaption));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfAutoCaption), sizeof(lcbSttbfAutoCaption));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfWkb), sizeof(fcPlcfWkb));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfWkb), sizeof(lcbPlcfWkb));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfSpl), sizeof(fcPlcfSpl));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfSpl), sizeof(lcbPlcfSpl));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcftxbxTxt), sizeof(fcPlcftxbxTxt));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcftxbxTxt), sizeof(lcbPlcftxbxTxt));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldTxbx), sizeof(fcPlcfFldTxbx));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldTxbx), sizeof(lcbPlcfFldTxbx));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfHdrtxbxTxt), sizeof(fcPlcfHdrtxbxTxt));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfHdrtxbxTxt), sizeof(lcbPlcfHdrtxbxTxt));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcffldHdrTxbx), sizeof(fcPlcffldHdrTxbx));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcffldHdrTxbx), sizeof(lcbPlcffldHdrTxbx));
-  mainstrm.read(reinterpret_cast<char *>(&fcStwUser), sizeof(fcStwUser));
-  mainstrm.read(reinterpret_cast<char *>(&lcbStwUser), sizeof(lcbStwUser));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbTtmbd), sizeof(fcSttbTtmbd));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbTtmbd), sizeof(lcbSttbTtmbd));
-  mainstrm.read(reinterpret_cast<char *>(&fcCookieData), sizeof(fcCookieData));
-  mainstrm.read(reinterpret_cast<char *>(&lcbCookieData), sizeof(lcbCookieData));
-  mainstrm.read(reinterpret_cast<char *>(&fcPgdMotherOldOld), sizeof(fcPgdMotherOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPgdMotherOldOld), sizeof(lcbPgdMotherOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&fcBkdMotherOldOld), sizeof(fcBkdMotherOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&lcbBkdMotherOldOld), sizeof(lcbBkdMotherOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&fcPgdFtnOldOld), sizeof(fcPgdFtnOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPgdFtnOldOld), sizeof(lcbPgdFtnOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&fcBkdFtnOldOld), sizeof(fcBkdFtnOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&lcbBkdFtnOldOld), sizeof(lcbBkdFtnOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&fcPgdEdnOldOld), sizeof(fcPgdEdnOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPgdEdnOldOld), sizeof(lcbPgdEdnOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&fcBkdEdnOldOld), sizeof(fcBkdEdnOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&lcbBkdEdnOldOld), sizeof(lcbBkdEdnOldOld));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfIntlFld), sizeof(fcSttbfIntlFld));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfIntlFld), sizeof(lcbSttbfIntlFld));
-  mainstrm.read(reinterpret_cast<char *>(&fcRouteSlip), sizeof(fcRouteSlip));
-  mainstrm.read(reinterpret_cast<char *>(&lcbRouteSlip), sizeof(lcbRouteSlip));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbSavedBy), sizeof(fcSttbSavedBy));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbSavedBy), sizeof(lcbSttbSavedBy));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbFnm), sizeof(fcSttbFnm));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbFnm), sizeof(lcbSttbFnm));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlfLst), sizeof(fcPlfLst));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlfLst), sizeof(lcbPlfLst));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlfLfo), sizeof(fcPlfLfo));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlfLfo), sizeof(lcbPlfLfo));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfTxbxBkd), sizeof(fcPlcfTxbxBkd));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfTxbxBkd), sizeof(lcbPlcfTxbxBkd));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfTxbxHdrBkd), sizeof(fcPlcfTxbxHdrBkd));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfTxbxHdrBkd), sizeof(lcbPlcfTxbxHdrBkd));
-  mainstrm.read(reinterpret_cast<char *>(&fcDocUndoUSHORT9), sizeof(fcDocUndoUSHORT9));
-  mainstrm.read(reinterpret_cast<char *>(&lcbDocUndoUSHORT9), sizeof(lcbDocUndoUSHORT9));
-  mainstrm.read(reinterpret_cast<char *>(&fcRgbUse), sizeof(fcRgbUse));
-  mainstrm.read(reinterpret_cast<char *>(&lcbRgbUse), sizeof(lcbRgbUse));
-  mainstrm.read(reinterpret_cast<char *>(&fcUsp), sizeof(fcUsp));
-  mainstrm.read(reinterpret_cast<char *>(&lcbUsp), sizeof(lcbUsp));
-  mainstrm.read(reinterpret_cast<char *>(&fcUskf), sizeof(fcUskf));
-  mainstrm.read(reinterpret_cast<char *>(&lcbUskf), sizeof(lcbUskf));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcupcRgbUse), sizeof(fcPlcupcRgbUse));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcupcRgbUse), sizeof(lcbPlcupcRgbUse));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcupcUsp), sizeof(fcPlcupcUsp));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcupcUsp), sizeof(lcbPlcupcUsp));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbGlsyStyle), sizeof(fcSttbGlsyStyle));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbGlsyStyle), sizeof(lcbSttbGlsyStyle));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlgosl), sizeof(fcPlgosl));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlgosl), sizeof(lcbPlgosl));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcocx), sizeof(fcPlcocx));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcocx), sizeof(lcbPlcocx));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfBteLvc), sizeof(fcPlcfBteLvc));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBteLvc), sizeof(lcbPlcfBteLvc));
-  mainstrm.read(reinterpret_cast<char *>(&dwLowDateTime), sizeof(dwLowDateTime));
-  mainstrm.read(reinterpret_cast<char *>(&dwHighDateTime), sizeof(dwHighDateTime));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfLvcPre10), sizeof(fcPlcfLvcPre10));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfLvcPre10), sizeof(lcbPlcfLvcPre10));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfAsumy), sizeof(fcPlcfAsumy));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfAsumy), sizeof(lcbPlcfAsumy));
-  mainstrm.read(reinterpret_cast<char *>(&fcPlcfGram), sizeof(fcPlcfGram));
-  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfGram), sizeof(lcbPlcfGram));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbListNames), sizeof(fcSttbListNames));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbListNames), sizeof(lcbSttbListNames));
-  mainstrm.read(reinterpret_cast<char *>(&fcSttbfUssr), sizeof(fcSttbfUssr));
-  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfUssr), sizeof(lcbSttbfUssr));
+  mainstrm.read(reinterpret_cast<char *>(&fcStshfOrig), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbStshfOrig), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcStshf), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbStshf), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcffndRef), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcffndRef), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcffndTxt), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcffndTxt), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfandRef), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfandRef), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfandTxt), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfandTxt), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfSed), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfSed), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcPad), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcPad), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfPhe), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfPhe), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfGlsy), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfGlsy), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfGlsy), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfGlsy), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfHdd), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfHdd), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfBteChpx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBteChpx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfBtePapx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBtePapx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfSea), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfSea), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfFfn), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfFfn), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldMom), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldMom), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldHdr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldHdr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldFtn), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldFtn), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldAtn), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldAtn), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldMcr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldMcr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfBkmk), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfBkmk), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfBkf), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBkf), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfBkl), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBkl), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcCmds), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbCmds), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcUnused1), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfMcr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfMcr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPrDrvr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPrDrvr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPrEnvPort), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPrEnvPort), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPrEnvLand), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPrEnvLand), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcWss), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbWss), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcDop), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbDop), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfAssoc), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfAssoc), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcClx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbClx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfPgdFtn), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfPgdFtn), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcAutosaveSource), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbAutosaveSource), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcGrpXstAtnOwners), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbGrpXstAtnOwners), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfAtnBkmk), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfAtnBkmk), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcUnused2), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbUnused2), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcUnused3), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbUnused3), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcSpaMom), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcSpaMom), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcSpaHdr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcSpaHdr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfAtnBkf), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfAtnBkf), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfAtnBkl), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfAtnBkl), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPms), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPms), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcFormFldSttbs), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbFormFldSttbs), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfendRef), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfendRef), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfendTxt), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfendTxt), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldEdn), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldEdn), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcUnused4), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbUnused4), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcDggInfo), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbDggInfo), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfRMark), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfRMark), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfCaption), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfCaption), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfAutoCaption), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfAutoCaption), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfWkb), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfWkb), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfSpl), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfSpl), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcftxbxTxt), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcftxbxTxt), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfFldTxbx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfFldTxbx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfHdrtxbxTxt), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfHdrtxbxTxt), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcffldHdrTxbx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcffldHdrTxbx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcStwUser), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbStwUser), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbTtmbd), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbTtmbd), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcCookieData), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbCookieData), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPgdMotherOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPgdMotherOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcBkdMotherOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbBkdMotherOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPgdFtnOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPgdFtnOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcBkdFtnOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbBkdFtnOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPgdEdnOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPgdEdnOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcBkdEdnOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbBkdEdnOldOld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfIntlFld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfIntlFld), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcRouteSlip), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbRouteSlip), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbSavedBy), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbSavedBy), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbFnm), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbFnm), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlfLst), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlfLst), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlfLfo), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlfLfo), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfTxbxBkd), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfTxbxBkd), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfTxbxHdrBkd), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfTxbxHdrBkd), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcDocUndoUSHORT9), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbDocUndoUSHORT9), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcRgbUse), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbRgbUse), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcUsp), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbUsp), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcUskf), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbUskf), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcupcRgbUse), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcupcRgbUse), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcupcUsp), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcupcUsp), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbGlsyStyle), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbGlsyStyle), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlgosl), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlgosl), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcocx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcocx), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfBteLvc), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfBteLvc), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&dwLowDateTime), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&dwHighDateTime), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfLvcPre10), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfLvcPre10), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfAsumy), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfAsumy), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcPlcfGram), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbPlcfGram), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbListNames), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbListNames), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&fcSttbfUssr), sizeof(ULONG));
+  mainstrm.read(reinterpret_cast<char *>(&lcbSttbfUssr), sizeof(ULONG));
 }
 
 VOID Fib::FibRgFcLcb::FibRgFcLcb2000::readFibRgFcLcb2000(std::ifstream & wrdfile)
@@ -1212,36 +1194,36 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2000::readFibRgFcLcb2000(std::ifstream & wrdfile
   FibRgFcLcb97 varPortion97;
   varPortion97.readFibRgFcLcb97(wrdfile);
 
-  wrdfile.read(reinterpret_cast<char *>(&fcPlcfTch), sizeof(fcPlcfTch));
-  wrdfile.read(reinterpret_cast<char *>(&lcbPlcfTch), sizeof(lcbPlcfTch));
-  wrdfile.read(reinterpret_cast<char *>(&fcRmdThreading), sizeof(fcRmdThreading));
-  wrdfile.read(reinterpret_cast<char *>(&lcbRmdThreading), sizeof(lcbRmdThreading));
-  wrdfile.read(reinterpret_cast<char *>(&fcMid), sizeof(fcMid));
-  wrdfile.read(reinterpret_cast<char *>(&lcbMid), sizeof(lcbMid));
-  wrdfile.read(reinterpret_cast<char *>(&fcSttbRgtplc), sizeof(fcSttbRgtplc));
-  wrdfile.read(reinterpret_cast<char *>(&lcbSttbRgtplc), sizeof(lcbSttbRgtplc));
-  wrdfile.read(reinterpret_cast<char *>(&fcMsoEnvelope), sizeof(fcMsoEnvelope));
-  wrdfile.read(reinterpret_cast<char *>(&lcbMsoEnvelope), sizeof(lcbMsoEnvelope));
-  wrdfile.read(reinterpret_cast<char *>(&fcPlcfLad), sizeof(fcPlcfLad));
-  wrdfile.read(reinterpret_cast<char *>(&lcbPlcfLad), sizeof(lcbPlcfLad));
-  wrdfile.read(reinterpret_cast<char *>(&fcRgDofr), sizeof(fcRgDofr));
-  wrdfile.read(reinterpret_cast<char *>(&lcbRgDofr), sizeof(lcbRgDofr));
-  wrdfile.read(reinterpret_cast<char *>(&fcPlcosl), sizeof(fcPlcosl));
-  wrdfile.read(reinterpret_cast<char *>(&lcbPlcosl), sizeof(lcbPlcosl));
-  wrdfile.read(reinterpret_cast<char *>(&fcPlcfCookieOld), sizeof(fcPlcfCookieOld));
-  wrdfile.read(reinterpret_cast<char *>(&lcbPlcfCookieOld), sizeof(lcbPlcfCookieOld));
-  wrdfile.read(reinterpret_cast<char *>(&fcPgdMotherOld), sizeof(fcPgdMotherOld));
-  wrdfile.read(reinterpret_cast<char *>(&lcbPgdMotherOld), sizeof(lcbPgdMotherOld));
-  wrdfile.read(reinterpret_cast<char *>(&fcBkdMotherOld), sizeof(fcBkdMotherOld));
-  wrdfile.read(reinterpret_cast<char *>(&lcbBkdMotherOld), sizeof(lcbBkdMotherOld));
-  wrdfile.read(reinterpret_cast<char *>(&fcPgdFtnOld), sizeof(fcPgdFtnOld));
-  wrdfile.read(reinterpret_cast<char *>(&lcbPgdFtnOld), sizeof(lcbPgdFtnOld));
-  wrdfile.read(reinterpret_cast<char *>(&fcBkdFtnOld), sizeof(fcBkdFtnOld));
-  wrdfile.read(reinterpret_cast<char *>(&lcbBkdFtnOld), sizeof(lcbBkdFtnOld));
-  wrdfile.read(reinterpret_cast<char *>(&fcPgdEdnOld), sizeof(fcPgdEdnOld));
-  wrdfile.read(reinterpret_cast<char *>(&lcbPgdEdnOld), sizeof(lcbPgdEdnOld));
-  wrdfile.read(reinterpret_cast<char *>(&fcBkdEdnOld), sizeof(fcBkdEdnOld));
-  wrdfile.read(reinterpret_cast<char *>(&lcbBkdEdnOld), sizeof(lcbBkdEdnOld));
+  wrdfile.read(reinterpret_cast<char *>(&fcPlcfTch), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbPlcfTch), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcRmdThreading), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbRmdThreading), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcMid), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbMid), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcSttbRgtplc), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbSttbRgtplc), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcMsoEnvelope), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbMsoEnvelope), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcPlcfLad), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbPlcfLad), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcRgDofr), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbRgDofr), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcPlcosl), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbPlcosl), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcPlcfCookieOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbPlcfCookieOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcPgdMotherOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbPgdMotherOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcBkdMotherOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbBkdMotherOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcPgdFtnOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbPgdFtnOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcBkdFtnOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbBkdFtnOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcPgdEdnOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbPgdEdnOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&fcBkdEdnOld), sizeof(ULONG));
+  wrdfile.read(reinterpret_cast<char *>(&lcbBkdEdnOld), sizeof(ULONG));
 }
 
 
@@ -1250,62 +1232,62 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2002::readFibRgFcLcb2002(std::ifstream &document
   FibRgFcLcb2000 varPortion2000;
   varPortion2000.readFibRgFcLcb2000(documentStr);
 
-  documentStr.read(reinterpret_cast<char *>(&fcUnused1), sizeof(fcUnused1));
-  documentStr.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(lcbUnused1));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfPgp), sizeof(fcPlcfPgp));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfPgp), sizeof(lcbPlcfPgp));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfuim), sizeof(fcPlcfuim));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfuim), sizeof(lcbPlcfuim));
-  documentStr.read(reinterpret_cast<char *>(&fcPlfguidUim), sizeof(fcPlfguidUim));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlfguidUim), sizeof(lcbPlfguidUim));
-  documentStr.read(reinterpret_cast<char *>(&fcAtrdExtra), sizeof(fcAtrdExtra));
-  documentStr.read(reinterpret_cast<char *>(&lcbAtrdExtra), sizeof(lcbAtrdExtra));
-  documentStr.read(reinterpret_cast<char *>(&fcPlrsid), sizeof(fcPlrsid));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlrsid), sizeof(lcbPlrsid));
-  documentStr.read(reinterpret_cast<char *>(&fcSttbfBkmkFactoid), sizeof(fcSttbfBkmkFactoid));
-  documentStr.read(reinterpret_cast<char *>(&lcbSttbfBkmkFactoid), sizeof(lcbSttbfBkmkFactoid));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfBkfFactoid), sizeof(fcPlcfBkfFactoid));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfBkfFactoid), sizeof(lcbPlcfBkfFactoid));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfcookie), sizeof(fcPlcfcookie));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfcookie), sizeof(lcbPlcfcookie));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfBklFactoid), sizeof(fcPlcfBklFactoid));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfBklFactoid), sizeof(lcbPlcfBklFactoid));
-  documentStr.read(reinterpret_cast<char *>(&fcFactoidData), sizeof(fcFactoidData));
-  documentStr.read(reinterpret_cast<char *>(&lcbFactoidData), sizeof(lcbFactoidData));
-  documentStr.read(reinterpret_cast<char *>(&fcDocUndo), sizeof(fcDocUndo));
-  documentStr.read(reinterpret_cast<char *>(&lcbDocUndo), sizeof(lcbDocUndo));
-  documentStr.read(reinterpret_cast<char *>(&fcSttbfBkmkFcc), sizeof(fcSttbfBkmkFcc));
-  documentStr.read(reinterpret_cast<char *>(&lcbSttbfBkmkFcc), sizeof(lcbSttbfBkmkFcc));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfBkfFcc), sizeof(fcPlcfBkfFcc));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfBkfFcc), sizeof(lcbPlcfBkfFcc));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfBklFcc), sizeof(fcPlcfBklFcc));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfBklFcc), sizeof(lcbPlcfBklFcc));
-  documentStr.read(reinterpret_cast<char *>(&fcSttbfbkmkBPRepairs), sizeof(fcSttbfbkmkBPRepairs));
-  documentStr.read(reinterpret_cast<char *>(&lcbSttbfbkmkBPRepairs), sizeof(lcbSttbfbkmkBPRepairs));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfbkfBPRepairs), sizeof(fcPlcfbkfBPRepairs));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfbkfBPRepairs), sizeof(lcbPlcfbkfBPRepairs));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfbklBPRepairs), sizeof(fcPlcfbklBPRepairs));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfbklBPRepairs), sizeof(lcbPlcfbklBPRepairs));
-  documentStr.read(reinterpret_cast<char *>(&fcPmsNew), sizeof(fcPmsNew));
-  documentStr.read(reinterpret_cast<char *>(&lcbPmsNew), sizeof(lcbPmsNew));
-  documentStr.read(reinterpret_cast<char *>(&fcODSO), sizeof(fcODSO));
-  documentStr.read(reinterpret_cast<char *>(&lcbODSO), sizeof(lcbODSO));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiOldXP), sizeof(fcPlcfpmiOldXP));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiOldXP), sizeof(lcbPlcfpmiOldXP));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiNewXP), sizeof(fcPlcfpmiNewXP));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiNewXP), sizeof(lcbPlcfpmiNewXP));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiMixedXP), sizeof(fcPlcfpmiMixedXP));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiMixedXP), sizeof(lcbPlcfpmiMixedXP));
-  documentStr.read(reinterpret_cast<char *>(&fcUnused2), sizeof(fcUnused2));
-  documentStr.read(reinterpret_cast<char *>(&lcbUnused2), sizeof(lcbUnused2));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcffactoid), sizeof(fcPlcffactoid));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcffactoid), sizeof(lcbPlcffactoid));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcflvcOldXP), sizeof(fcPlcflvcOldXP));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcOldXP), sizeof(lcbPlcflvcOldXP));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcflvcNewXP), sizeof(fcPlcflvcNewXP));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcNewXP), sizeof(lcbPlcflvcNewXP));
-  documentStr.read(reinterpret_cast<char *>(&fcPlcflvcMixedXP), sizeof(fcPlcflvcMixedXP));
-  documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcMixedXP), sizeof(lcbPlcflvcMixedXP));
+  documentStr.read(reinterpret_cast<char *>(&fcUnused1), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfPgp), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfPgp), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfuim), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfuim), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlfguidUim), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlfguidUim), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcAtrdExtra), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbAtrdExtra), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlrsid), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlrsid), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcSttbfBkmkFactoid), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbSttbfBkmkFactoid), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfBkfFactoid), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfBkfFactoid), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfcookie), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfcookie), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfBklFactoid), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfBklFactoid), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcFactoidData), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbFactoidData), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcDocUndo), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbDocUndo), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcSttbfBkmkFcc), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbSttbfBkmkFcc), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfBkfFcc), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfBkfFcc), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfBklFcc), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfBklFcc), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcSttbfbkmkBPRepairs), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbSttbfbkmkBPRepairs), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfbkfBPRepairs), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfbkfBPRepairs), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfbklBPRepairs), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfbklBPRepairs), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPmsNew), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPmsNew), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcODSO), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbODSO), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiOldXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiOldXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiNewXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiNewXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcfpmiMixedXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcfpmiMixedXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcUnused2), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbUnused2), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcffactoid), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcffactoid), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcflvcOldXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcOldXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcflvcNewXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcNewXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&fcPlcflvcMixedXP), sizeof(ULONG));
+  documentStr.read(reinterpret_cast<char *>(&lcbPlcflvcMixedXP), sizeof(ULONG));
 }
 
 
@@ -1314,62 +1296,62 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2003::readFibRgFcLcb2003(std::ifstream & dotdocs
   FibRgFcLcb2002 varPortion2002;
   varPortion2002.readFibRgFcLcb2002(dotdocstrm);
 
-  dotdocstrm.read(reinterpret_cast<char *>(&fcHplxsdr), sizeof(fcHplxsdr));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbHplxsdr), sizeof(lcbHplxsdr));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcSttbfBkmkSdt), sizeof(fcSttbfBkmkSdt));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbfBkmkSdt), sizeof(lcbSttbfBkmkSdt));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBkfSdt), sizeof(fcPlcfBkfSdt));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBkfSdt), sizeof(lcbPlcfBkfSdt));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBklSdt), sizeof(fcPlcfBklSdt));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBklSdt), sizeof(lcbPlcfBklSdt));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcCustomXForm), sizeof(fcCustomXForm));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbCustomXForm), sizeof(lcbCustomXForm));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcSttbfBkmkProt), sizeof(fcSttbfBkmkProt));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbfBkmkProt), sizeof(lcbSttbfBkmkProt));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBkfProt), sizeof(fcPlcfBkfProt));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBkfProt), sizeof(lcbPlcfBkfProt));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBklProt), sizeof(fcPlcfBklProt));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBklProt), sizeof(lcbPlcfBklProt));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcSttbProtUser), sizeof(fcSttbProtUser));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbProtUser), sizeof(lcbSttbProtUser));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcUnused), sizeof(fcUnused));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbUnused), sizeof(lcbUnused));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiOld), sizeof(fcPlcfpmiOld));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiOld), sizeof(lcbPlcfpmiOld));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiOldInline), sizeof(fcPlcfpmiOldInline));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiOldInline), sizeof(lcbPlcfpmiOldInline));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiNew), sizeof(fcPlcfpmiNew));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiNew), sizeof(lcbPlcfpmiNew));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiNewInline), sizeof(fcPlcfpmiNewInline));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiNewInline), sizeof(lcbPlcfpmiNewInline));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcOld), sizeof(fcPlcflvcOld));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcOld), sizeof(lcbPlcflvcOld));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcOldInline), sizeof(fcPlcflvcOldInline));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcOldInline), sizeof(lcbPlcflvcOldInline));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcNew), sizeof(fcPlcflvcNew));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcNew), sizeof(lcbPlcflvcNew));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcNewInline), sizeof(fcPlcflvcNewInline));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcNewInline), sizeof(lcbPlcflvcNewInline));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPgdMother), sizeof(fcPgdMother));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdMother), sizeof(lcbPgdMother));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcBkdMother), sizeof(fcBkdMother));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdMother), sizeof(lcbBkdMother));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcAfdMother), sizeof(fcAfdMother));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdMother), sizeof(lcbAfdMother));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPgdFtn), sizeof(fcPgdFtn));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdFtn), sizeof(lcbPgdFtn));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcBkdFtn), sizeof(fcBkdFtn));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdFtn), sizeof(lcbBkdFtn));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcAfdFtn), sizeof(fcAfdFtn));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdFtn), sizeof(lcbAfdFtn));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcPgdEdn), sizeof(fcPgdEdn));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdEdn), sizeof(lcbPgdEdn));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcBkdEdn), sizeof(fcBkdEdn));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdEdn), sizeof(lcbBkdEdn));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcAfdEdn), sizeof(fcAfdEdn));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdEdn), sizeof(lcbAfdEdn));
-  dotdocstrm.read(reinterpret_cast<char *>(&fcAfd), sizeof(fcAfd));
-  dotdocstrm.read(reinterpret_cast<char *>(&lcbAfd), sizeof(lcbAfd));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcHplxsdr), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbHplxsdr), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcSttbfBkmkSdt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbfBkmkSdt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBkfSdt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBkfSdt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBklSdt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBklSdt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcCustomXForm), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbCustomXForm), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcSttbfBkmkProt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbfBkmkProt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBkfProt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBkfProt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfBklProt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfBklProt), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcSttbProtUser), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbSttbProtUser), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcUnused), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbUnused), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiOld), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiOld), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiOldInline), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiOldInline), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiNew), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiNew), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcfpmiNewInline), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcfpmiNewInline), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcOld), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcOld), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcOldInline), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcOldInline), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcNew), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcNew), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPlcflvcNewInline), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPlcflvcNewInline), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPgdMother), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdMother), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcBkdMother), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdMother), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcAfdMother), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdMother), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPgdFtn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdFtn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcBkdFtn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdFtn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcAfdFtn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdFtn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcPgdEdn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbPgdEdn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcBkdEdn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbBkdEdn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcAfdEdn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdEdn), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&fcAfd), sizeof(ULONG));
+  dotdocstrm.read(reinterpret_cast<char *>(&lcbAfd), sizeof(ULONG));
 
   return;
 }
@@ -1379,82 +1361,75 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2007::readFibRgFcLcb2007(std::ifstream & dStream
   FibRgFcLcb2003 varPortion2003;
   varPortion2003.readFibRgFcLcb2003(dStream);
 
-  dStream.read(reinterpret_cast<char *>(&fcPlcfmthd), sizeof(fcPlcfmthd));
-  dStream.read(reinterpret_cast<char *>(&lcbPlcfmthd), sizeof(lcbPlcfmthd));
-  dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkMoveFrom), sizeof(fcSttbfBkmkMoveFrom));
-  dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkMoveFrom), sizeof(lcbSttbfBkmkMoveFrom));
-  dStream.read(reinterpret_cast<char *>(&fcPlcfBkfMoveFrom), sizeof(fcPlcfBkfMoveFrom));
-  dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfMoveFrom), sizeof(lcbPlcfBkfMoveFrom));
-  dStream.read(reinterpret_cast<char *>(&fcPlcfBklMoveFrom), sizeof(fcPlcfBklMoveFrom));
-  dStream.read(reinterpret_cast<char *>(&lcbPlcfBklMoveFrom), sizeof(lcbPlcfBklMoveFrom));
-  dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkMoveTo), sizeof(fcSttbfBkmkMoveTo));
-  dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkMoveTo), sizeof(lcbSttbfBkmkMoveTo));
-  dStream.read(reinterpret_cast<char *>(&fcPlcfBkfMoveTo), sizeof(fcPlcfBkfMoveTo));
-  dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfMoveTo), sizeof(lcbPlcfBkfMoveTo));
-  dStream.read(reinterpret_cast<char *>(&fcPlcfBklMoveTo), sizeof(fcPlcfBklMoveTo));
-  dStream.read(reinterpret_cast<char *>(&lcbPlcfBklMoveTo), sizeof(lcbPlcfBklMoveTo));
-  dStream.read(reinterpret_cast<char *>(&fcUnused1), sizeof(fcUnused1));
-  dStream.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(lcbUnused1));
-  dStream.read(reinterpret_cast<char *>(&fcUnused2), sizeof(fcUnused2));
-  dStream.read(reinterpret_cast<char *>(&lcbUnused2), sizeof(lcbUnused2));
-  dStream.read(reinterpret_cast<char *>(&fcUnused3), sizeof(fcUnused3));
-  dStream.read(reinterpret_cast<char *>(&lcbUnused3), sizeof(lcbUnused3));
-  dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkArto), sizeof(fcSttbfBkmkArto));
-  dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkArto), sizeof(lcbSttbfBkmkArto));
-  dStream.read(reinterpret_cast<char *>(&fcPlcfBkfArto), sizeof(fcPlcfBkfArto));
-  dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfArto), sizeof(lcbPlcfBkfArto));
-  dStream.read(reinterpret_cast<char *>(&fcPlcfBklArto), sizeof(fcPlcfBklArto));
-  dStream.read(reinterpret_cast<char *>(&lcbPlcfBklArto), sizeof(lcbPlcfBklArto));
-  dStream.read(reinterpret_cast<char *>(&fcArtoData), sizeof(fcArtoData));
-  dStream.read(reinterpret_cast<char *>(&lcbArtoData), sizeof(lcbArtoData));
-  dStream.read(reinterpret_cast<char *>(&fcUnused4), sizeof(fcUnused4));
-  dStream.read(reinterpret_cast<char *>(&lcbUnused4), sizeof(lcbUnused4));
-  dStream.read(reinterpret_cast<char *>(&fcUnused5), sizeof(fcUnused5));
-  dStream.read(reinterpret_cast<char *>(&lcbUnused5), sizeof(lcbUnused5));
-  dStream.read(reinterpret_cast<char *>(&fcUnused6), sizeof(fcUnused6));
-  dStream.read(reinterpret_cast<char *>(&lcbUnused6), sizeof(lcbUnused6));
-  dStream.read(reinterpret_cast<char *>(&fcOssTheme), sizeof(fcOssTheme));
-  dStream.read(reinterpret_cast<char *>(&lcbOssTheme), sizeof(lcbOssTheme));
-  dStream.read(reinterpret_cast<char *>(&fcColorSchemeMapping), sizeof(fcColorSchemeMapping));
-  dStream.read(reinterpret_cast<char *>(&lcbColorSchemeMapping), sizeof(lcbColorSchemeMapping));
+  dStream.read(reinterpret_cast<char *>(&fcPlcfmthd), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbPlcfmthd), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkMoveFrom), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkMoveFrom), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcPlcfBkfMoveFrom), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfMoveFrom), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcPlcfBklMoveFrom), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbPlcfBklMoveFrom), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkMoveTo), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkMoveTo), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcPlcfBkfMoveTo), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfMoveTo), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcPlcfBklMoveTo), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbPlcfBklMoveTo), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcUnused1), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcUnused2), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbUnused2), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcUnused3), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbUnused3), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcSttbfBkmkArto), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbSttbfBkmkArto), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcPlcfBkfArto), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbPlcfBkfArto), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcPlcfBklArto), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbPlcfBklArto), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcArtoData), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbArtoData), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcUnused4), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbUnused4), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcUnused5), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbUnused5), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcUnused6), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbUnused6), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcOssTheme), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbOssTheme), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&fcColorSchemeMapping), sizeof(ULONG));
+  dStream.read(reinterpret_cast<char *>(&lcbColorSchemeMapping), sizeof(ULONG));
 }
 
 // Reads an FibRgCswNew, using the current version of Word (97 -2007) to
 // select the appropriate data structure to read into memory, whilst
 // returning the size of data read for use in subsequent methods
-USHORT Fib::FibRgCswNew::readFibRgCswNew(std::ifstream& stream, const USHORT cswNewValue)
+VOID Fib::FibRgCswNew::readFibRgCswNew(std::ifstream& stream, const USHORT cswNewVal)
 {
-  USHORT retVal;
-  if (cswNewValue == EXPECTED_CSWNEW_97)
+  if (cswNewVal == EXPECTED_CSWNEW_97)
   {
     std::cout << "This version does not have the 'FibRgCswNew' structure.\n";
-    retVal = EXPECTED_CSWNEW_97;
   }
   else
   {
     stream.read(reinterpret_cast<char *>(&nFibNew), sizeof(USHORT));
-    retVal = this->rgCswNewData.readRgCswNewData(stream, nFibNew);
+    this->rgCswNewData.readFibRgCswNewData(stream, cswNewVal);
   }
-  return retVal;
 }
 
 // Reads from FibRgCswNewData structure, but what exactly is read depends
 // on the verion of Word. This version is determined by the 2nd argument
 // This function will return the size of the dat structure that was read
-USHORT Fib::FibRgCswNew::FibRgCswNewData::readFibRgCswNewData(std::ifstream& filestrm, const USHORT newVer)
+VOID Fib::FibRgCswNew::FibRgCswNewData::readFibRgCswNewData(std::ifstream& filestrm, const USHORT cswVer)
 {
-  USHORT retValue
-    if (newVer == NFIB_FOR_2000 || (newVer == NFIB_FOR_2002 || newVer == NFIB_FOR_2003))
-    {
-      this->fibRgCswNewData2000.read2000(filestrm);
-      retValue = EXPECTED_CSWNEW_2000;
-    }
-    else if (newVer == NFIB_FOR_2007)
-    {
-      this->fibRgCswNewData2007.read2007(filestrm);
-      retValue = EXPECTED_CSWNEW_2007;
-    }
-    return retValue;
+  if (cswVer == EXPECTED_CSWNEW_2000)
+  {
+    this->fibRgCswNewData2000.read2000(filestrm);
+  }
+  else if (cswVer == EXPECTED_CSWNEW_2007)
+  {
+    this->fibRgCswNewData2007.read2007(filestrm);
+  }
 }
 
 VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::read2000(std::ifstream & instream)
@@ -1465,7 +1440,7 @@ VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::read2000(std::ifstr
 VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::read2007(std::ifstream & streamin)
 {
   FibRgCswNewData2000 newdat2000;
-  newdat2000.readFibRgCswNewData2000(streamin);
+  newdat2000.read2000(streamin);
 
   streamin.read(reinterpret_cast<char *>(&lidThemeOther), sizeof(USHORT));
   streamin.read(reinterpret_cast<char *>(&lidThemeFE), sizeof(USHORT));
@@ -1475,13 +1450,13 @@ VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::read2007(std::ifstr
 // Inspects the entire data read into the in-memory copy of the
 // main data structures that represent the File Information Block.
 // Where appropriate, minor adjustments are to be made
-VOID Fib::inspectFibStructs(const USHORT ver)
+VOID Fib::inspectFibStructs()
 {
   base.process_FibBase();
   fibRgW.process_FibRgW97();
   fibRgLw.process_FibRgLw97();
-  fibRgFcLcbBlob.process_FibRgFcLcbBlob(ver);
-  rgCswNew.process_FibRgCswNew(ver);
+  fibRgFcLcbBlob.process_FibRgFcLcbBlob(base, fibRgLw);
+  fibRgCswNew.process_FibRgCswNew(base);
 }
 
 // Screens the members of FibBase to make sure all conditions are met
@@ -1558,7 +1533,7 @@ VOID Fib::FibBase::process_FibBase()
   {
     switch(this->lid)
     {
-    case THAI;
+    case THAI:
     case VIETNAMESE:
     case HINDI:
       this->lid = ENGLISH_UNITED_STATES;
@@ -1600,7 +1575,7 @@ VOID Fib::FibBase::process_FibBase()
     throw "fExtChar MUST be 1.";
   }
 
-  if (this->nFibBack != 0x00BF || this->nFibBack 1= 0x00C1)
+  if (this->nFibBack != 0x00BF || this->nFibBack != 0x00C1)
   {
     throw "Incorrect values for nFibBack.";
   }
@@ -1633,59 +1608,60 @@ VOID Fib::FibRgLw97::process_FibRgLw97()
   
   if (ccpEdn < 0)
   {
-    throw "ccpEdn must be greater than or equal to 0."
+    throw "ccpEdn must be greater than or equal to 0.";
   }
   
   if (ccpTxbx < 0)
   {
-    throw "ccpTxbx must be greater than or equal to 0."
+    throw "ccpTxbx must be greater than or equal to 0.";
   }
 
   if (ccpHdrTxbx < 0)
   {
-    throw "ccpKdrTxbx must be greater than or equal to 0."
+    throw "ccpKdrTxbx must be greater than or equal to 0.";
   }
 
 }
 
-VOID Fib::FibRgFcLcb::process_FibRgFcLcbBlob(const USHORT version);
+VOID Fib::FibRgFcLcb::process_FibRgFcLcbBlob(const FibBase &baseObj, const FibRgLw97 &rglwObj)
 {
+  USHORT version = baseObj.nFib;
   switch(version)
   {
   case NFIB_FOR_97:
-    fibRgFcLcb97.process_FibRgFcLcb97();
+    fibRgFcLcb97.process_FibRgFcLcb97(baseObj, rglwObj);
     break;
   case NFIB_FOR_2000:
-    fibRgFcLcb2000.process_FibRgFcLcb2000();
+    fibRgFcLcb2000.process_FibRgFcLcb2000(baseObj, rglwObj);
     break;
   case NFIB_FOR_2002:
-    fibRgFcLcb2002.process_FibRgFcLcb2002();
+    fibRgFcLcb2002.process_FibRgFcLcb2002(baseObj, rglwObj);
     break;
   case NFIB_FOR_2003:
-    fibRgFcLcb2003.process_FibRgFcLcb2003();
+    fibRgFcLcb2003.process_FibRgFcLcb2003(baseObj, rglwObj);
     break;
   case NFIB_FOR_2007:
-    fibRgFcLcb2007.process_FibRgFcLcb2007();
+    fibRgFcLcb2007.process_FibRgFcLcb2007(baseObj, rglwObj);
     break;
   }
 }
 
-VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
+VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97(const FibBase &bs, const FibRgLw97 &rglw)
 {
   if (this->lcbStshf == 0)
   {
     throw "lcbShshf must be a non-zero value.";
   }
 
-  if ((fibRgLw.ccpFtn == 0 && this->lcbPlcffndTxt != 0) ||
-      (fibRgLw.ccpFtn != 0 && this->lcbPlcffndTxt == 0))
+  if ((rglw.ccpFtn == 0 && this->lcbPlcffndTxt != 0) ||
+      (rglw.ccpFtn != 0 && this->lcbPlcffndTxt == 0))
   {
     throw "FibRgFcLcb97.lcbPlcffndTxt must be zero when"
       "FibRgLw97.ccpFtn is zero and vice versa.";
   }
 
-  if ((fibRgLw.ccpAtn == 0 && this->lcbPlcfandTxt != 0) ||
-      (fibRgLw.ccpAtn != 0 && this->lcbPlcfandTxt == 0))
+  if ((rglw.ccpAtn == 0 && this->lcbPlcfandTxt != 0) ||
+      (rglw.ccpAtn != 0 && this->lcbPlcfandTxt == 0))
   {
     throw "FibRgFcLcb97.lcbPlcfandTxt must be zero when"
       "FibRgLw97.ccpAtn is zero and vice versa.";
@@ -1696,7 +1672,7 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
     throw "FibRgFcLcb97.lcbPlcPad must be zero.";
   }
 
-  if (base.fGlsy == 0)
+  if (bs.fGlsy == 0)
   {
     if (this->lcbSttbfGlsy != 0)
     {
@@ -1787,8 +1763,8 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
     throw "'lcbFormFldSttbs' must be ZERO.";
   }
 
-  if ((fibRgLw.ccpEdn == 0 && this->lcbPlcfendTxt != 0) ||
-      (fibRgLw.ccpEdn != 0 && this->lcbPlcfendTxt == 0))
+  if ((rglw.ccpEdn == 0 && this->lcbPlcfendTxt != 0) ||
+      (rglw.ccpEdn != 0 && this->lcbPlcfendTxt == 0))
   {
     throw "FibRgFcLcb97.lcbPlcfendTxt must be zero when"
       "FibRgLw97.ccpEdn is zero and vice versa.";
@@ -1799,7 +1775,7 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
     throw "'lcbUnused4' must be ZERO.";
   }
 
-  if (base.fDot == 0)
+  if (bs.fDot == 0)
   {
     if (this->lcbSttbfCaption != 0)
     {
@@ -1812,7 +1788,7 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
     }
   }
 
-  if (fibRgLw.ccpTxbx == 0)
+  if (rglw.ccpTxbx == 0)
   {
     if (this->lcbPlcftxbxTxt != 0)
     {
@@ -1837,14 +1813,14 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
     }
   }
   
-  if ((fibRgLw.ccpHdrTxbx == 0 && this->lcbPlcfHdrtxbxTxt != 0) ||
-      (fibRgLw.ccpHdrTxbx != 0 && this->lcbPlcfHdrtxbxTxt != 0))
+  if ((rglw.ccpHdrTxbx == 0 && this->lcbPlcfHdrtxbxTxt != 0) ||
+      (rglw.ccpHdrTxbx != 0 && this->lcbPlcfHdrtxbxTxt != 0))
   {
     throw "FibRgFcLcb97.lcbPlcfHdrtxbxTxt must be zero when"
       "FibRgLw97.ccpHdrTxbx is zero and vice versa.";
   }
 
-  if (fibRgLw.ccpHdrTxbx == 0)
+  if (rglw.ccpHdrTxbx == 0)
   {
     if (this->lcbPlcfHdrtxbxTxt != 0)
     {
@@ -1874,7 +1850,7 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
     throw "'lcbSttbfIntlFld' must be ZERO.";
   }
 
-  if (base.nFib > NFIB_FOR_2000)
+  if (bs.nFib > NFIB_FOR_2000)
   {
     if (this->lcbSttbSavedBy != 0)
     {
@@ -1887,7 +1863,7 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
     }
   }
 
-  if (base.nFib == NFIB_FOR_2007)
+  if (bs.nFib == NFIB_FOR_2007)
   {
     if (this->lcbPlcfBteLvc != 0)
     {
@@ -1896,9 +1872,9 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97()
   }  
 }
  
-VOID Fib::FibRgFcLcb::FibRgFcLcb2000::process_FibRgFcLcb2000()
+VOID Fib::FibRgFcLcb::FibRgFcLcb2000::process_FibRgFcLcb2000(const FibBase &bas, const FibRgLw97 &rgl)
 {
-  rgFcLcb97.process_FibRgFcLcb97();
+  rgFcLcb97.process_FibRgFcLcb97(bas, rgl);
 
   if (this->lcbRmdThreading == 0)
   {
@@ -1906,16 +1882,16 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2000::process_FibRgFcLcb2000()
   }
 }
 
-VOID Fib::FibRgFcLcb::FibRgFcLcb2002::process_FibRgFcLcb2002()
+VOID Fib::FibRgFcLcb::FibRgFcLcb2002::process_FibRgFcLcb2002(const FibBase &bs, const FibRgLw97 &rglw)
 {
-  rgFcLcb2000.process_FibRgFcLcb2000();
+  rgFcLcb2000.process_FibRgFcLcb2000(bs, rglw);
 
   if (this->lcbUnused1 != 0)
   {
     throw "; lcbUnused1' must be ZERO.";
   }
 
-  if (base.nFib < NFIB_FOR_2002)
+  if (bs.nFib < NFIB_FOR_2002)
   {
     if (this->lcbPlcfpmiOldXP != 0)
     {
@@ -1954,9 +1930,9 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2002::process_FibRgFcLcb2002()
   }
 }
 
-VOID Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003()
+VOID Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003(const FibBase& bs, const FibRgLw97 &rglw)
 {
-  rgFcLcb2002.process_FibRgFcLcb2002();
+  rgFcLcb2002.process_FibRgFcLcb2002(bs, rglw);
   
   if (this->lcbCustomXForm > 4168
       && this->lcbCustomXForm % 2 != 0)
@@ -1969,7 +1945,7 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003()
     throw "'fcUnusded' and 'lcbUnused' must be ZERO.";
   }
 
-  if (base.nFib > NFIB_FOR_2003)
+  if (bs.nFib > NFIB_FOR_2003)
   {
     if (this->lcbPlcfpmiOld != 0)
     {
@@ -2013,9 +1989,9 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003()
   }
 }
 
-VOID Fib::FibRgFcLcb::FibRgFcLcb2007::process_FibRgFcLcb2007()
+VOID Fib::FibRgFcLcb::FibRgFcLcb2007::process_FibRgFcLcb2007(const FibBase &base, const FibRgLw97 &rglw)
 {
-  rgFcLcb2003.process_FibRgFcLcb2003();
+  rgFcLcb2003.process_FibRgFcLcb2003(base, rglw);
   
   if (this->lcbPlcfmthd != 0)
   {
@@ -2103,8 +2079,9 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2007::process_FibRgFcLcb2007()
   }
 }
 
-VOID Fib::FibRgCswNew::process_FibRgCswNew(const USHORT ver)
+VOID Fib::FibRgCswNew::process_FibRgCswNew(const FibBase &obj)
 {
+  USHORT ver = obj.nFib;
   if (ver == NFIB_FOR_2000 ||
       (ver == NFIB_FOR_2002) || (ver == NFIB_FOR_2003))
   {
@@ -2160,37 +2137,26 @@ inline VOID Fib::skip_fields(std::ifstream & docustrm, ULONG numSkipped) const
 // function will adjust the file pointer to the tune of the determined
 // deficit. This is to ensure that reading of subsequent fields commences
 // at the right offset.
-inline VOID Fib::adjust_file_pointer(std::ifstream& strm, USHORT gvnSize, USHORT standard) const
-{
-  if (gvnSize < standard)
-  {
-    const int diff = standard - gvnSize;
-    strm.seekg(diff, std::ios::cur);
-  }
-}
+// inline VOID Fib::adjust_file_pointer(std::ifstream& strm, USHORT gvnSize, USHORT standard) const
+// {
+//   if (gvnSize < standard)
+//   {
+//     const int diff = standard - gvnSize;
+//     strm.seekg(diff, std::ios::cur);
+//   }
+// }
 
 // Checks to confirm that the capacity assigned to a struct matches the expected value.
   // It may be recalled that the 'USHORT' fields hold a value which, when multiplied by a 
   // specified value is supposed to equate the size in memory of the said struct.
-template <class T>
-USHORT Fib::computeStructSize(const T& fibStrct, const USHORT cbValue, const USHORT expValue, const int multiplier)
-{
-  USHORT cbSize;
-  if (cbValue == expValue)
-  {
-    cbSize = cbValue * multiplier;
-  }
-  return cbSize;
-}
-
-// Ckecks whether the value read from the stream that reflects the capacity
-// of the subsequent struct is equal to its expected value, and throws an
-// expection if this confirmation is not in the affirmative, which will be
-// caught only after the file stream has been safely closed post-reading
- inline VOID  Fib::verifyValues(const USHORT rd, const USHORT exp) const
- {
-   if (rd != exp)
-   {
-     throw "'csw' is not equal to the expecte value.";
-   }
- }
+// template <class T>
+// USHORT Fib::computeStructSize(const USHORT cbValue, const USHORT expValue, const in
+// 			      t multiplier) const
+// {
+//   USHORT cbSize = { };
+//   if (cbValue == expValue)
+//   {
+//     cbSize = cbValue * multiplier;
+//   }
+//   return cbSize;
+// }

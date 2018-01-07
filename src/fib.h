@@ -39,27 +39,25 @@
 #include <iostream>
 #include "dtypes.h"  // those funny MS data types are defined in this file 
 
-#define _SET_BITS_1 0
-#define _SET_BITS_3 0
-#define _SET_BITS_4 0
-
-#define ERR_LCBSTSHF_W97 0x3
-
 struct Fib
 {
   Fib();
   ~Fib();
   VOID readFib(std::ifstream&);
-  // inline USHORT determine_nFib_use() const;
   inline VOID skip_fields(std::ifstream&, ULONG) const;
-  inline VOID adjust_file_pointer(std::ifstream&, USHORT, USHORT) const;
+  // inline VOID adjust_file_pointer(std::ifstream&, USHORT, USHORT) const;
   inline static BYTE assignBits(BYTE, BYTE, int);
-  USHORT computeStructSize(const T&, const USHORT, const USHORT, const USHORT) const;
-  VOID inspectFibStructs(const USHORT);
-  inline VOID verifyValues(const USHORT, const USHORT) const;
+  //template <class T>
+  // USHORT computeStructSize(const T&, const USHORT, const USHORT, const int) const;
+  VOID inspectFibStructs();
   
   struct FibBase
   {
+    FibBase();
+    ~FibBase();
+    VOID readFibBase(std::ifstream&);
+    VOID process_FibBase();
+	
     USHORT wIdent;
     USHORT nFib;
     USHORT unused;
@@ -91,11 +89,6 @@ struct Fib
     USHORT reserved4;
     ULONG reserved5;
     ULONG reserved6;
-
-    FibBase();
-    ~FibBase();
-    VOID readFibBase(std::ifstream&);
-    VOID process_fibBase();
   } base; // !struct FibBase
   
   USHORT csw;
@@ -162,15 +155,15 @@ struct Fib
   {
     FibRgFcLcb();
     ~FibRgFcLcb();
-    USHORT readFibRgFcLcbBlob(std::ifstream&, USHORT);
-    VOID process_FibRgFcLcbBlob(const USHORT);
+    VOID readFibRgFcLcbBlob(std::ifstream&, const USHORT);
+    VOID process_FibRgFcLcbBlob(const FibBase&, const FibRgLw97&);
     
     struct FibRgFcLcb97
     {
       FibRgFcLcb97();
       ~FibRgFcLcb97();
       VOID readFibRgFcLcb97(std::ifstream &);
-      VOID process_FibRgFcLcb97();
+      VOID process_FibRgFcLcb97(const FibBase&, const FibRgLw97&);
 
       ULONG fcStshfOrig;
       ULONG lcbStshfOrig;
@@ -362,6 +355,11 @@ struct Fib
 
     struct FibRgFcLcb2000
     {
+	  FibRgFcLcb2000();
+      ~FibRgFcLcb2000();
+      VOID readFibRgFcLcb2000(std::ifstream &);
+      VOID process_FibRgFcLcb2000(const FibBase&, const FibRgLw97&);
+	  
       FibRgFcLcb97 rgFcLcb97;
       ULONG fcPlcfTch;
       ULONG lcbPlcfTch;
@@ -393,11 +391,6 @@ struct Fib
       ULONG lcbPgdEdnOld;
       ULONG fcBkdEdnOld;
       ULONG lcbBkdEdnOld;
-
-      FibRgFcLcb2000();
-      ~FibRgFcLcb2000();
-      VOID readFibRgFcLcb2000(std::ifstream &);
-      VOID process_FibRgFcLcb2000();
     } fibRgFcLcb2000;     // !struct FibRgFcLcb2000
 
     struct FibRgFcLcb2002
@@ -405,7 +398,7 @@ struct Fib
       FibRgFcLcb2002();
       ~FibRgFcLcb2002();
       VOID readFibRgFcLcb2002(std::ifstream &);
-      VOID process_FibRgFcLcb2002();
+      VOID process_FibRgFcLcb2002(const FibBase&, const FibRgLw97&);
       
       FibRgFcLcb2000 rgFcLcb2000;
       ULONG fcUnused1;
@@ -471,7 +464,7 @@ struct Fib
       FibRgFcLcb2003();
       ~FibRgFcLcb2003();
       VOID readFibRgFcLcb2003(std::ifstream &);
-      VOID process_FibRgFcLcb2003();
+      VOID process_FibRgFcLcb2003(const FibBase&, const FibRgLw97&);
       
       FibRgFcLcb2002 rgFcLcb2002;
       ULONG fcHplxsdr;
@@ -537,7 +530,7 @@ struct Fib
       FibRgFcLcb2007();
       ~FibRgFcLcb2007();
       VOID readFibRgFcLcb2007(std::ifstream &);
-      VOID process_FibRgFcLcb2007();
+      VOID process_FibRgFcLcb2007(const FibBase&, const FibRgLw97&);
 
       FibRgFcLcb2003 rgFcLcb2003;
       ULONG fcPlcfmthd;
@@ -587,8 +580,8 @@ struct Fib
   {
     FibRgCswNew();
     ~FibRgCswNew();
-    USHORT readFibRgCswNew(std::ifstream&, USHORT);
-    VOID process_FibRgCswNew(const USHORT);
+    VOID readFibRgCswNew(std::ifstream&, const USHORT);
+    VOID process_FibRgCswNew(const FibBase&);
     
     USHORT nFibNew;
 
@@ -596,7 +589,7 @@ struct Fib
     {
       FibRgCswNewData();      
       ~FibRgCswNewData();
-      readFibRgCswNewData(std::ifstream&, USHORT);
+      VOID readFibRgCswNewData(std::ifstream&, const USHORT);
       
       struct FibRgCswNewData2000
       {
