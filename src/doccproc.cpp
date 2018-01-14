@@ -1,4 +1,4 @@
-#include "DoccProc.h"
+#include "doccproc.h"
 
 DoccProc::DoccProc()
 {
@@ -22,36 +22,29 @@ std::string DoccProc::getString() const
 
 void DoccProc::read_file_data(std::ifstream &stream)
 {
-	_olehdr.readCFHeader(stream);
-	_sectSz = _olehdr.get_sector_size();
-	stream.seekg(_olehdr.DirSect1 * _sectSz, std::ios::cur);
+  _olehdr.readCFHeader(stream);
+  unsigned int offset = _olehdr.get_sector_offset(_olehdr.DirSect1);
 
-	_root.readDirEntry(stream);
-	_strmName = u"WordDocument";
+  stream.seekg(offset);
+  _root.readDirEntry(stream);
+  _strmName = u"WordDocument";
 
-	_wdocStart = _root.find_directory(stream, _olehdr, _strmName);
-	stream.seekg(_wdocStart, std::ios::beg);
-	
-	_fib.readFib(stream);
-	if (_fib.base.fWhichTblStm)
-	{
-		_strmName = u"1Table";
-	}
-	else
-	{
-		_strmName = u"0Table";
-	}
+  _wdocStart = _root.find_stream_object(stream, _olehdr, _strmName);
+  stream.seekg(_wdocStart);
+  _fib.read_Fib(stream);
+  
+  if (_fib.base.fWhichTblStm)
+    _strmName = u"1Table";
+  else
+    _strmName = u"0Table";
 
-	_tablStart = _root.find_directory(stream, _olehdr, _strmName);
+  _tablStart = _root.find_stream_object(stream, _olehdr, _strmName);
+  stream.seekg(_tablStart);
 
-	stream.seekg(_tablStart, std::ios::beg);
-	
-	_clxOffset = _fib.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
-	stream.seekg(_clxOffset, std::ios::cur);
+  _clxOffset = _fib.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
+  stream.seekg(_clxOffset, std::ios::cur);
 
-	_clxobj.readToClx(stream);
-
-	return;
+  _clxobj.readToClx(stream);
 }
 
 void DoccProc::collect_text(std::ifstream &filestrm)

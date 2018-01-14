@@ -1,4 +1,4 @@
-#include "TextProc.h"
+#include "textproc.h"
 
 TextProc::TextProc()
 {

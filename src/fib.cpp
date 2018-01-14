@@ -818,17 +818,17 @@ Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::~FibRgCswNewData2007()
 // Reads the File Information Block (FIB)
 // This method also calls other functions that read relevant
 // parts of the FIB.
-VOID Fib::readFib(std::ifstream &docstream)
+VOID Fib::read_Fib(std::ifstream &docstream)
 {
-  base.readFibBase(docstream);  
+  base.read_FibBase(docstream);  
   docstream.read(reinterpret_cast<char *>(&csw), sizeof(USHORT));
-  fibRgW.readFibRgW(docstream);
+  fibRgW.read_FibRgW(docstream);
   docstream.read(reinterpret_cast<char *>(&cslw), sizeof(USHORT));
-  fibRgLw.readFibRgLw(docstream);
+  fibRgLw.read_FibRgLw(docstream);
   docstream.read(reinterpret_cast<char *>(&cbRgFcLcb), sizeof(USHORT));
-  fibRgFcLcbBlob.readFibRgFcLcbBlob(docstream, cbRgFcLcb);
+  fibRgFcLcbBlob.read_FibRgFcLcbBlob(docstream, cbRgFcLcb);
   docstream.read(reinterpret_cast<char *>(&cswNew), sizeof(USHORT));
-  fibRgCswNew.readFibRgCswNew(docstream, cswNew);
+  fibRgCswNew.read_FibRgCswNew(docstream, cswNew);
   if (cswNew != EXPECTED_CSWNEW_97)
   {
     base.nFib = fibRgCswNew.nFibNew;
@@ -838,10 +838,15 @@ VOID Fib::readFib(std::ifstream &docstream)
 // Reads the FibBase from the WordDocument Stream
 // Those parts that are bit fields are extracted using
 // bit masks and other relevant constructs
-VOID Fib::FibBase::readFibBase(std::ifstream &docfile)
+VOID Fib::FibBase::read_FibBase(std::ifstream &docfile)
 {
   docfile.read(reinterpret_cast<char *>(&wIdent), sizeof(USHORT));
   docfile.read(reinterpret_cast<char *>(&nFib), sizeof(USHORT));
+  if (nFib == NFIB_SPECIAL || nFib == NFIB_BIDI_BLD)
+  {
+    nFib = NFIB_FOR_97;
+  }
+
   docfile.read(reinterpret_cast<char *>(&unused), sizeof(USHORT));
   docfile.read(reinterpret_cast<char *>(&lid), sizeof(USHORT));
   docfile.read(reinterpret_cast<char *>(&pnNext), sizeof(USHORT));
@@ -904,7 +909,7 @@ VOID Fib::FibBase::readFibBase(std::ifstream &docfile)
   docfile.read(reinterpret_cast<char *>(&reserved6), sizeof(ULONG));
 }
 
-VOID Fib::FibRgLw97::readFibRgLw(std::ifstream & mystream)
+VOID Fib::FibRgLw97::read_FibRgLw(std::ifstream & mystream)
 { // TODO: Clean this thing up!
   USHORT add_member_sizes = 0;   // What on earth was I thinking???
 
@@ -954,7 +959,7 @@ VOID Fib::FibRgLw97::readFibRgLw(std::ifstream & mystream)
   add_member_sizes += sizeof(reserved14);
 }
 
-VOID Fib::FibRgW97::readFibRgW(std::ifstream & filestrm)
+VOID Fib::FibRgW97::read_FibRgW(std::ifstream & filestrm)
 {
   filestrm.read(reinterpret_cast<char *>(&reserved1), sizeof(USHORT));
   filestrm.read(reinterpret_cast<char *>(&reserved2), sizeof(USHORT));
@@ -975,31 +980,31 @@ VOID Fib::FibRgW97::readFibRgW(std::ifstream & filestrm)
 // Reads the value of a part of the FIB that varies in content and structure
   // with different versions of Word (97 - 2007). The nFib (a member of the FibBase
   // data structure) is what determines which version is used.
-VOID Fib::FibRgFcLcb::readFibRgFcLcbBlob(std::ifstream& flStream, const USHORT newVer)
+VOID Fib::FibRgFcLcb::read_FibRgFcLcbBlob(std::ifstream& flStream, const USHORT newVer)
 {
   switch (newVer)
   {
   case EXPECTED_CBRGFCLCB_97:
-    this->fibRgFcLcb97.readFibRgFcLcb97(flStream);
+    fibRgFcLcb97.read_FibRgFcLcb97(flStream);
     break;
   case EXPECTED_CBRGFCLCB_2000:
-    this->fibRgFcLcb2000.readFibRgFcLcb2000(flStream);
+    fibRgFcLcb2000.read_FibRgFcLcb2000(flStream);
     break;
   case EXPECTED_CBRGFCLCB_2002:
-    this->fibRgFcLcb2002.readFibRgFcLcb2002(flStream);
+    fibRgFcLcb2002.read_FibRgFcLcb2002(flStream);
     break;
   case EXPECTED_CBRGFCLCB_2003:
-    this->fibRgFcLcb2003.readFibRgFcLcb2003(flStream);
+    fibRgFcLcb2003.read_FibRgFcLcb2003(flStream);
     break;
   case EXPECTED_CBRGFCLCB_2007:
-    this->fibRgFcLcb2007.readFibRgFcLcb2007(flStream);
+    fibRgFcLcb2007.read_FibRgFcLcb2007(flStream);
     break;
   default:
     throw "çbRgFcLbc' is holding an invalid value.";
   }
 }
 
-VOID Fib::FibRgFcLcb::FibRgFcLcb97::readFibRgFcLcb97(std::ifstream & mainstrm)
+VOID Fib::FibRgFcLcb::FibRgFcLcb97::read_FibRgFcLcb97(std::ifstream & mainstrm)
 {
   mainstrm.read(reinterpret_cast<char *>(&fcStshfOrig), sizeof(ULONG));
   mainstrm.read(reinterpret_cast<char *>(&lcbStshfOrig), sizeof(ULONG));
@@ -1189,11 +1194,10 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::readFibRgFcLcb97(std::ifstream & mainstrm)
   mainstrm.read(reinterpret_cast<char *>(&lcbSttbfUssr), sizeof(ULONG));
 }
 
-VOID Fib::FibRgFcLcb::FibRgFcLcb2000::readFibRgFcLcb2000(std::ifstream & wrdfile)
+VOID Fib::FibRgFcLcb::FibRgFcLcb2000::read_FibRgFcLcb2000(std::ifstream & wrdfile)
 {
-  FibRgFcLcb97 varPortion97;
-  varPortion97.readFibRgFcLcb97(wrdfile);
-
+  rgFcLcb97.read_FibRgFcLcb97(wrdfile);
+  
   wrdfile.read(reinterpret_cast<char *>(&fcPlcfTch), sizeof(ULONG));
   wrdfile.read(reinterpret_cast<char *>(&lcbPlcfTch), sizeof(ULONG));
   wrdfile.read(reinterpret_cast<char *>(&fcRmdThreading), sizeof(ULONG));
@@ -1227,10 +1231,9 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2000::readFibRgFcLcb2000(std::ifstream & wrdfile
 }
 
 
-VOID Fib::FibRgFcLcb::FibRgFcLcb2002::readFibRgFcLcb2002(std::ifstream &documentStr)
+VOID Fib::FibRgFcLcb::FibRgFcLcb2002::read_FibRgFcLcb2002(std::ifstream &documentStr)
 {
-  FibRgFcLcb2000 varPortion2000;
-  varPortion2000.readFibRgFcLcb2000(documentStr);
+  rgFcLcb2000.read_FibRgFcLcb2000(documentStr);
 
   documentStr.read(reinterpret_cast<char *>(&fcUnused1), sizeof(ULONG));
   documentStr.read(reinterpret_cast<char *>(&lcbUnused1), sizeof(ULONG));
@@ -1291,10 +1294,9 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2002::readFibRgFcLcb2002(std::ifstream &document
 }
 
 
-VOID Fib::FibRgFcLcb::FibRgFcLcb2003::readFibRgFcLcb2003(std::ifstream & dotdocstrm)
-{
-  FibRgFcLcb2002 varPortion2002;
-  varPortion2002.readFibRgFcLcb2002(dotdocstrm);
+VOID Fib::FibRgFcLcb::FibRgFcLcb2003::read_FibRgFcLcb2003(std::ifstream & dotdocstrm)
+{  
+  rgFcLcb2002.read_FibRgFcLcb2002(dotdocstrm);
 
   dotdocstrm.read(reinterpret_cast<char *>(&fcHplxsdr), sizeof(ULONG));
   dotdocstrm.read(reinterpret_cast<char *>(&lcbHplxsdr), sizeof(ULONG));
@@ -1352,14 +1354,11 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2003::readFibRgFcLcb2003(std::ifstream & dotdocs
   dotdocstrm.read(reinterpret_cast<char *>(&lcbAfdEdn), sizeof(ULONG));
   dotdocstrm.read(reinterpret_cast<char *>(&fcAfd), sizeof(ULONG));
   dotdocstrm.read(reinterpret_cast<char *>(&lcbAfd), sizeof(ULONG));
-
-  return;
 }
 
-VOID Fib::FibRgFcLcb::FibRgFcLcb2007::readFibRgFcLcb2007(std::ifstream & dStream)
-{
-  FibRgFcLcb2003 varPortion2003;
-  varPortion2003.readFibRgFcLcb2003(dStream);
+VOID Fib::FibRgFcLcb::FibRgFcLcb2007::read_FibRgFcLcb2007(std::ifstream & dStream)
+{  
+  rgFcLcb2003.read_FibRgFcLcb2003(dStream);
 
   dStream.read(reinterpret_cast<char *>(&fcPlcfmthd), sizeof(ULONG));
   dStream.read(reinterpret_cast<char *>(&lcbPlcfmthd), sizeof(ULONG));
@@ -1404,7 +1403,7 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2007::readFibRgFcLcb2007(std::ifstream & dStream
 // Reads an FibRgCswNew, using the current version of Word (97 -2007) to
 // select the appropriate data structure to read into memory, whilst
 // returning the size of data read for use in subsequent methods
-VOID Fib::FibRgCswNew::readFibRgCswNew(std::ifstream& stream, const USHORT cswNewVal)
+VOID Fib::FibRgCswNew::read_FibRgCswNew(std::ifstream& stream, const USHORT cswNewVal)
 {
   if (cswNewVal == EXPECTED_CSWNEW_97)
   {
@@ -1413,34 +1412,34 @@ VOID Fib::FibRgCswNew::readFibRgCswNew(std::ifstream& stream, const USHORT cswNe
   else
   {
     stream.read(reinterpret_cast<char *>(&nFibNew), sizeof(USHORT));
-    this->rgCswNewData.readFibRgCswNewData(stream, cswNewVal);
+    rgCswNewData.read_FibRgCswNewData(stream, cswNewVal);
   }
 }
 
 // Reads from FibRgCswNewData structure, but what exactly is read depends
 // on the verion of Word. This version is determined by the 2nd argument
 // This function will return the size of the dat structure that was read
-VOID Fib::FibRgCswNew::FibRgCswNewData::readFibRgCswNewData(std::ifstream& filestrm, const USHORT cswVer)
+VOID Fib::FibRgCswNew::FibRgCswNewData::read_FibRgCswNewData(std::ifstream& filestrm, const USHORT cswVer)
 {
   if (cswVer == EXPECTED_CSWNEW_2000)
   {
-    this->fibRgCswNewData2000.read2000(filestrm);
+    fibRgCswNewData2000.read_2000(filestrm);
   }
   else if (cswVer == EXPECTED_CSWNEW_2007)
   {
-    this->fibRgCswNewData2007.read2007(filestrm);
+    fibRgCswNewData2007.read_2007(filestrm);
   }
 }
 
-VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::read2000(std::ifstream & instream)
+VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::read_2000(std::ifstream & instream)
 {
   instream.read(reinterpret_cast<char *>(&cQuickSavesNew), sizeof(USHORT));
 }
 
-VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::read2007(std::ifstream & streamin)
+VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::read_2007(std::ifstream & streamin)
 {
   FibRgCswNewData2000 newdat2000;
-  newdat2000.read2000(streamin);
+  newdat2000.read_2000(streamin);
 
   streamin.read(reinterpret_cast<char *>(&lidThemeOther), sizeof(USHORT));
   streamin.read(reinterpret_cast<char *>(&lidThemeFE), sizeof(USHORT));
@@ -1467,14 +1466,9 @@ VOID Fib::FibBase::process_FibBase()
     throw "Fle is either corrupted or not of the specidied format.";
   }
   
-  if (this->nFib == NFIB_SPECIAL || this->nFib == NFIB_BIDI_BLD)
+  if (nFib >= NFIB_FOR_2000)
   {
-    this->nFib = NFIB_FOR_97;
-  }
-
-  if (this->nFib >= NFIB_FOR_2000)
-  {
-    switch(this->lid)
+    switch(lid)
     {
     case CHINESE_TAIWAN:
     case GERMAN_GERMANY:
@@ -1524,26 +1518,26 @@ VOID Fib::FibBase::process_FibBase()
     case SPANISH_UNITED_STATES:
     case SPANISH_LATIN_AMERICA:
     case FRENCH_NORTH_AFRICA:
-      this->lid = ENGLISH_UNITED_STATES;
+      lid = ENGLISH_UNITED_STATES;
       break;
     }
   }
 
-  if (this->nFib >= NFIB_FOR_2002)
+  if (nFib >= NFIB_FOR_2002)
   {
-    switch(this->lid)
+    switch(lid)
     {
     case THAI:
     case VIETNAMESE:
     case HINDI:
-      this->lid = ENGLISH_UNITED_STATES;
+      lid = ENGLISH_UNITED_STATES;
       break;
     }
   }
   
   if (pnNext != 0)
   {
-    if (this->fGlsy == 1 || this->fDot == 0)
+    if (fGlsy == 1 || fDot == 0)
     {
       throw "pnNext MUST be zero.";
     }
@@ -1562,20 +1556,20 @@ VOID Fib::FibBase::process_FibBase()
     }
   }
   
-  if (this->nFib >= NFIB_FOR_2000)
+  if (nFib >= NFIB_FOR_2000)
   {
-    if (this->cQuickSaves != 0xF)
+    if (cQuickSaves != 0xF)
     {
       throw "cQuickSaves is not equal to 0xF.";
     }
   }
 
-  if (this->fExtChar != 1)
+  if (fExtChar != 1)
   {
     throw "fExtChar MUST be 1.";
   }
 
-  if (this->nFibBack != 0x00BF || this->nFibBack != 0x00C1)
+  if (nFibBack != 0x00BF || nFibBack != 0x00C1)
   {
     throw "Incorrect values for nFibBack.";
   }
@@ -1587,21 +1581,21 @@ VOID Fib::FibRgW97::process_FibRgW97()
  
 VOID Fib::FibRgLw97::process_FibRgLw97()
 {
-  if (this->ccpText < 0)
+  if (ccpText < 0)
   {
     throw "ccpText must be greater than or equal to 0.";
   }
 
-  if (this->ccpFtn < 0)
+  if (ccpFtn < 0)
   {
     throw "ccpFtn must be greater than or equal to 0.";
   }
-  if (this->ccpHdd < 0)
+  if (ccpHdd < 0)
   {
     throw "ccpHdd must be greater than or equal to 0.";
   }
 
-  if (this->ccpAtn < 0)
+  if (ccpAtn < 0)
   {
     throw "ccpAtn must be greater than or equal to 0.";
   }
@@ -1648,123 +1642,123 @@ VOID Fib::FibRgFcLcb::process_FibRgFcLcbBlob(const FibBase &baseObj, const FibRg
 
 VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97(const FibBase &bs, const FibRgLw97 &rglw)
 {
-  if (this->lcbStshf == 0)
+  if (lcbStshf == 0)
   {
     throw "lcbShshf must be a non-zero value.";
   }
 
-  if ((rglw.ccpFtn == 0 && this->lcbPlcffndTxt != 0) ||
-      (rglw.ccpFtn != 0 && this->lcbPlcffndTxt == 0))
+  if ((rglw.ccpFtn == 0 && lcbPlcffndTxt != 0) ||
+      (rglw.ccpFtn != 0 && lcbPlcffndTxt == 0))
   {
     throw "FibRgFcLcb97.lcbPlcffndTxt must be zero when"
       "FibRgLw97.ccpFtn is zero and vice versa.";
   }
 
-  if ((rglw.ccpAtn == 0 && this->lcbPlcfandTxt != 0) ||
-      (rglw.ccpAtn != 0 && this->lcbPlcfandTxt == 0))
+  if ((rglw.ccpAtn == 0 && lcbPlcfandTxt != 0) ||
+      (rglw.ccpAtn != 0 && lcbPlcfandTxt == 0))
   {
     throw "FibRgFcLcb97.lcbPlcfandTxt must be zero when"
       "FibRgLw97.ccpAtn is zero and vice versa.";
   }
 
-  if (this->lcbPlcPad != 0)
+  if (lcbPlcPad != 0)
   {
     throw "FibRgFcLcb97.lcbPlcPad must be zero.";
   }
 
   if (bs.fGlsy == 0)
   {
-    if (this->lcbSttbfGlsy != 0)
+    if (lcbSttbfGlsy != 0)
     {
       throw "FibRgFcLcb97.lcbSttbfGlsy must be zero when base.fGlsy is zero";
     }
 
-    if (this->lcbPlcfGlsy != 0)
+    if (lcbPlcfGlsy != 0)
     {
       throw "FibRgFcLcb97.lcbPlcfGlsy must be zero when base.fGlsy is zero";
     }
 
-    if (this->lcbSttbGlsyStyle != 0)
+    if (lcbSttbGlsyStyle != 0)
     {
       throw "FibRgFcLcb97.lcbSttbGlsyStyle must be zero when base.fGlsy is zero";
     }
   }
   else
   {
-    if (this->lcbSttbGlsyStyle == 0)
+    if (lcbSttbGlsyStyle == 0)
     {
       throw "'FibRgFcLcb97.lcbSttbGlsyStyle' should be non-zero.";
     }
   }
 
-  if (this->fcPlcfBteChpx <= 0 || this->lcbPlcfBteChpx <= 0)
+  if (fcPlcfBteChpx <= 0 || lcbPlcfBteChpx <= 0)
   {
     throw "Both fcPlcfBteChpx and lcbPlcfBteChpx of FibRgFcLcb97 must be > 0.";
   }
 
-  if (this->fcPlcfBtePapx <= 0 || this->lcbPlcfBtePapx <= 0)
+  if (fcPlcfBtePapx <= 0 || lcbPlcfBtePapx <= 0)
   {
     throw "Both fcPlcfBtePapx and lcbPlcfBtePapx of FibRgFcLcb97 must be > 0.";
   }
 
-  if (this->lcbPlcfSea != 0)
+  if (lcbPlcfSea != 0)
   {
     throw "'lcbPlcSea' must be zero.";
   }
   
-  if (this->lcbPlcfFldMcr != 0)
+  if (lcbPlcfFldMcr != 0)
   {
     throw "'lcbPlcfFldMcr' must be zero.";
   }
 
-  if (this->lcbUnused1 != 0)
+  if (lcbUnused1 != 0)
   {
     throw "'lcbUnused1' must be zero.";
   }
 
-  if (this->lcbSttbfMcr != 0)
+  if (lcbSttbfMcr != 0)
   {
     throw "'lcbSttbfMcr' must be zero.";
   }
   
-  if (this->lcbDop == 0)
+  if (lcbDop == 0)
   {
     throw "'lcbDop must not be zero.";
   }
 
   
-  if (this->lcbSttbfAssoc == 0)
+  if (lcbSttbfAssoc == 0)
   {
     throw "'lcbSttbfAssoc' must not be zero.";
   }
   
-  if (this->lcbClx <= 0)
+  if (lcbClx <= 0)
   {
     throw "'lcbClx' must be greater than ZERO.";
   }
 
-  if (this->lcbPlcfPgdFtn != 0)
+  if (lcbPlcfPgdFtn != 0)
   {
     throw "'lcbPlcfPgdFtn' must be ZERO.";
   }
 
-  if (this->lcbAutosaveSource != 0)
+  if (lcbAutosaveSource != 0)
   {
     throw "'lcbAutosaveSource' must be ZERO.";
   }
   
-  if (this->lcbUnused2 != 0 || this->lcbUnused3 != 0)
+  if (lcbUnused2 != 0 || lcbUnused3 != 0)
   {
     throw "'lcbUnsed2 /-3 must be ZERO.";
   }
   
-  if (this->lcbFormFldSttbs != 0)
+  if (lcbFormFldSttbs != 0)
   {
     throw "'lcbFormFldSttbs' must be ZERO.";
   }
 
-  if ((rglw.ccpEdn == 0 && this->lcbPlcfendTxt != 0) ||
-      (rglw.ccpEdn != 0 && this->lcbPlcfendTxt == 0))
+  if ((rglw.ccpEdn == 0 && lcbPlcfendTxt != 0) ||
+      (rglw.ccpEdn != 0 && lcbPlcfendTxt == 0))
   {
     throw "FibRgFcLcb97.lcbPlcfendTxt must be zero when"
       "FibRgLw97.ccpEdn is zero and vice versa.";
@@ -1777,12 +1771,12 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97(const FibBase &bs, cons
 
   if (bs.fDot == 0)
   {
-    if (this->lcbSttbfCaption != 0)
+    if (lcbSttbfCaption != 0)
     {
       throw "'lcbSttbfCaption' must be ZERO when base.fDot is also zero.";
     }
 
-    if (this->lcbSttbfAutoCaption != 0)
+    if (lcbSttbfAutoCaption != 0)
     {
       throw "'lcbSttbfAutoCaption' must be ZERO when base.fDot is also zero.";
     }
@@ -1790,31 +1784,31 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97(const FibBase &bs, cons
 
   if (rglw.ccpTxbx == 0)
   {
-    if (this->lcbPlcftxbxTxt != 0)
+    if (lcbPlcftxbxTxt != 0)
     {
       throw "lcbPlcftxbxTxt' should be ZERO.";
     }
 
-    if (this->lcbPlcfTxbxBkd != 0)
+    if (lcbPlcfTxbxBkd != 0)
     {
       throw "'lcbPlcfTxbxBkd should be ZERO.";
     }
   }
   else
   {
-    if (this->lcbPlcftxbxTxt == 0)
+    if (lcbPlcftxbxTxt == 0)
     {
       throw "lcbPlcftxbxTxt' should not be ZERO.";
     }
 
-    if (this->lcbPlcfTxbxBkd == 0)
+    if (lcbPlcfTxbxBkd == 0)
     {
       throw "'lcbPlcfTxbxBkd should not be ZERO.";
     }
   }
   
-  if ((rglw.ccpHdrTxbx == 0 && this->lcbPlcfHdrtxbxTxt != 0) ||
-      (rglw.ccpHdrTxbx != 0 && this->lcbPlcfHdrtxbxTxt != 0))
+  if ((rglw.ccpHdrTxbx == 0 && lcbPlcfHdrtxbxTxt != 0) ||
+      (rglw.ccpHdrTxbx != 0 && lcbPlcfHdrtxbxTxt != 0))
   {
     throw "FibRgFcLcb97.lcbPlcfHdrtxbxTxt must be zero when"
       "FibRgLw97.ccpHdrTxbx is zero and vice versa.";
@@ -1822,42 +1816,42 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97(const FibBase &bs, cons
 
   if (rglw.ccpHdrTxbx == 0)
   {
-    if (this->lcbPlcfHdrtxbxTxt != 0)
+    if (lcbPlcfHdrtxbxTxt != 0)
     {
       throw "lcbPlcfHdrtxbxTxt' should be ZERO.";
     }
 
-    if (this->lcbPlcfTxbxHdrBkd != 0)
+    if (lcbPlcfTxbxHdrBkd != 0)
     {
       throw "lcbPlcfTxbxHdrBkd' should be ZERO.";
     }
   }
   else
   {
-    if (this->lcbPlcfHdrtxbxTxt == 0)
+    if (lcbPlcfHdrtxbxTxt == 0)
     {
       throw "lcbPlcfHdrtxbxTxt' should not be ZERO.";
     }
 
-    if (this->lcbPlcfTxbxHdrBkd == 0)
+    if (lcbPlcfTxbxHdrBkd == 0)
     {
       throw "lcbPlcfTxbxHdrBkd' should be ZERO.";
     }
   }
   
-  if (this->lcbSttbfIntlFld != 0)
+  if (lcbSttbfIntlFld != 0)
   {
     throw "'lcbSttbfIntlFld' must be ZERO.";
   }
 
   if (bs.nFib > NFIB_FOR_2000)
   {
-    if (this->lcbSttbSavedBy != 0)
+    if (lcbSttbSavedBy != 0)
     {
       throw "'lcbSttbSavedBy' should be ZERO for tis version of Word";
     }
 
-    if (this->lcbPlcfLvcPre10 != 0)
+    if (lcbPlcfLvcPre10 != 0)
     {
       throw "'lcbPlcfLvcPre10' should be ZERO for this version of Word.";
     }
@@ -1865,7 +1859,7 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb97::process_FibRgFcLcb97(const FibBase &bs, cons
 
   if (bs.nFib == NFIB_FOR_2007)
   {
-    if (this->lcbPlcfBteLvc != 0)
+    if (lcbPlcfBteLvc != 0)
     {
       throw "'lcbPlcfBteLvc' should be zero in the version of Word.";
     }
@@ -1876,7 +1870,7 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2000::process_FibRgFcLcb2000(const FibBase &bas,
 {
   rgFcLcb97.process_FibRgFcLcb97(bas, rgl);
 
-  if (this->lcbRmdThreading == 0)
+  if (lcbRmdThreading == 0)
   {
     throw "'lcbRmdThreading' must not be ZERO.";
   }
@@ -1886,45 +1880,45 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2002::process_FibRgFcLcb2002(const FibBase &bs, 
 {
   rgFcLcb2000.process_FibRgFcLcb2000(bs, rglw);
 
-  if (this->lcbUnused1 != 0)
+  if (lcbUnused1 != 0)
   {
     throw "; lcbUnused1' must be ZERO.";
   }
 
   if (bs.nFib < NFIB_FOR_2002)
   {
-    if (this->lcbPlcfpmiOldXP != 0)
+    if (lcbPlcfpmiOldXP != 0)
     {
       throw "'lcbPlcfpmiOldXP' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcfpmiNewXP != 0)
+    if (lcbPlcfpmiNewXP != 0)
     {
       throw "'lcbPlcfpmiNewXP'should be zero for tis version of Word.";
     }
 
-    if (this->lcbPlcfpmiMixedXP != 0)
+    if (lcbPlcfpmiMixedXP != 0)
     {
       throw "'lcbPlcfpmiMixedXP' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcflvcOldXP != 0)
+    if (lcbPlcflvcOldXP != 0)
     {
       throw "'lcbPlcflvcOldXP' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcflvcNewXP != 0)
+    if (lcbPlcflvcNewXP != 0)
     {
       throw "'lcbPlcflvcNewXP' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcflvcMixedXP != 0)
+    if (lcbPlcflvcMixedXP != 0)
     {
       throw "'lcbPlcflvcMixedXP' should be zero for this version of Word.";
     }
   }
 
-  if (this->lcbUnused2 != 0)
+  if (lcbUnused2 != 0)
   {
     throw "'lcbUnused2' should be ZERO.";
   }
@@ -1934,55 +1928,55 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2003::process_FibRgFcLcb2003(const FibBase& bs, 
 {
   rgFcLcb2002.process_FibRgFcLcb2002(bs, rglw);
   
-  if (this->lcbCustomXForm > 4168
-      && this->lcbCustomXForm % 2 != 0)
+  if (lcbCustomXForm > 4168
+      && lcbCustomXForm % 2 != 0)
   {
     throw "'lcbCustomXForm' must be less than or equal to 4168 & an even number.";
   }
 
-  if (this->fcUnused != 0 && this->lcbUnused != 0)
+  if (fcUnused != 0 && lcbUnused != 0)
   {
     throw "'fcUnusded' and 'lcbUnused' must be ZERO.";
   }
 
   if (bs.nFib > NFIB_FOR_2003)
   {
-    if (this->lcbPlcfpmiOld != 0)
+    if (lcbPlcfpmiOld != 0)
     {
       throw "'lcbPlcfpmiOld' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcfpmiOldInline != 0)
+    if (lcbPlcfpmiOldInline != 0)
     {
       throw "'lcbPlcfpmiOldInline' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcfpmiNew != 0)
+    if (lcbPlcfpmiNew != 0)
     {
       throw "'lcbPlcfpmiNew' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcfpmiNewInline != 0)
+    if (lcbPlcfpmiNewInline != 0)
     {
       throw "'lcbPlcfpmiNewInline' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcflvcOld != 0)
+    if (lcbPlcflvcOld != 0)
     {
       throw "'lcbPlcflvcOld' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcflvcOldInline != 0)
+    if (lcbPlcflvcOldInline != 0)
     {
       throw "'lcbPlcflvcOldInline' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcflvcNew != 0)
+    if (lcbPlcflvcNew != 0)
     {
       throw "'lcbPlcflvcNew' should be zero for this version of Word.";
     }
 
-    if (this->lcbPlcflvcNewInline != 0)
+    if (lcbPlcflvcNewInline != 0)
     {
       throw "'lcbPlcflvcNewInline' should be zero for this version of Word.";
     }
@@ -1993,87 +1987,87 @@ VOID Fib::FibRgFcLcb::FibRgFcLcb2007::process_FibRgFcLcb2007(const FibBase &base
 {
   rgFcLcb2003.process_FibRgFcLcb2003(base, rglw);
   
-  if (this->lcbPlcfmthd != 0)
+  if (lcbPlcfmthd != 0)
   {
     throw "'lcbPlcfmthd' must be zero.";
   }
   
-  if (this->lcbSttbfBkmkMoveFrom != 0)
+  if (lcbSttbfBkmkMoveFrom != 0)
   {
     throw "'lcbSttbfBkmkMoveFrom' must be zero.";
   }
   
-  if (this->lcbPlcfBkfMoveFrom != 0)
+  if (lcbPlcfBkfMoveFrom != 0)
   {
     throw "'lcbPlcfBkfMoveFrom' must be zero.";
   }
   
-  if (this->lcbPlcfBklMoveFrom != 0)
+  if (lcbPlcfBklMoveFrom != 0)
   {
     throw "'lcbPlcfBklMoveFrom' must be zero.";
   }
   
-  if (this->lcbSttbfBkmkMoveTo != 0)
+  if (lcbSttbfBkmkMoveTo != 0)
   {
     throw "'lcbSttbfBkmkMoveTo' must be zero.";
   }
   
-  if (this->lcbPlcfBkfMoveTo != 0)
+  if (lcbPlcfBkfMoveTo != 0)
   {
     throw "'lcbPlcfBkfMoveTo' must be zero.";
   }
   
-  if (this->lcbPlcfBklMoveTo != 0)
+  if (lcbPlcfBklMoveTo != 0)
   {
     throw "'lcbPlcfBklMoveTo' must be zero.";
   }
   
-  if (this->lcbUnused1 != 0)
+  if (lcbUnused1 != 0)
   {
     throw "'lcbUnused1' must be zero.";
   }
   
-  if (this->lcbUnused2 != 0)
+  if (lcbUnused2 != 0)
   {
     throw "'lcbUnused2' must be zero.";
   }
   
-  if (this->lcbUnused3 != 0)
+  if (lcbUnused3 != 0)
     {
     throw "'lcbUnused3' must be zero.";
   }
   
-  if (this->lcbSttbfBkmkArto != 0)
+  if (lcbSttbfBkmkArto != 0)
   {
     throw "'lcbSttbfBkmkArto' must be zero.";
   }
   
-  if (this->lcbPlcfBkfArto != 0)
+  if (lcbPlcfBkfArto != 0)
   {
     throw "'lcbPlcfBkfArto' must be zero.";
   }
   
-  if (this->lcbPlcfBklArto != 0)
+  if (lcbPlcfBklArto != 0)
   {
     throw "'lcbPlcfBklArto' must be zero.";
   }
   
-  if (this->lcbArtoData != 0)
+  if (lcbArtoData != 0)
   {
     throw "'lcbArtoData' must be zero.";
   }
   
-  if (this->lcbUnused4 != 0)
+  if (lcbUnused4 != 0)
   {
     throw "'lcbUnused4' must be zero.";
   }
   
-  if (this->lcbUnused5 != 0)
+  if (lcbUnused5 != 0)
   {
     throw "'lcbUnused5' must be zero.";
   }
   
-  if (this->lcbUnused6 != 0)
+  if (lcbUnused6 != 0)
   {
     throw "'lcbUnused6' must be zero.";
   }
@@ -2085,17 +2079,17 @@ VOID Fib::FibRgCswNew::process_FibRgCswNew(const FibBase &obj)
   if (ver == NFIB_FOR_2000 ||
       (ver == NFIB_FOR_2002) || (ver == NFIB_FOR_2003))
   {
-    this->rgCswNewData.fibRgCswNewData2000.process_FibRgCswNewData2000();
+    rgCswNewData.fibRgCswNewData2000.process_FibRgCswNewData2000();
   }
   else if (ver == NFIB_FOR_2007)
   {
-    this->rgCswNewData.fibRgCswNewData2007.process_FibRgCswNewData2007();
+    rgCswNewData.fibRgCswNewData2007.process_FibRgCswNewData2007();
   }
 }
 
 VOID Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2000::process_FibRgCswNewData2000()
 {
-  if (this->cQuickSavesNew < 0 || this->cQuickSavesNew > 0x000F)
+  if (cQuickSavesNew < 0 || cQuickSavesNew > 0x000F)
   {
     throw "'cQuickSavesNew' should be between 0 and 0x000F, inclusively.";
   }

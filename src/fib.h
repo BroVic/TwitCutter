@@ -43,21 +43,18 @@ struct Fib
 {
   Fib();
   ~Fib();
-  VOID readFib(std::ifstream&);
+  VOID read_Fib(std::ifstream&);
   inline VOID skip_fields(std::ifstream&, ULONG) const;
-  // inline VOID adjust_file_pointer(std::ifstream&, USHORT, USHORT) const;
   inline static BYTE assignBits(BYTE, BYTE, int);
-  //template <class T>
-  // USHORT computeStructSize(const T&, const USHORT, const USHORT, const int) const;
   VOID inspectFibStructs();
   
   struct FibBase
   {
     FibBase();
     ~FibBase();
-    VOID readFibBase(std::ifstream&);
+    VOID read_FibBase(std::ifstream&);
     VOID process_FibBase();
-	
+
     USHORT wIdent;
     USHORT nFib;
     USHORT unused;
@@ -90,11 +87,17 @@ struct Fib
     ULONG reserved5;
     ULONG reserved6;
   } base; // !struct FibBase
-  
+
+
   USHORT csw;
   
   struct FibRgW97
   {
+    FibRgW97();
+    ~FibRgW97();
+    VOID read_FibRgW(std::ifstream &);
+    VOID process_FibRgW97();
+
     USHORT reserved1;
     USHORT reserved2;
     USHORT reserved3;
@@ -108,18 +111,19 @@ struct Fib
     USHORT reserved11;
     USHORT reserved12;
     USHORT reserved13;
-    USHORT lidFE;
-    
-    FibRgW97();
-    ~FibRgW97();
-    VOID readFibRgW(std::ifstream &);
-    VOID process_FibRgW97();
+    USHORT lidFE;    
   } fibRgW; // !struct FibRgW97
-  
+
+
   USHORT cslw;
   
   struct FibRgLw97
   {
+    FibRgLw97();
+    ~FibRgLw97();
+    VOID read_FibRgLw(std::ifstream&);
+    VOID process_FibRgLw97();
+
     ULONG cbMac;
     ULONG reserved1;
     ULONG reserved2;
@@ -141,28 +145,24 @@ struct Fib
     ULONG reserved11;
     ULONG reserved12;
     ULONG reserved13;
-    ULONG reserved14;
-    
-    FibRgLw97();
-    ~FibRgLw97();
-    VOID readFibRgLw(std::ifstream&);
-    VOID process_FibRgLw97();
+    ULONG reserved14;    
   } fibRgLw; // !struct FibRgLw97
-	
-  USHORT cbRgFcLcb;
+ 	
 
+  USHORT cbRgFcLcb;
+  
   union FibRgFcLcb
   {
     FibRgFcLcb();
     ~FibRgFcLcb();
-    VOID readFibRgFcLcbBlob(std::ifstream&, const USHORT);
+    VOID read_FibRgFcLcbBlob(std::ifstream&, const USHORT);
     VOID process_FibRgFcLcbBlob(const FibBase&, const FibRgLw97&);
-    
+
     struct FibRgFcLcb97
     {
       FibRgFcLcb97();
       ~FibRgFcLcb97();
-      VOID readFibRgFcLcb97(std::ifstream &);
+      VOID read_FibRgFcLcb97(std::ifstream&);
       VOID process_FibRgFcLcb97(const FibBase&, const FibRgLw97&);
 
       ULONG fcStshfOrig;
@@ -197,7 +197,7 @@ struct Fib
       ULONG lcbPlcfSea;
       ULONG fcSttbfFfn;
       ULONG lcbSttbfFfn;
-      ULONG fcPlcfFldMom;					// refers to offset for PlcFld
+      ULONG fcPlcfFldMom;		// refers to offset for PlcFld
       ULONG lcbPlcfFldMom;
       ULONG fcPlcfFldHdr;
       ULONG lcbPlcfFldHdr;
@@ -351,15 +351,15 @@ struct Fib
       ULONG lcbSttbListNames;
       ULONG fcSttbfUssr;
       ULONG lcbSttbfUssr;
-    } fibRgFcLcb97;          // !struct FibRgFcLcb97
-
+    } fibRgFcLcb97;         // !struct FibRgFcLcb97
+   
     struct FibRgFcLcb2000
     {
-	  FibRgFcLcb2000();
+      FibRgFcLcb2000();
       ~FibRgFcLcb2000();
-      VOID readFibRgFcLcb2000(std::ifstream &);
+      VOID read_FibRgFcLcb2000(std::ifstream &);
       VOID process_FibRgFcLcb2000(const FibBase&, const FibRgLw97&);
-	  
+
       FibRgFcLcb97 rgFcLcb97;
       ULONG fcPlcfTch;
       ULONG lcbPlcfTch;
@@ -391,13 +391,13 @@ struct Fib
       ULONG lcbPgdEdnOld;
       ULONG fcBkdEdnOld;
       ULONG lcbBkdEdnOld;
-    } fibRgFcLcb2000;     // !struct FibRgFcLcb2000
-
+    } fibRgFcLcb2000;    // !struct FibRgFcLcb2000
+ 
     struct FibRgFcLcb2002
     {
       FibRgFcLcb2002();
       ~FibRgFcLcb2002();
-      VOID readFibRgFcLcb2002(std::ifstream &);
+      VOID read_FibRgFcLcb2002(std::ifstream &);
       VOID process_FibRgFcLcb2002(const FibBase&, const FibRgLw97&);
       
       FibRgFcLcb2000 rgFcLcb2000;
@@ -457,13 +457,13 @@ struct Fib
       ULONG lcbPlcflvcNewXP;
       ULONG fcPlcflvcMixedXP;
       ULONG lcbPlcflvcMixedXP;
-    } fibRgFcLcb2002;    // !struct FibRgFcLcb2002
-
+    } fibRgFcLcb2002;   // !struct FibRgFcLcb2002
+ 
     struct FibRgFcLcb2003
     {
       FibRgFcLcb2003();
       ~FibRgFcLcb2003();
-      VOID readFibRgFcLcb2003(std::ifstream &);
+      VOID read_FibRgFcLcb2003(std::ifstream &);
       VOID process_FibRgFcLcb2003(const FibBase&, const FibRgLw97&);
       
       FibRgFcLcb2002 rgFcLcb2002;
@@ -524,12 +524,12 @@ struct Fib
       ULONG fcAfd;
       ULONG lcbAfd;
     } fibRgFcLcb2003;    // !struct FibRgFcLcb2003
-
+ 
     struct FibRgFcLcb2007
     {
       FibRgFcLcb2007();
       ~FibRgFcLcb2007();
-      VOID readFibRgFcLcb2007(std::ifstream &);
+      VOID read_FibRgFcLcb2007(std::ifstream &);
       VOID process_FibRgFcLcb2007(const FibBase&, const FibRgLw97&);
 
       FibRgFcLcb2003 rgFcLcb2003;
@@ -571,41 +571,41 @@ struct Fib
       ULONG lcbOssTheme;
       ULONG fcColorSchemeMapping;
       ULONG lcbColorSchemeMapping;
-    } fibRgFcLcb2007;    // !struct FibRgFcLcb2007
+    } fibRgFcLcb2007;    // !struct FibRgFcLcb2007   
   } fibRgFcLcbBlob; // !union FibRgFcLcb
 
   USHORT cswNew;
-
+  
   struct FibRgCswNew
   {
     FibRgCswNew();
     ~FibRgCswNew();
-    VOID readFibRgCswNew(std::ifstream&, const USHORT);
+    VOID read_FibRgCswNew(std::ifstream&, const USHORT);
     VOID process_FibRgCswNew(const FibBase&);
     
     USHORT nFibNew;
-
+  
     union FibRgCswNewData
     {
       FibRgCswNewData();      
       ~FibRgCswNewData();
-      VOID readFibRgCswNewData(std::ifstream&, const USHORT);
-      
+      VOID read_FibRgCswNewData(std::ifstream&, const USHORT);
+
       struct FibRgCswNewData2000
       {
 	FibRgCswNewData2000();
 	~FibRgCswNewData2000();
-	VOID read2000(std::ifstream &);
+	VOID read_2000(std::ifstream&);
 	VOID process_FibRgCswNewData2000();
-	
-	USHORT cQuickSavesNew;
-      } fibRgCswNewData2000; // !struct FibRgCswNewData2000
 
+	USHORT cQuickSavesNew;
+      } fibRgCswNewData2000; 
+    
       struct FibRgCswNewData2007
       {
 	FibRgCswNewData2007();
 	~FibRgCswNewData2007();
-	VOID read2007(std::ifstream &);
+	VOID read_2007(std::ifstream &);
 	VOID process_FibRgCswNewData2007();
 	
 	FibRgCswNewData2000 rgCswNewData2000;
@@ -616,4 +616,5 @@ struct Fib
     } rgCswNewData; // !union FibRgCswNewData
   } fibRgCswNew; // !struct FibRgCswNew
 }; // !struct Fib
+
 #endif // !FIB_H_INCLUDED

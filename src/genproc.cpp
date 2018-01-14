@@ -1,6 +1,6 @@
-// genericproc.cpp
+// genproc.cpp
 
-#include "genericproc.h"
+#include "genproc.h"
 
 //////////////////////////////////////////////////////////////////
 ///////////////         INPUT CLASS         //////////////////////
@@ -165,7 +165,7 @@ TwtProcessor::~TwtProcessor()
 
 void TwtProcessor::estimTwtNum()
 {
-	int len = _fullText.length();
+	unsigned int len = _fullText.length();
 	if (len > SET_LIMIT)
 	{
 		_twtNumb = len / SET_LIMIT;

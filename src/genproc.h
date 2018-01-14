@@ -6,16 +6,15 @@
 	// 2. Labels the strings with a number
 	// 3. Builds a collection of these strings until all the document text has been accounted for.
 
-#ifndef GENERICPROC_H_INCLUDED
-#define	GENERICPROC_H_INCLUDED
+#ifndef GENPROC_H_INCLUDED
+#define	GENPROC_H_INCLUDED
 
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "DoccProc.h"
+#include "doccproc.h"
 #include "textproc.h"
-// #include "docxproc.h"
 
 ///////////////////////////////////////////////////////////////////
 ///////////////         INPUT CLASSES         /////////////////////

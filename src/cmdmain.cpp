@@ -13,30 +13,20 @@
 
 #include <string>
 #include <iostream>
-#include "genericproc.h"
+#include "genproc.h"
 #include "starters.h"
 
 int main(int argc, char** argv)
 {
-	Parser prs;
-	std::string path;
-	try
-	{
-		path = prs.validate_args(argc, argv[1]);
-	}
-	catch (const char* issue)
-	{
-		std::cerr << "Error: " << issue << std::endl;
-	}
-	
-	// Work proper
-	Receiver jobIn;
-	jobIn.startJob(path);
+  Parser prs;
+  std::string path;
+  path = prs.validate_args(argc, argv[1]);
 
-	MasterSelector sel;
-	sel.enable_options(jobIn);
+  Receiver jobIn;
+  jobIn.startJob(path);
 
-	std::cout << "OPERATION COMPLETED." << std::endl;
-	
-	return 0;
+  MasterSelector sel;
+  sel.enable_options(jobIn);
+
+  std::cout << "OPERATION COMPLETED." << std::endl;
 }

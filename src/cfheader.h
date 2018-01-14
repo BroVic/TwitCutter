@@ -1,16 +1,29 @@
 // CFH.h
 
-// Data structure(s) for the OLE Compound File Header
+// Data structure(s) for the OLE Compound File
 // (adapted from https://msdn.microsoft.com/en-us/library/dd941946.aspx)
+// The main structures copied into memory through this header and its
+// accompanying implementation file are:
+// 1. Compound File Header: This  references all the key parts of the file.
+//
+// 2. Double indirect file allocation table (Difat): This structure's life
+//    begins in the CFH as an array of 109 fields and it provides reference to
+//    the FAT.
+//
+// 3. File Allocation Table (FAT): This is an array that references all the
+//    sectors of the file, with the sole expection of the CFH, to which it is
+//    linked through the Difat.
+//
+// 4. Mini FAT: For files that are small, this structures a mini stream
+//
+// 5. Directory Entry: These are partitions of sectors that contain information
+//    on storage and stream objects (that contain user-defined data), arranged in //    hierarchical tree structure to enable the location of the different streams
+//    within a file e.g. a WordDocument stream.
 
-// PURPOSE: To read the Compound File Header into memory, as this will
-// determine what else we would want to do with the file's constituent
-// parts i.e. streams and objects. This is the starting point for dealing
-// with files that come in this format.
 
 
-#ifndef CFH_H_INCLUDED
-#define CFH_H_INCLUDED
+#ifndef CFHEADER_H_INCLUDED
+#define CFHEADER_H_INCLUDED
 
 #include <fstream>
 #include <vector>
@@ -19,8 +32,9 @@
 
 constexpr int SIGN_ELEMENTS = 8;
 constexpr int DIFAT_LENGTH  = 109;
+constexpr int DIFAT_NEXT_LOC= 1;
 
-constexpr USHORT MINOR_VERSION     = 0X003E;
+constexpr USHORT MINOR_VERSION     = 0x003E;
 constexpr USHORT MAJOR_VERSION_3   = 0x0003;
 constexpr USHORT MAJOR_VERSION_4   = 0x0004;
 constexpr USHORT LIL_ENDIAN        = 0xFFFE;
@@ -45,11 +59,11 @@ struct CFHeader
 {
   CFHeader();
   ~CFHeader();
-  VOID readCFHeader(std::ifstream&);
-  std::vector<ULONG> loadFat(std::ifstream&, CFHeader&);
-  BOOL use_difat_sect();
-  ULONG fat_len(std::ifstream&, const USHORT);
-  USHORT get_sector_size() const;
+  std::vector<ULONG> copy_difat(std::istream&);
+  std::vector<ULONG> loadFat(std::ifstream&);
+  VOID readCFHeader(std::ifstream&);  
+  ULONG get_sector_offset(const ULONG);  
+  inline USHORT get_sector_size();
   
   BYTE   Sig[SIGN_ELEMENTS];
   CLSID  CLSID_NULL;
@@ -72,13 +86,16 @@ struct CFHeader
   ULONG  Difat[DIFAT_LENGTH];
 }; // !struct CFHeader
 
+// Data structure to represent a typical directory entry
+// This contains metadata that refer to either storage objects
+// or stream objects that exist somewhere in the compound file
 struct DirEntry
 {
   DirEntry();
   ~DirEntry();
-  VOID readDirEntry(std::ifstream &);
-  unsigned short find_directory(std::ifstream&, CFHeader&, std::u16string);
-  inline unsigned int get_direntry_offset(CFHeader&, const USHORT);
+  VOID readDirEntry(std::ifstream&);
+  ULONG find_stream_object(std::ifstream&, CFHeader&, std::u16string);
+  inline unsigned int get_direntry_offset(const CFHeader&, const USHORT);
 
   WCHAR      name[UTF16_CODE_POINTS];
   USHORT     nameLength;

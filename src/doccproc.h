@@ -6,11 +6,10 @@
 #include <fstream>
 #include <string>
 #include <map>
-#include "CFHeader.h"
-#include "FIB.h"
-#include "CFDirEntry.h"
-#include "Clx.h"
-#include "GenericProc.h"
+#include "cfheader.h"
+#include "fib.h"
+#include "clx.h"
+#include "genproc.h"
 
 // For decisions on encoding
 constexpr int UNICODE  = 0;
@@ -32,9 +31,9 @@ private:
 	
 	std::u16string  _strmName;
 	uint16_t        _sectSz;
-	USHORT          _wdocStart;
-	USHORT          _tablStart;
-	USHORT          _clxOffset;
+        ULONG           _wdocStart;
+	ULONG           _tablStart;
+        ULONG           _clxOffset;
 	ULONG           _strmOffset;
 
 public:

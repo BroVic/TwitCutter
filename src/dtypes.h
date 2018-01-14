@@ -14,6 +14,7 @@ using BYTE      = unsigned char;
 using USHORT    = unsigned short;
 using ULONG     = unsigned int;
 using ULONGLONG = unsigned long long;
+using DWORD     = unsigned int;
 using CHAR      = signed char;
 using SHORT     = short;
 using LONG      = int;
@@ -34,8 +35,8 @@ struct CLSID
 
 struct FILETIME
 {
-  ULONG dwLowDateTime;
-  ULONG dwHighDateTime;
+  DWORD dwLowDateTime;
+  DWORD dwHighDateTime;
 
   FILETIME();
   ~FILETIME();

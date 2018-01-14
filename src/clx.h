@@ -1,12 +1,12 @@
 // Clx.h
-// Define in-memory data structures for use with MS-USHORT .DOC Clx format
+// Define in-memory structures for reading and working with a Clx
 
 #ifndef CLX_H_INCLUDED
 #define CLX_H_INCLUDED
 
 #include <fstream>
 #include <cassert>
-#include "FIB.h"
+#include "fib.h"
 
 constexpr ULONG SIZE_OF_PCD = 8;
 
@@ -28,110 +28,98 @@ constexpr ULONG SIZE_OF_PCD = 8;
 // This stucture contains the character positions and related data.
 struct Clx
 {
-	struct Prc
+  Clx();
+  ~Clx();
+  VOID readToClx(std::ifstream&);
+
+  struct Prc
+  {
+    Prc();
+    ~Prc();
+
+    BYTE clxt;
+
+    struct PrcData
+    {
+      PrcData();
+      ~PrcData();
+
+      SHORT cbGrpprl;
+      struct Prl
+      {
+	Prl();
+	~Prl();
+
+	struct Sprm
 	{
-		BYTE clxt;
-		struct PrcData
-		{
-			SHORT cbGrpprl;
-			struct Prl
-			{
-				struct Sprm
-				{
-					USHORT ispmd : 9;
-					BYTE fSpec : 1;
-					BYTE sgc : 3;
-					BYTE spra : 3;
+	  Sprm();
+	  ~Sprm();
+	  VOID readSprm(std::ifstream&);
 
-					Sprm();
-					~Sprm();
+	  USHORT ispmd : 9;
+	  BYTE fSpec : 1;
+	  BYTE sgc : 3;
+	  BYTE spra : 3;
+	} sprm; // !struct Sprm
+	// operand
+      } *GrpPrl;
+    } data; // !struct PrcData
+  } *rgPrc; // !struct Prc
 
-					VOID readSprm(std::ifstream&);
+  struct Pcdt
+  {
+    Pcdt();
+    ~Pcdt();
+    VOID readPcdt(std::ifstream&, BYTE, Clx&);
 
-				} sprm; // struct Sprm
-				// operand
+    BYTE clxt;
+    ULONG lcb;
 
-				Prl();
-				~Prl();
+    struct PlcPcd
+    {
+      PlcPcd();
+      ~PlcPcd();
+      VOID readPlcPcd(std::ifstream&, ULONG);
+      ULONG getCharPos(int);
+      ULONG pcdLength(Clx&);
 
-			} *GrpPrl;
+      ULONG *aCP;
 
-			PrcData();
-			~PrcData();
+      struct Pcd
+      {
+	Pcd();
+	~Pcd();
+	VOID readPcdData(std::ifstream&);
+	USHORT defineOffset() const;
+	LONG defineEncoding() const;
 
-		} data; // struct PrcData
+	BYTE fNoParaLast : 1;
+	BYTE fR1 : 1;
+	BYTE fDirty : 1;
+	USHORT fR2 : 13;
 
-		Prc();
-		~Prc();
-
-	} *rgPrc; // struct Prc
-	struct Pcdt
+	struct FcCompressed
 	{
-		BYTE clxt;
-		ULONG lcb;
-		struct PlcPcd
-		{
-			ULONG *aCP;
-			struct Pcd
-			{
-				BYTE fNoParaLast : 1;
-				BYTE fR1 : 1;
-				BYTE fDirty : 1;
-				USHORT fR2 : 13;
-				struct FcCompressed
-				{
-					ULONG fc : 30;
-					BYTE fCompressed : 1;
-					BYTE r1 : 1;
+	  FcCompressed();
+	  ~FcCompressed();
+	  VOID readFcData(std::ifstream&);
 
-					FcCompressed();
-					~FcCompressed();
+	  ULONG fc : 30;
+	  BYTE fCompressed : 1;
+	  BYTE r1 : 1;
+	} fc; // !struct FcCompressed
 
-					VOID readFcData(std::ifstream&);
+	struct Prm
+	{
+	  Prm();
+	  ~Prm();
+	  VOID readPrmData(std::ifstream&);
 
-				} fc; // struct FcCompressed
-				struct Prm
-				{
-					BYTE fComplex : 1;
-					USHORT data : 15;
-
-					Prm();
-					~Prm();
-
-					VOID readPrmData(std::ifstream&);
-
-				} prm; // struct Prm
-
-				Pcd();
-				~Pcd();
-
-				VOID readPcdData(std::ifstream&);
-				USHORT defineOffset() const;
-				LONG defineEncoding() const;
-				
-			} *aPcd; // struct Pcd
-
-			PlcPcd();
-			~PlcPcd();
-
-			VOID readPlcPcd(std::ifstream&, ULONG);
-			ULONG getCharPos(int);
-			inline ULONG pcdLength(Clx&);
-
-		} plcPcd; // struct PlcPcd
-
-		Pcdt();
-		~Pcdt();
-
-		VOID readPcdt(std::ifstream&, BYTE, Clx&);
-
-	} pcdt; // struct Pcdt
-
-	Clx();
-	~Clx();
-
-	VOID readToClx(std::ifstream&);
-
-}; // struct Clx
-
+	  BYTE fComplex : 1;
+	  USHORT data : 15;
+       	} prm; // !struct Prm
+      } *aPcd; // !struct Pcd
+    } plcPcd; // !struct PlcPcd
+  } pcdt; // !struct Pcdt
+}; // !struct Clx
 #endif // !CLX_H_INCLUDED
