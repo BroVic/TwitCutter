@@ -139,6 +139,4 @@ inline void DoccProc::setANSIexceptions()
 	_altANSI[0x9B] = 0x2034;
 	_altANSI[0x9C] = 0x0153;
 	_altANSI[0x9F] = 0x0178;
-
-	return;
 }

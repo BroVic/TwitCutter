@@ -11,21 +11,21 @@
 constexpr ULONG SIZE_OF_PCD = 8;
 
 // Sprm values
-//constexpr USHORT sprmCFRMarkDel = 0x0800;
-//constexpr USHORT sprmCFRMarkIns = 0x0801;
-//constexpr USHORT sprmCFFldVanish = 0x0802;
-//constexpr USHORT sprmCPicLocation = 0x6A03;
-//constexpr USHORT sprmCIbstRMark = 0x4804;
-//constexpr USHORT sprmCDttmRMark = 0x6805;
-//constexpr USHORT sprmCFData = 0x0806;
-//constexpr USHORT sprmCIdslRMark = 0x07;
-//constexpr USHORT sprmCSymbol = 0x6A09;
-//constexpr USHORT sprmCFOle2 = 0x080A;
-//constexpr USHORT sprmCHighlight = 0x2A0C;
-//constexpr USHORT sprmCFWebHidden = 0x0811;
+//constexpr USHORT sprmCFRMarkDel    = 0x0800;
+//constexpr USHORT sprmCFRMarkIns    = 0x0801;
+//constexpr USHORT sprmCFFldVanish   = 0x0802;
+//constexpr USHORT sprmCPicLocation  = 0x6A03;
+//constexpr USHORT sprmCIbstRMark    = 0x4804;
+//constexpr USHORT sprmCDttmRMark    = 0x6805;
+//constexpr USHORT sprmCFData        = 0x0806;
+//constexpr USHORT sprmCIdslRMark    = 0x07;
+//constexpr USHORT sprmCSymbol       = 0x6A09;
+//constexpr USHORT sprmCFOle2        = 0x080A;
+//constexpr USHORT sprmCHighlight    = 0x2A0C;
+//constexpr USHORT sprmCFWebHidden   = 0x0811;
 
-// Nested data structure, Clx, which is found on the Table stream.
-// This stucture contains the character positions and related data.
+// Nested data structure, Clx, which is found in the Table Stream.
+// This stucture contains the character positions and other related data.
 struct Clx
 {
   Clx();

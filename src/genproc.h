@@ -1,10 +1,19 @@
+// genproc.h
+// Generic processing of strings retrieved from various sources
 
-// GenericProc.h: Generic processing of strings retrieved from various sources
 
-// Takes a string containing text extracted from a document and does the following:
-	// 1. Cut out out a string of a particular size
-	// 2. Labels the strings with a number
-	// 3. Builds a collection of these strings until all the document text has been accounted for.
+// There are two kinds of classes in this header:
+// A. Input: Classes that process input from files, other sources.
+// B. Output: Classes that process text retrieved from these sources.
+
+// The Input section will take the path to a given file of a supported format and determine
+// what further processing needs to be done. It will pass the data stream to an appropriate
+// class that is equipped to handle the given file format.
+
+// The Output section takes a string containing text extracted from a document and do the following:
+	// 1. Cuts out a string of a given size.
+	// 2. Labels the strings with a number i.e. pagination.
+	// 3. Builds a collection of these strings until all the text in the document has been accounted for.
 
 #ifndef GENPROC_H_INCLUDED
 #define	GENPROC_H_INCLUDED
@@ -14,7 +23,7 @@
 #include <iostream>
 #include <fstream>
 #include "doccproc.h"
-#include "textproc.h"
+#include "txtproc.h"
 
 ///////////////////////////////////////////////////////////////////
 ///////////////         INPUT CLASSES         /////////////////////
@@ -68,8 +77,6 @@ private:
 
 };
                    //////////////////////////
-
-
 
 ///////////////////////////////////////////////////////////////////
 ///////////////         OUTPUT CLASSES        /////////////////////
@@ -138,7 +145,6 @@ private:
 
 	void writeToDisk();
 };
-
                    ////////////////////////
 
 #endif // !GENERICPROC_H_INCLUDED

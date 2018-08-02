@@ -151,7 +151,7 @@ void MasterSelector::enable_options(Receiver &obj)
 ///////////////         OUTPUT CLASSES        //////////////////////
 ////////////////////////////////////////////////////////////////////
 
-// Methods for Class TwtProcessor (definitions)
+// Member functions for Class TwtProcessor (definitions)
 TwtProcessor::TwtProcessor()
 {
 	_denom    = {};

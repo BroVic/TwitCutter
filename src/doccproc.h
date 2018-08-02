@@ -6,7 +6,7 @@
 #include <fstream>
 #include <string>
 #include <map>
-#include "cfheader.h"
+#include "cfh.h"
 #include "fib.h"
 #include "clx.h"
 #include "genproc.h"

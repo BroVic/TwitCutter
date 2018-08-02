@@ -243,7 +243,7 @@ constexpr USHORT ENGLISH_INDONESIA               = 14345;
 constexpr USHORT SPANISH_URUGUAY                 = 14346;
 constexpr USHORT FRENCH_MOROCCO                  = 14348;
 constexpr USHORT ARABIC_BAHRAIN                  = 15361;
-constexpr USHORT ENGLISH_HONG_KONG_SAR		 = 15369;
+constexpr USHORT ENGLISH_HONG_KONG_SAR		       = 15369;
 constexpr USHORT SPANISH_PARAGUAY                = 15370;
 constexpr USHORT FRENCH_HAITI                    = 15372;
 constexpr USHORT ARABIC_QATAR                    = 16385;
@@ -328,7 +328,7 @@ Fib::FibRgW97::FibRgW97()
   reserved11	= { };
   reserved12	= { };
   reserved13	= { };
-  lidFE         = { };
+  lidFE       = { };
 }
 
 Fib::FibRgW97::~FibRgW97()
@@ -816,8 +816,7 @@ Fib::FibRgCswNew::FibRgCswNewData::FibRgCswNewData2007::~FibRgCswNewData2007()
 }
 
 // Reads the File Information Block (FIB)
-// This method also calls other functions that read relevant
-// parts of the FIB.
+// This method also calls other functions that read relevant parts of the FIB.
 VOID Fib::read_Fib(std::ifstream &docstream)
 {
   base.read_FibBase(docstream);  

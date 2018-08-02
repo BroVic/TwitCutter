@@ -37,7 +37,7 @@
 
 #include <fstream>
 #include <iostream>
-#include "dtypes.h"  // those funny MS data types are defined in this file 
+#include "dtypes.h"  // MS data types
 
 struct Fib
 {
@@ -88,7 +88,6 @@ struct Fib
     ULONG reserved6;
   } base; // !struct FibBase
 
-
   USHORT csw;
   
   struct FibRgW97
@@ -113,7 +112,6 @@ struct Fib
     USHORT reserved13;
     USHORT lidFE;    
   } fibRgW; // !struct FibRgW97
-
 
   USHORT cslw;
   
@@ -148,7 +146,6 @@ struct Fib
     ULONG reserved14;    
   } fibRgLw; // !struct FibRgLw97
  	
-
   USHORT cbRgFcLcb;
   
   union FibRgFcLcb

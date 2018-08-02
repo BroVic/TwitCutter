@@ -12,3 +12,4 @@ windows/codeblocks/bin
 
 windows/codeblocks/TwitCutter.layout
 samples/* 
+.vscode*/ 
