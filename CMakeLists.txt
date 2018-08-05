@@ -1,8 +1,6 @@
-cmake_minimum_required(VERSION 3.6)
-
-project(twtcut)
-
-set(CMAKE_CXX_STANDARD 14)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.6)
+PROJECT(Twitcutter)
+SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_VERBOSE_MAKEFILE off)
 set(CMAKE_CXX_FLAGS "-g -Wall -Werror")
-
-add_subdirectory(src)
+ADD_SUBDIRECTORY(src)

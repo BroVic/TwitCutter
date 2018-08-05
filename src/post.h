@@ -10,13 +10,14 @@
 #include<algorithm>
 #include "twitcurl.h"
 #include "oauthlib.h"
+#include "genproc.h"        // To receive TwtProcessor class
 
 class TwitterCred
 {
-    const std::string consumerKey;
-    const std::string consumerKeySecret;
-    const std::string myOAuthAccessTokenKey;
-    const std::string myOAuthAccessTokenSecret;
+    const std::string _consumerKey;
+    const std::string _consumerKeySecret;
+    const std::string _myOAuthAccessTokenKey;
+    const std::string _myOAuthAccessTokenSecret;
 
 public:
     TwitterCred() = default;
@@ -34,13 +35,13 @@ public:
     const std::string& get_myOAuthAccessTokenSecret() const;
 };
 
-
 class Updater
 {
-    TwitterCred keyring;
-    twitCurl twitterObj;
+    TwitterCred _keyring;
+    twitCurl _twitterObj;
+    TwtProcessor _tweets;
     // char tmpBuf[1024];
-    std::string replyMsg;
+    std::string _replyMsg;
 
     Updater() = default;
     ~Updater()
@@ -48,7 +49,6 @@ class Updater
     }
 
     void set_keys();
-    void post_status(const std::string&);
+    void post_status(const TwtProcessor&);
 };
-
 #endif // !_POST_H_INCLUDED_

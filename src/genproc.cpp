@@ -1,6 +1,7 @@
 // genproc.cpp
 
 #include "genproc.h"
+#include "print.h"
 
 //////////////////////////////////////////////////////////////////
 ///////////////         INPUT CLASS         //////////////////////
@@ -154,8 +155,8 @@ void MasterSelector::enable_options(Receiver &obj)
 // Member functions for Class TwtProcessor (definitions)
 TwtProcessor::TwtProcessor()
 {
-	_denom    = {};
-	_twtNumb  = {};
+	denom    = {};
+	twtNumb  = {};
 }
 
 TwtProcessor::~TwtProcessor()
@@ -166,12 +167,12 @@ TwtProcessor::~TwtProcessor()
 void TwtProcessor::estimTwtNum()
 {
 	unsigned int len = _fullText.length();
-	if (len > SET_LIMIT)
+	if (len > CHARACTER_LIMIT)
 	{
-		_twtNumb = len / SET_LIMIT;
-		if (len % SET_LIMIT != 0)
+		twtNumb = len / CHARACTER_LIMIT;
+		if (len % CHARACTER_LIMIT != 0)
 		{
-			++_twtNumb;
+			++twtNumb;
 		}
 	}
 	return;
@@ -183,9 +184,9 @@ void TwtProcessor::spliceStr()
 
 	while(!_fullText.empty())
 	{
-		if (MAX_LIMIT - SET_LIMIT > 5)
+		if (CHARACTER_MAX - CHARACTER_LIMIT > 5)
 		{
-			cutoff = _fullText.rfind(' ', SET_LIMIT);
+			cutoff = _fullText.rfind(' ', CHARACTER_LIMIT);
 		}
 		else
 		{
@@ -194,16 +195,14 @@ void TwtProcessor::spliceStr()
 
 		_piece = _fullText.substr(0, cutoff);
 
-		if (!_piece.empty())
+		if (_piece.empty())
 		{
-			++_denom;
-
+			++denom;
 			_piece.push_back(OPEN_TAG);
-			_piece += std::to_string(_denom);
+			_piece += std::to_string(denom);
 			_piece.push_back(DIVISOR);
-			_piece += std::to_string(_twtNumb);
+			_piece += std::to_string(twtNumb);
 			_piece.push_back(CLOSE_TAG);
-
 			chain.push_back(_piece);
 		}
 		else
@@ -223,109 +222,12 @@ void TwtProcessor::spliceStr()
 void TwtProcessor::mkChain()
 {
 	// collectStr();
-
 	estimTwtNum();
-
 	spliceStr();
-
-
 }
 
 void TwtProcessor::setFulltxt(std::string s_in)
 {
 	_fullText.assign(s_in);
 }
-
-
-// Methods for Class TwtPrinter (definitions)
-TwitPrinter::TwitPrinter()
-{
-}
-
-TwitPrinter::~TwitPrinter()
-{
-}
-
-void TwitPrinter::publish()
-{
-	this->displayInConsole();
-
-	this->writeToDisk();
-}
-
-template<class T>
-inline void TwitPrinter::printChain(T &obj)
-{
-	std::cout << "Printing available text blocks..." << std::endl
-		<< std::endl;
-
-	int numb = chain.size();
-	int i = 0;
-	while (i < numb)
-	{
-		obj << i + 1 << " " << this->chain[i] << std::endl;
-		printALine(obj);
-		i++;
-	}
-
-	if (i == numb)
-	{
-		obj << "--- All available tweets have been displayed. ---" << std::endl;
-		printALine(obj);
-	}
-	else
-	{
-		obj << "There was a problem counting/printing the text blocks." << std::endl;
-	}
-}
-
-void TwitPrinter::displayInConsole()
-{
-	printChain(std::cout);
-}
-
-void TwitPrinter::writeToDisk()
-{
-	char response{};
-	std::cout << "\nWrite tweets to disk? (Y/N) ";
-	std::cin >> response;
-	if (tolower(response) == 'n')
-	{
-		return;
-	}
-	else if (tolower(response) == 'y')
-	{
-		std::string filename;
-		std::cout << "Provide a filename (defaults to '.TXT'): ";
-		std::cin >> filename;
-		filename.append(".txt");
-
-		_printer.open(filename.c_str());
-		if (!_printer.is_open())
-		{
-			std::cerr << "Could not open '" << filename.c_str() << "'." << std::endl;
-			return;
-		}
-
-		printChain(_printer);
-
-		_printer.close();
-	}
-	else
-	{
-		std::cerr << "Invalid response." << std::endl;
-	}
-}
-
-template<class T>
-void TwitPrinter::printALine(T &t)
-{
-	char dash{ '-' };
-	for (size_t i = 0; i < 10; i++)
-	{
-		t << dash;
-	}
-	t << std::endl;
-}
-
          ////////////////// -oo- //////////////////////////

@@ -90,62 +90,31 @@ constexpr char DIVISOR    = '/';
 constexpr char CLOSE_TAG  = ')';
 
 // Character limits for text blocs
-constexpr unsigned int MAX_LIMIT  = 140;
-constexpr unsigned int SET_LIMIT  = 120;
+constexpr unsigned int CHARACTER_MAX  = 140;
+constexpr unsigned int CHARACTER_LIMIT  = 120;
 
 
 class TwtProcessor
 {        // To process retrieved text and store the pieces in a chain.
-	unsigned short         _denom;
-	unsigned short         _twtNumb;
 	std::string            _fullText;
 	std::string            _piece;
 	std::string::iterator  _it;
-
-public:
-	std::vector<std::string> chain;
-
-private:
+	
 	void estimTwtNum();
-
 	void spliceStr();
-
 	// void collectStr();
 
 public:
+	std::vector<std::string> chain;
+	unsigned short         denom;
+	unsigned short         twtNumb; // TODO: Possibly remove; deducible from vector length
+	// TODO: Check if chain is empty (boolean)
+	// TODO: Set maximum length of chain
+
 	TwtProcessor();
 	~TwtProcessor();
-
 	void mkChain();
 	void setFulltxt(std::string);
-
-};
-
-
-class TwitPrinter
-	: public TwtProcessor
-{        // To provide various options for displaying the tweets
-private:
-	std::ofstream _printer;
-
-public:
-	TwitPrinter();
-	~TwitPrinter();
-
-	void publish();
-
-private:
-	template <class T>
-	void printALine(T&);
-
-	template <class T>
-	void printChain(T&);
-
-	void displayInConsole();
-
-	void writeToDisk();
 };
                    ////////////////////////
-
 #endif // !GENERICPROC_H_INCLUDED
-
