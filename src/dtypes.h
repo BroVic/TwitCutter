@@ -10,6 +10,7 @@
 #ifndef DTYPES_H_INCLUDED
 #define DTYPES_H_INCLUDED
 
+#include <Windows.h>
 #include <minwindef.h>
 
 
@@ -25,24 +26,24 @@
 	using BOOL        = bool;
 	using VOID        = void;
 */
-	struct CLSID
-	{
-		ULONG Data1;
-		USHORT Data2;
-		USHORT Data3;
-		BYTE Data4[8];
+	//struct CLSID
+	//{
+	//	ULONG  Data1;
+	//	USHORT Data2;
+	//	USHORT Data3;
+	//	BYTE   Data4[8];
 
-		CLSID();
-		~CLSID();
-	}; // struct CLSID
+	//	CLSID();
+	//	~CLSID();
+	//}; // struct CLSID
 
-	struct FILETIME
-	{
-		DWORD dwLowDateTime;
-		DWORD dwHighDateTime;
+	//struct FILETIME
+	//{
+	//	DWORD dwLowDateTime;
+	//	DWORD dwHighDateTime;
 
-		FILETIME();
-		~FILETIME();
-	};
+	//	FILETIME();
+	//	~FILETIME();
+	//};
 #endif // !DTYPES_H_INCLUDED
 

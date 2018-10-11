@@ -14,8 +14,8 @@ TwitterClient::~TwitterClient()
 // Sets API keys 
 void TwitterClient::setup_twitter_oauth()
 {
-	_twitterObj.getOAuth().setConsumerKey(_keys.getConsumerKey());
-	_twitterObj.getOAuth().setConsumerSecret(_keys.getConsumerKeySecret());
+	_twitterObj.getOAuth().setConsumerKey(_keys.getMyConsumerKey());
+	_twitterObj.getOAuth().setConsumerSecret(_keys.getMyConsumerKeySecret());
 	_twitterObj.getOAuth().setOAuthTokenKey(_keys.getMyOAuthAccessTokenKey());
 	_twitterObj.getOAuth().setOAuthTokenSecret(_keys.getMyOAuthAccessTokenSecret());
 }

@@ -5,13 +5,13 @@
 #ifndef _POST_H_INCLUDED_
 #define _POST_H_INCLUDED_
 
-#include<string>
-#include<sstream>
-#include<algorithm>
-#include "genproc.h"        // TwtProcessor class
-#include "keys.h"           // default app credentials
-#include "include/twitcurl.h"       // 
-#include "include/oauthlib.h"       //
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <twitcurl.h>       // header from twitcurl library
+#include <oauthlib.h>       // ditto
+#include "genproc.h"        // for 'TwtProcessor' class
+#include "keys.h"           // for login credentials
 
 class TwitterClient
 {

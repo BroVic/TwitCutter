@@ -8,8 +8,8 @@
 
 class Keyring
 {
-	std::string _consumerKey;
-	std::string _consumerKeySecret;
+	std::string _myConsumerKey;
+	std::string _myConsumerKeySecret;
 	std::string _myOAuthAccessTokenKey;
 	std::string _myOAuthAccessTokenSecret;
 
@@ -17,8 +17,8 @@ public:
 	Keyring();
 	~Keyring();
 
-	const std::string& getConsumerKey() const;
-	const std::string& getConsumerKeySecret() const;
+	const std::string& getMyConsumerKey() const;
+	const std::string& getMyConsumerKeySecret() const;
 	const std::string& getMyOAuthAccessTokenKey() const;
 	const std::string& getMyOAuthAccessTokenSecret() const;
 
