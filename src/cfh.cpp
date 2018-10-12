@@ -3,15 +3,6 @@
 
 #include "cfh.h"
 
-
-// Special values used for the FAT
-constexpr unsigned long MAXREGSECT  = 0xFFFFFFFA;
-constexpr unsigned long RESERVED    = 0xFFFFFFFB;
-constexpr unsigned long DIFSECT     = 0xFFFFFFFC;
-constexpr unsigned long FATSECT     = 0xFFFFFFFD;
-constexpr unsigned long ENDOFCHAIN  = 0xFFFFFFFE;
-constexpr unsigned long FREESECT    = 0xFFFFFFFF;
-
 CFHeader::CFHeader()
 {
   for (auto i = 0; i < SIGN_ELEMENTS; ++i)
@@ -69,7 +60,7 @@ void CFHeader::readCFHeader(std::ifstream & dcstream)
 // calculated from the sector size of file, and then copied into a vector
 std::vector<unsigned long> CFHeader::loadFat(std::ifstream & stream) 
 {
-  const unsigned short szSect = this->get_sector_size();
+  const auto szSect = this->get_sector_size();
   std::vector<unsigned long> difatArray(copy_difat(stream));
   std::vector<unsigned long> fat;
   unsigned long fatValue = MAXREGSECT;
@@ -99,23 +90,28 @@ inline unsigned short CFHeader::get_sector_size()
 }
 
 // Identifies the file offset for a particular sector value
+unsigned long CFHeader::get_sector_offset(const unsigned long sectorNumber, const unsigned short sectorSize)
+{
+  return (sectorNumber + 1) * sectorSize;
+}
+
 unsigned long CFHeader::get_sector_offset(const unsigned long sectorNumber)
 {
-  return (sectorNumber + 1) * get_sector_size();
+	return (sectorNumber + 1) * get_sector_size();
 }
 
 // Creates an in-memory copy of the Difat.
-// This helps us make sure that anygg additional Difat sectors are
+// This helps us make sure that any additional Difat sectors are
 // properly captured and to serve as an anchor to the FAT.
-std::vector<unsigned long> CFHeader::copy_difat(std::istream &stream)
+std::vector<unsigned long> CFHeader::copy_difat(std::ifstream &stream)
 {
   std::vector<unsigned long> difatCopy(Difat, Difat + sizeof(Difat) / sizeof(unsigned long));
 
-  if (DifatSect1 > 0)
+  if (DifatSect1 != ENDOFCHAIN)
   { // only go this route if there are any Difat sectors
-    const unsigned short sectSz = get_sector_size();    
-    int difatSectOffset = get_sector_offset(DifatSect1);
-    const int difatLenPerSector = sectSz / sizeof(unsigned long);
+    auto sectSz = get_sector_size();    
+    auto difatSectOffset = get_sector_offset(DifatSect1, sectSz);
+    const auto difatLenPerSector = sectSz / sizeof(unsigned long);
     unsigned long difatVal = 0;
 
     unsigned int numDifatSectors = this->NumDifatSects;
@@ -123,14 +119,21 @@ std::vector<unsigned long> CFHeader::copy_difat(std::istream &stream)
     { // exclude Difat in header and compute
       numDifatSectors = ((this->NumFatSects - DIFAT_LENGTH) / (difatLenPerSector - DIFAT_NEXT_LOC)) + 1;
     }
-    // Sector-bu-sector looping
+    // Sector-by-sector looping
     for (unsigned int i = 0; i < numDifatSectors; ++i)
     {
       stream.seekg(difatSectOffset);
       // Loop within a sector
       for (int j = 0; j < difatLenPerSector; ++j)
       {
-	stream.read(reinterpret_cast<char *>(&difatVal), sizeof(unsigned long));
+		  try
+		  {
+			  stream.read(reinterpret_cast<char *>(&difatVal), sizeof(unsigned long));
+		  }
+		  catch (std::ifstream::failure e)
+		  {
+			  std::cerr << "Exception caught in file stream: " << std::strerror(errno) << "\n";
+		  }
 
 	// The last field of Difat sectors do not hold FAT sector numbers
 	// but instead hold the value of the next Difat sector if it exists.
@@ -182,12 +185,12 @@ DirEntry::~DirEntry()
 // receives the name of the stream object we're looking for
 unsigned long DirEntry::find_stream_object(std::ifstream &stream, CFHeader &header, std::u16string str)
 {
-  const unsigned short sectorSize = header.get_sector_size();
-  const long long rootOffset = get_direntry_offset(header, sectorSize);
+  const auto sectorSize = header.get_sector_size();
+  const auto rootOffset = get_direntry_offset(header, sectorSize);
 
   // Determine length of Directory Entry array via FAT
   std::vector<unsigned long> fatArray = header.loadFat(stream);
-  unsigned long sector = header.DirSect1;
+  auto sector = header.DirSect1;
 
   while (true)
   {
