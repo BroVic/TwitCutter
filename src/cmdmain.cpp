@@ -24,15 +24,13 @@ extern "C" void __imp__set_output_format(void) {};
 int main(int argc, char** argv)
 {
   Parser prs;
-  std::string path;
-  path = prs.validate_args(argc, argv[1]);
+  std::string path = prs.validate_args(argc, argv[1]);
 
   Receiver jobIn;
   jobIn.startJob(path);
 
   MasterSelector sel;
   sel.enable_options(jobIn);
-
 
   TwitterClient app;
   app.setup_twitter_oauth();

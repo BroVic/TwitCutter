@@ -23,7 +23,7 @@ std::string DoccProc::getString() const
 void DoccProc::read_file_data(std::ifstream &stream)
 {
   _olehdr.readCFHeader(stream);
-  unsigned int offset = _olehdr.get_sector_offset(_olehdr.DirSect1);
+  auto offset = _olehdr.get_sector_offset(_olehdr.DirSect1);
 
   stream.seekg(offset);
   _root.readDirEntry(stream);
