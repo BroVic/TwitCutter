@@ -135,7 +135,6 @@
     <ClCompile Include="..\..\src\clx.cpp" />
     <ClCompile Include="..\..\src\cmdmain.cpp" />
     <ClCompile Include="..\..\src\doccproc.cpp" />
-    <ClCompile Include="..\..\src\dtypes.cpp" />
     <ClCompile Include="..\..\src\fib.cpp" />
     <ClCompile Include="..\..\src\genproc.cpp" />
     <ClCompile Include="..\..\src\keys.cpp" />
@@ -149,7 +148,6 @@
     <ClInclude Include="..\..\src\cfh.h" />
     <ClInclude Include="..\..\src\clx.h" />
     <ClInclude Include="..\..\src\doccproc.h" />
-    <ClInclude Include="..\..\src\dtypes.h" />
     <ClInclude Include="..\..\src\fib.h" />
     <ClInclude Include="..\..\src\genproc.h" />
     <ClInclude Include="..\..\src\keys.h" />
