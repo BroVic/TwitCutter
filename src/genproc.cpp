@@ -31,17 +31,22 @@ void Receiver::startJob(const std::string &file)
 
 void Receiver::activate_stream()
 {
-	_docstream.open(_fName, std::ios::binary);
-	if (!_docstream.is_open())
+	// Enable exception before opening stream
+	_docstream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	try
 	{
-		throw "Could not open the file." ;
+		_docstream.open(_fName, std::ios::binary);
 	}
-	if (!_docstream.good())
+	catch (std::ifstream::failure e)
 	{
-		throw "The file is probably corrupted.";
+		std::cerr << "Exception opening file: " << std::strerror(errno) << "\n";
 	}
-	if (!_docstream.tellg() == ZERO_OFFSET)
-		_docstream.seekg(ZERO_OFFSET, std::ios::beg);
+	
+	if (_docstream.good())
+	{
+		if (!_docstream.tellg() == ZERO_OFFSET)
+			_docstream.seekg(ZERO_OFFSET, std::ios::beg);
+	}
 }
 
 void Receiver::get_file_ext()

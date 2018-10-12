@@ -18,6 +18,8 @@
 #ifndef GENPROC_H_INCLUDED
 #define	GENPROC_H_INCLUDED
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <vector>
 #include <string>
 #include <iostream>
