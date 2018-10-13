@@ -8,13 +8,13 @@
 #include <cassert>
 
 
-class TextProc
+class TextProcessor
 {
 	std::string _textString;
 
 public:
-	TextProc();
-	~TextProc();
+	TextProcessor();
+	~TextProcessor();
 
 	void read_textfile(std::ifstream&);
 	std::string getString();

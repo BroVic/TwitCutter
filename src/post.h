@@ -17,7 +17,6 @@ class TwitterClient
 {
 	Keyring _keys;
 	twitCurl _twitterObj;
-	TwtProcessor twts;     // TODO: This is not intuitive, so change it!
 	std::string _srvResponse;
 	// char tmpBuf[1024];
 
@@ -26,6 +25,6 @@ public:
 	~TwitterClient();
 
 	void setup_twitter_oauth();
-	void post_status();
+	void post_status(TwtProcessor&);
 };
 #endif // !_POST_H_INCLUDED_

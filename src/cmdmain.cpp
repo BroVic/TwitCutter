@@ -15,6 +15,7 @@
 #include <iostream>
 #include "genproc.h"
 #include "starters.h"
+#include "print.h"
 #include "post.h"
 
 FILE _iob[] = { *stdin, *stdout, *stderr };
@@ -24,17 +25,34 @@ extern "C" void __imp__set_output_format(void) {};
 int main(int argc, char** argv)
 {
   Parser prs;
-  std::string path = prs.validate_args(argc, argv[1]);
+  auto path = prs.validate_args(argc, argv[1]);
 
   Receiver jobIn;
   jobIn.startJob(path);
 
   MasterSelector sel;
-  sel.enable_options(jobIn);
+  std::string txt = sel.enable_options(jobIn);
+  
+  TwitPrinter twitPr;
+  twitPr.setFulltxt(txt);
+  twitPr.mkChain();
+  twitPr.publish();
 
-  TwitterClient app;
-  app.setup_twitter_oauth();
-  app.post_status();
-
-  std::cout << "OPERATION COMPLETED." << std::endl;
+  char ans{};
+  std::cout << "Post text as tweets... (Y/N) ";
+  std::cin >> ans;
+  if (tolower(ans) == 'y')
+  {
+	  TwitterClient app;
+	  app.setup_twitter_oauth();
+	  app.post_status(twitPr);
+  }
+  else if (tolower(ans) == 'n')
+  {
+	  std::cout << "Text will not be posted online\n";
+  }
+  else
+  {
+	  std::cerr << "Invalid entry\n";
+  }
 }

@@ -119,9 +119,9 @@ int MasterSelector::select_extension(Receiver &obj)
 	}
 }
 
-void MasterSelector::enable_options(Receiver &obj)
+std::string MasterSelector::enable_options(Receiver &obj)
 {		// Decision on file processing
-	TwitPrinter twitPr;
+	std::string str;
 	fType = check_extension(obj);
 	switch (fType)
 	{
@@ -130,24 +130,20 @@ void MasterSelector::enable_options(Receiver &obj)
 		break;
 	case DOC:
 	{
-		DoccProc doccPr;
+		DoccProcessor doccPr;
 		doccPr.process_file(obj._docstream);
-		twitPr.setFulltxt(doccPr.getString());
+		str = doccPr.getString();
 	}
 	break;
 	case TXT:
 	{
-		TextProc textPr;
+		TextProcessor textPr;
 		textPr.read_textfile(obj._docstream);
-		twitPr.setFulltxt(textPr.getString());
+		str = textPr.getString();
 	}
 	break;
-
 	}
-
-	twitPr.mkChain();
-
-	twitPr.publish();
+	return str;
 }
 
        //////////////////// -oo-  ////////////////////////////
@@ -187,52 +183,28 @@ void TwtProcessor::estimTwtNum()
 void TwtProcessor::spliceStr()
 {
 	unsigned int cutoff{};
-
-	while(!_fullText.empty())
+	while(denom != twtNumb)
 	{
-		if (CHARACTER_MAX - CHARACTER_LIMIT > 5)
-		{
-			cutoff = _fullText.rfind(' ', CHARACTER_LIMIT);
-		}
-		else
-		{
-			std::cerr << "The string length are too high" << std::endl;
-		}
-
+		cutoff = _fullText.rfind(' ', CHARACTER_LIMIT);
 		_piece = _fullText.substr(0, cutoff);
-
-		if (_piece.empty())
-		{
-			++denom;
-			_piece.push_back(OPEN_TAG);
-			_piece += std::to_string(denom);
-			_piece.push_back(DIVISOR);
-			_piece += std::to_string(twtNumb);
-			_piece.push_back(CLOSE_TAG);
-			chain.push_back(_piece);
-		}
-		else
-		{
-			return;
-		}
-
+		_piece.push_back(OPEN_TAG);
+		_piece += std::to_string(++denom);
+		_piece.push_back(DIVISOR);
+		_piece += std::to_string(twtNumb);
+		_piece.push_back(CLOSE_TAG);
+		chain.push_back(_piece);
 		_fullText = _fullText.erase(0, cutoff);
 	}
 }
 
-//void TwtProcessor::collectStr()
-//{		// Collects extracted string from various document formats
-//	_fullText.assign(_stringColl);
-//}
 
 void TwtProcessor::mkChain()
 {
-	// collectStr();
 	estimTwtNum();
 	spliceStr();
 }
 
-void TwtProcessor::setFulltxt(std::string s_in)
+void TwtProcessor::setFulltxt(std::string& s_in)
 {
 	_fullText.assign(s_in);
 }

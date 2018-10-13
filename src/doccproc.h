@@ -15,7 +15,7 @@
 constexpr int UNICODE  = 0;
 constexpr int ANSI     = 1;
 
-class DoccProc
+class DoccProcessor
 {
 private:
 	CFHeader                    _olehdr;
@@ -31,14 +31,14 @@ private:
 	
 	std::u16string              _strmName;
 	uint16_t                    _sectSz;
-    unsigned long                       _wdocStart;
-	unsigned long                       _tablStart;
-    unsigned long                       _clxOffset;
-	unsigned long                       _strmOffset;
+    unsigned long               _wdocStart;
+	unsigned long               _tablStart;
+    unsigned long               _clxOffset;
+	unsigned long               _strmOffset;
 
 public:
-	DoccProc();
-	~DoccProc();
+	DoccProcessor();
+	~DoccProcessor();
 
 	void process_file(std::ifstream&);
 	std::string getString() const;

@@ -21,7 +21,7 @@ void TwitterClient::setup_twitter_oauth()
 }
 
 // Updates status
-void TwitterClient::post_status()
+void TwitterClient::post_status(TwtProcessor& twts)
 {
     // TODO: Input validation and error checking
     for (const auto& twit : twts.chain)

@@ -25,8 +25,7 @@ void TwitPrinter::publish()
 template<class T>
 inline void TwitPrinter::printChain(T &obj)
 {
-	std::cout << "Printing available text blocks..." << std::endl
-		<< std::endl;
+	std::cout << "Printing available text blocks...\n\n";
 
 	int numb = chain.size();
 	int i = 0;
@@ -39,12 +38,12 @@ inline void TwitPrinter::printChain(T &obj)
 
 	if (i == numb)
 	{
-		obj << "--- All available tweets have been displayed. ---" << std::endl;
+		obj << "--- All available tweets have been displayed. ---\n";
 		printALine(obj);
 	}
 	else
 	{
-		obj << "There was a problem counting/printing the text blocks." << std::endl;
+		obj << "There was a problem counting/printing the text blocks.\n";
 	}
 }
 

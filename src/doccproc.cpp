@@ -1,26 +1,26 @@
 #include "doccproc.h"
 
-DoccProc::DoccProc()
+DoccProcessor::DoccProcessor()
 {
 	this->setANSIexceptions();
 }
 
-DoccProc::~DoccProc()
+DoccProcessor::~DoccProcessor()
 {	
 }
 
-void DoccProc::process_file(std::ifstream & strm)
+void DoccProcessor::process_file(std::ifstream & strm)
 {
 	this->read_file_data(strm);
 	this->collect_text(strm);
 }
 
-std::string DoccProc::getString() const
+std::string DoccProcessor::getString() const
 {
 	return _stringColl;
 }
 
-void DoccProc::read_file_data(std::ifstream &stream)
+void DoccProcessor::read_file_data(std::ifstream &stream)
 {
   _olehdr.readCFHeader(stream);
   auto offset = _olehdr.get_sector_offset(_olehdr.DirSect1);
@@ -34,9 +34,13 @@ void DoccProc::read_file_data(std::ifstream &stream)
   _fib.read_Fib(stream);
   
   if (_fib.base.fWhichTblStm)
-    _strmName = u"1Table";
+  {
+	  _strmName = u"1Table";
+  }
   else
-    _strmName = u"0Table";
+  {
+	  _strmName = u"0Table";
+  }
 
   _tablStart = _root.find_stream_object(stream, _olehdr, _strmName);
   stream.seekg(_tablStart);
@@ -47,7 +51,7 @@ void DoccProc::read_file_data(std::ifstream &stream)
   _clxobj.readToClx(stream);
 }
 
-void DoccProc::collect_text(std::ifstream &filestrm)
+void DoccProcessor::collect_text(std::ifstream &filestrm)
 {	
 	const unsigned int numElem = _clxobj.pcdt.plcPcd.pcdLength(_clxobj);
 	int encoding{};
@@ -86,7 +90,7 @@ void DoccProc::collect_text(std::ifstream &filestrm)
 	}
 }
 
-inline std::wstring DoccProc::transferUTFString(std::ifstream &giv, int cur, int nxt)
+inline std::wstring DoccProcessor::transferUTFString(std::ifstream &giv, int cur, int nxt)
 {
 	std::wstring wstr;
 	while (cur < nxt)
@@ -99,7 +103,7 @@ inline std::wstring DoccProc::transferUTFString(std::ifstream &giv, int cur, int
 	return wstr;
 }
 
-inline std::string DoccProc::transferANSIString(std::ifstream &giv, int cur, int nxt)
+inline std::string DoccProcessor::transferANSIString(std::ifstream &giv, int cur, int nxt)
 {
 	std::string str;
 	while ( cur < nxt)
@@ -113,7 +117,7 @@ inline std::string DoccProc::transferANSIString(std::ifstream &giv, int cur, int
 
 }
 
-inline void DoccProc::setANSIexceptions()
+inline void DoccProcessor::setANSIexceptions()
 {
 	_altANSI[0x82] = 0x201A;
 	_altANSI[0x83] = 0x0192;

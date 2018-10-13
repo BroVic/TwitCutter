@@ -1,16 +1,16 @@
 #include "txtproc.h"
 
 
-TextProc::TextProc()
+TextProcessor::TextProcessor()
 {
 }
 
-TextProc::~TextProc()
+TextProcessor::~TextProcessor()
 {
 
 }
 
-void TextProc::read_textfile(std::ifstream &input)
+void TextProcessor::read_textfile(std::ifstream &input)
 {
 	if (!input.good())
 	{
@@ -27,7 +27,7 @@ void TextProc::read_textfile(std::ifstream &input)
 }
 
 
-std::string TextProc::getString()
+std::string TextProcessor::getString()
 {
 	return _textString;
 }

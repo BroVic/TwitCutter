@@ -71,12 +71,11 @@ public:
 	MasterSelector();
 	~MasterSelector();
 
-	void enable_options(Receiver&);
+	std::string enable_options(Receiver&);
 
 private:
 	int check_extension(Receiver&);
 	int select_extension(Receiver&);
-
 };
 //////////////////////////
 
@@ -116,7 +115,7 @@ public:
 	TwtProcessor();
 	~TwtProcessor();
 	void mkChain();
-	void setFulltxt(std::string);
+	void setFulltxt(std::string&);
 };
 
                 ////////////////////////
