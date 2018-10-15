@@ -71,6 +71,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalDependencies>libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>./lib;C:\Users\Admn\Documents\5-Personal\Cpp\TwitCutter\Twitcutter\twitcut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>

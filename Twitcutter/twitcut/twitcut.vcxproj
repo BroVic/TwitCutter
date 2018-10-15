@@ -83,6 +83,8 @@
     <Link>
       <AdditionalDependencies>C:\Users\Admn\Documents\5-Personal\Cpp\TwitCutter\Twitcutter\twitcut\lib\twitcurl.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\Admn\Documents\5-Personal\Cpp\TwitCutter\Twitcutter\twitcut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
