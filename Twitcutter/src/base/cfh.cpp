@@ -106,9 +106,9 @@ unsigned long CFHeader::get_sector_offset(const unsigned long sectorNumber)
 std::vector<unsigned long> CFHeader::copy_difat(std::ifstream &stream)
 {
   std::vector<unsigned long> difatCopy(Difat, Difat + sizeof(Difat) / sizeof(unsigned long));
-
+  // only go this route if there are any Difat sectors
   if (DifatSect1 != ENDOFCHAIN)
-  { // only go this route if there are any Difat sectors
+  { 
     auto sectSz = get_sector_size();    
     auto difatSectOffset = get_sector_offset(DifatSect1, sectSz);
     const auto difatLenPerSector = sectSz / sizeof(unsigned long);
@@ -124,7 +124,7 @@ std::vector<unsigned long> CFHeader::copy_difat(std::ifstream &stream)
     {
       stream.seekg(difatSectOffset);
       // Loop within a sector
-      for (int j = 0; j < difatLenPerSector; ++j)
+      for (unsigned int j = 0; j < difatLenPerSector; ++j)
       {
 		  try
 		  {
@@ -134,21 +134,23 @@ std::vector<unsigned long> CFHeader::copy_difat(std::ifstream &stream)
 		  {
 			  std::cerr << "Exception caught in file stream: " << std::strerror(errno) << "\n";
 		  }
-
-	// The last field of Difat sectors do not hold FAT sector numbers
-	// but instead hold the value of the next Difat sector if it exists.
-	// In such a case, the offset is returned and used to reset the stream
-	// atop the outer loop.
-	if (j != difatLenPerSector - DIFAT_NEXT_LOC)
-	{
-	  difatCopy.push_back(difatVal);
-	}
-	else
-	{
-	  if (difatVal != ENDOFCHAIN)
-	    difatSectOffset = get_sector_offset(difatVal);
-	}
-      }
+		  
+		  // The last field of Difat sectors do not hold FAT sector numbers
+		  // but instead hold the value of the next Difat sector, if it exists.
+		  // In such a case, the offset is returned and used to reset the stream
+		  // atop the outer loop.
+		  if (j != difatLenPerSector - DIFAT_NEXT_LOC)
+		  {
+			  difatCopy.push_back(difatVal);
+		  }
+		  else
+		  {
+			  if (difatVal != ENDOFCHAIN)
+			  {
+				  difatSectOffset = get_sector_offset(difatVal);
+			  }
+		  }
+	  }
     }
   }
   return difatCopy;
