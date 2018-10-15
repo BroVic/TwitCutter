@@ -2,7 +2,7 @@
 
 DoccProcessor::DoccProcessor()
 {
-	this->setANSIexceptions();
+	this->setAnsiExceptions();
 }
 
 DoccProcessor::~DoccProcessor()
@@ -81,7 +81,7 @@ void DoccProcessor::collect_text(std::ifstream &filestrm)
 		}
 		else if (encoding == ANSI)
 		{
-			temp = transferANSIString(filestrm, currentCP, nextCP);
+			temp = transferAnsiString(filestrm, currentCP, nextCP);
 		}
 		
 		_stringColl.append(temp);
@@ -103,7 +103,7 @@ inline std::wstring DoccProcessor::transferUTFString(std::ifstream &giv, int cur
 	return wstr;
 }
 
-inline std::string DoccProcessor::transferANSIString(std::ifstream &giv, int cur, int nxt)
+inline std::string DoccProcessor::transferAnsiString(std::ifstream &giv, int cur, int nxt)
 {
 	std::string str;
 	while ( cur < nxt)
@@ -117,7 +117,7 @@ inline std::string DoccProcessor::transferANSIString(std::ifstream &giv, int cur
 
 }
 
-inline void DoccProcessor::setANSIexceptions()
+inline void DoccProcessor::setAnsiExceptions()
 {
 	_altANSI[0x82] = 0x201A;
 	_altANSI[0x83] = 0x0192;

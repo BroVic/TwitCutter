@@ -15,8 +15,8 @@
 	// 2. Labels the strings with a number i.e. pagination.
 	// 3. Builds a collection of these strings until all the text in the document has been accounted for.
 
-#ifndef GENPROC_H_INCLUDED
-#define	GENPROC_H_INCLUDED
+#ifndef _GENPROC_H_INCLUDED_
+#define	_GENPROC_H_INCLUDED_
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -86,13 +86,14 @@ private:
 constexpr int ZERO_OFFSET = 0;
 
 // For pagination
-constexpr char OPEN_TAG = '(';
-constexpr char DIVISOR = '/';
-constexpr char CLOSE_TAG = ')';
+constexpr char OPEN_TAG   = '(';
+constexpr char DIVISOR    = '/';
+constexpr char CLOSE_TAG  = ')';
+constexpr char SPACE      = ' ';
 
 // Character limits for text blocs
-constexpr unsigned int CHARACTER_MAX = 140;
-constexpr unsigned int CHARACTER_LIMIT = 120;
+constexpr unsigned int CHARACTER_MAX    = 140;
+constexpr unsigned int CHARACTER_LIMIT  = 120;
 
 
 class TwtProcessor
@@ -119,4 +120,4 @@ public:
 };
 
                 ////////////////////////
-#endif // !GENERICPROC_H_INCLUDED
+#endif // !_GENERICPROC_H_INCLUDED_

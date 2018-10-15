@@ -49,9 +49,9 @@ private:
 	void collect_text(std::ifstream&);
 
 	inline std::wstring transferUTFString(std::ifstream&, int, int);
-	inline std::string transferANSIString(std::ifstream&, int, int);
+	inline std::string transferAnsiString(std::ifstream&, int, int);
 	
-	void setANSIexceptions();
+	void setAnsiExceptions();
 };
 #endif // !DOCCPROC_H_INCLUDED
 

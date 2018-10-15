@@ -91,18 +91,13 @@ int MasterSelector::select_extension(Receiver &obj)
 	std::string temp(obj._exte);
 	int len = temp.length() + 1;
 	char *tempstr = new (std::nothrow) char[len];
-	/*if (tempstr == nullptr)
-	{
-	throw "Unable to allocate memory.";
-	}*/
-
 	// Ensure all are lower-case
 	for (int i = 0; i < len; ++i)
 	{
 		tempstr[i] = tolower(temp[i]);
 	}
-	tempstr[len] = '\0';
 
+	tempstr[len] = '\0';
 	temp.assign(tempstr);
 
 	if (temp.compare(".doc") == 0)
@@ -185,8 +180,9 @@ void TwtProcessor::spliceStr()
 	unsigned int cutoff{};
 	while(denom != twtNumb)
 	{
-		cutoff = _fullText.rfind(' ', CHARACTER_LIMIT);
+		cutoff = _fullText.rfind(SPACE, CHARACTER_LIMIT);
 		_piece = _fullText.substr(0, cutoff);
+		_piece.push_back(SPACE);
 		_piece.push_back(OPEN_TAG);
 		_piece += std::to_string(++denom);
 		_piece.push_back(DIVISOR);
