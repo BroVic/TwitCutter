@@ -68,16 +68,16 @@ void TwitPrinter::writeToDisk()
 		std::cin >> filename;
 		filename.append(".txt");
 
-		_printer.open(filename.c_str());
-		if (!_printer.is_open())
+		printer.open(filename.c_str());
+		if (!printer.is_open())
 		{
 			std::cerr << "Could not open '" << filename.c_str() << "'." << std::endl;
 			return;
 		}
 
-		printChain(_printer);
+		printChain(printer);
 
-		_printer.close();
+		printer.close();
 	}
 	else
 	{

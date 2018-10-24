@@ -10,7 +10,7 @@
 
 class TextProcessor
 {
-	std::string _textString;
+	std::string textString;
 
 public:
 	TextProcessor();

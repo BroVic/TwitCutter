@@ -1,7 +1,7 @@
 // TwitCutter
 //
-// CmdMain.cpp
-// Main source file for command-line access to the application
+// cmdmain.cpp
+// Entry point for the console application
 
 // A document file is passed as an argument at the command line
 // twtcut.exe [file]

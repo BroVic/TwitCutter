@@ -15,9 +15,9 @@
 
 class TwitterClient
 {
-	Keyring _keys;
-	twitCurl _twitterObj;
-	std::string _srvResponse;
+	Keyring keys;
+	twitCurl twitterObj;
+	std::string srvResponse;
 	// char tmpBuf[1024];
 
 public:

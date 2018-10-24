@@ -14,10 +14,10 @@ TwitterClient::~TwitterClient()
 // Sets API keys 
 void TwitterClient::setup_twitter_oauth()
 {
-	_twitterObj.getOAuth().setConsumerKey(_keys.getMyConsumerKey());
-	_twitterObj.getOAuth().setConsumerSecret(_keys.getMyConsumerKeySecret());
-	_twitterObj.getOAuth().setOAuthTokenKey(_keys.getMyOAuthAccessTokenKey());
-	_twitterObj.getOAuth().setOAuthTokenSecret(_keys.getMyOAuthAccessTokenSecret());
+	twitterObj.getOAuth().setConsumerKey(keys.getMyConsumerKey());
+	twitterObj.getOAuth().setConsumerSecret(keys.getMyConsumerKeySecret());
+	twitterObj.getOAuth().setOAuthTokenKey(keys.getMyOAuthAccessTokenKey());
+	twitterObj.getOAuth().setOAuthTokenSecret(keys.getMyOAuthAccessTokenSecret());
 }
 
 // Updates status
@@ -26,15 +26,15 @@ void TwitterClient::post_status(TwtProcessor& twts)
     // TODO: Input validation and error checking
     for (const auto& twit : twts.chain)
     {
-        if (_twitterObj.statusUpdate(twit))
+        if (twitterObj.statusUpdate(twit))
         {
-            _twitterObj.getLastWebResponse(_srvResponse);
-            printf("\ntwitterClient:: statusUpdate web response: \n%s\n", _srvResponse.c_str());
+            twitterObj.getLastWebResponse(srvResponse);
+            printf("\ntwitterClient:: statusUpdate web response: \n%s\n", srvResponse.c_str());
         }
         else
         {
-            _twitterObj.getLastCurlError(_srvResponse);
-            printf("\ntwitterClient:: statusUpdate error:\n%s\n", _srvResponse.c_str());
+            twitterObj.getLastCurlError(srvResponse);
+            printf("\ntwitterClient:: statusUpdate error:\n%s\n", srvResponse.c_str());
         }
     }
 }

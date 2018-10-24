@@ -45,9 +45,9 @@ enum FileExtension
 class Receiver
 {		// Processor of the original input file
 private:
-	std::ifstream _docstream;
-	std::string   _fName;
-	std::string   _exte;
+	std::ifstream docstream;
+	std::string   fName;
+	std::string   exte;
 
 	friend class MasterSelector;
 
@@ -98,9 +98,9 @@ constexpr unsigned int CHARACTER_LIMIT  = 120;
 
 class TwtProcessor
 {        // To process retrieved text and store the pieces in a chain.
-	std::string            _fullText;
-	std::string            _piece;
-	std::string::iterator  _it;
+	std::string            fullText;
+	std::string            piece;
+	std::string::iterator  it;
 
 	void estimTwtNum();
 	void spliceStr();

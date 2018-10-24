@@ -21,13 +21,13 @@ void TextProcessor::read_textfile(std::ifstream &input)
 	while (!input.eof())
     {
         std::getline(input, temp);
-        _textString.append(temp);
+        textString.append(temp);
     }
-    assert(!_textString.empty());
+    assert(!textString.empty());
 }
 
 
 std::string TextProcessor::getString()
 {
-	return _textString;
+	return textString;
 }

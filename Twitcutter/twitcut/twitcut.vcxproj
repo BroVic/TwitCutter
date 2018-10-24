@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\base\cfh.h" />
     <ClInclude Include="..\src\base\clx.h" />
+    <ClInclude Include="..\src\base\dllclnt.h" />
     <ClInclude Include="..\src\base\doccproc.h" />
     <ClInclude Include="..\src\base\fib.h" />
     <ClInclude Include="..\src\base\genproc.h" />
@@ -149,6 +150,7 @@
     <ClCompile Include="..\src\base\cfh.cpp" />
     <ClCompile Include="..\src\base\clx.cpp" />
     <ClCompile Include="..\src\base\cmdmain.cpp" />
+    <ClCompile Include="..\src\base\dllclnt.cpp" />
     <ClCompile Include="..\src\base\doccproc.cpp" />
     <ClCompile Include="..\src\base\fib.cpp" />
     <ClCompile Include="..\src\base\genproc.cpp" />

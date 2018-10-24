@@ -16,7 +16,7 @@ class TwitPrinter
 	: public TwtProcessor
 {        // To provide various options for displaying the tweets
 private:
-	std::ofstream _printer;
+	std::ofstream printer;
 
 public:
 	TwitPrinter();
