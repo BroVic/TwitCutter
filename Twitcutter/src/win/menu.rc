@@ -1,3 +1,5 @@
+// menu.rc
+
 #include "resource.h"
 
 // IDI_APPICON ICON "my_icon.ico"
