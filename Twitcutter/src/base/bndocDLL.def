@@ -1,5 +1,0 @@
-// bndocDLL.def
-//
-LIBRARY "bndoc"
-
-EXPORTS
