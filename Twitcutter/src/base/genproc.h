@@ -24,16 +24,13 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "doccproc.h"
 #include "txtproc.h"
+#include "dllclnt.h"
+#include "doccproc.h"
 
 ///////////////////////////////////////////////////////////////////
 ///////////////         INPUT CLASSES         /////////////////////
 ///////////////////////////////////////////////////////////////////
-
-//constexpr int ERR_NO_OPEN = 1;
-//constexpr int ERR_NOT_GOOD = 2;
-
 enum FileExtension
 {
 	STATIC = -1,
@@ -42,70 +39,68 @@ enum FileExtension
 	TXT
 };
 
+//
+// Receiver: For processing of the original input file
+// i.e. collecting its path, parsing the extension
 class Receiver
-{		// Processor of the original input file
+{		
 private:
 	std::ifstream docstream;
 	std::string   fName;
 	std::string   exte;
 
 	friend class MasterSelector;
-
 public:
 	Receiver();
 	~Receiver();
-
 	void startJob(const std::string&);
-
 private:
 	void activate_stream();
 	void get_file_ext();
 };
 
+//
+// Decides on format-specific processing
 class MasterSelector
-{		// Decides on format-specific processing
+{
 private:
 	int fType;
-
 public:
 	MasterSelector();
 	~MasterSelector();
-
 	std::string enable_options(Receiver&);
-
 private:
 	int check_extension(Receiver&);
 	int select_extension(Receiver&);
 };
-//////////////////////////
 
 ///////////////////////////////////////////////////////////////////
 ///////////////         OUTPUT CLASSES        /////////////////////
 ///////////////////////////////////////////////////////////////////
-
 constexpr int ZERO_OFFSET = 0;
 
 // For pagination
-constexpr char OPEN_TAG   = '(';
+constexpr char OPEN_TAG   = '(';    // TODO: Make mutable; use struct.
 constexpr char DIVISOR    = '/';
 constexpr char CLOSE_TAG  = ')';
 constexpr char SPACE      = ' ';
 
+//
 // Character limits for text blocs
 constexpr unsigned int CHARACTER_MAX    = 140;
 constexpr unsigned int CHARACTER_LIMIT  = 120;
 
-
+//
+// To process retrieved text and
+// store the pieces in a chain.
 class TwtProcessor
-{        // To process retrieved text and store the pieces in a chain.
+{        
 	std::string            fullText;
 	std::string            piece;
 	std::string::iterator  it;
 
 	void estimTwtNum();
 	void spliceStr();
-	// void collectStr();
-
 public:
 	std::vector<std::string> chain;
 	unsigned short         denom;
@@ -118,6 +113,4 @@ public:
 	void mkChain();
 	void setFulltxt(std::string&);
 };
-
-                ////////////////////////
 #endif // !_GENERICPROC_H_INCLUDED_

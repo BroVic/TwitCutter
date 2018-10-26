@@ -125,9 +125,10 @@ std::string MasterSelector::enable_options(Receiver &obj)
 		break;
 	case DOC:
 	{
-		DoccProcessor doccPr;
-		doccPr.process_file(obj.docstream);
-		str = doccPr.getString();
+		DoccProcessor  doccPr;
+		IProcessorLib& ip = doccPr;
+		ip.process_file(obj.docstream);
+		str = ip.getString();
 	}
 	break;
 	case TXT:
