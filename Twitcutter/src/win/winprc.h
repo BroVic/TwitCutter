@@ -6,7 +6,7 @@
 #include <Windows.h>
 #include "resource.h"
 #include "abtd.h"
-#define IDC_MAIN_UI = 101;
+#include "genproc.h"
 
 constexpr char nullterminator = '\0';
 

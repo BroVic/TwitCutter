@@ -30,6 +30,7 @@
 #define ID_EDIT_PASTE     2003
 #define ID_EDIT_FIND      2004
 #define ID_EDIT_REPLACE   2005
+#define ID_EDIT_CLEAR     2006
 
 // Connect menu
 #define ID_CONNECT_POST   3001
@@ -43,6 +44,4 @@
   // Help menu
 #define ID_HELP_ABOUT     6001
 
-// Command macros
-#define IDBROWSE             901 // TODO: Place or displace!
 #endif // !_RESOURCE_H_INCLUDED_

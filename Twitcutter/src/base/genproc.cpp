@@ -134,8 +134,9 @@ std::string MasterSelector::enable_options(Receiver &obj)
 	case TXT:
 	{
 		TextProcessor textPr;
-		textPr.read_textfile(obj.docstream);
-		str = textPr.getString();
+		IProcessorLib& ip = textPr;
+		ip.read_file_data(obj.docstream);
+		str = ip.getString();
 	}
 	break;
 	}

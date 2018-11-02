@@ -38,5 +38,10 @@ public:
 	virtual void read_file_data(std::ifstream&) = 0;
 	virtual void collect_text(std::ifstream&) = 0;
 };
+
+// Macros to suppress export warnings on STL object instances
+#define BEGIN_WARNINGS_ACTION __pragma(warning(push))
+#define DISABLE_WARNING_4251 __pragma(warning(disable:4251))
+#define END_WARNINGS_ACTION __pragma(warning(pop))
 #endif // !_DLLCLNT_H_INCLUDED_
 

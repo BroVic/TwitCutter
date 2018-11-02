@@ -49,8 +49,8 @@ DoccProcessor::~DoccProcessor()
 
 void DoccProcessor::process_file(std::ifstream & strm)
 {
-	this->read_file_data(strm);
-	this->collect_text(strm);
+	read_file_data(strm);
+	collect_text(strm);
 }
 
 std::string DoccProcessor::getString() const
@@ -58,53 +58,59 @@ std::string DoccProcessor::getString() const
 	return stringColl;
 }
 
+// Reads data from the Word Binary File Format (.DOC)
 void DoccProcessor::read_file_data(std::ifstream &stream)
 {
-  olehdr.readCFHeader(stream);
-  auto offset = olehdr.get_sector_offset(olehdr.DirSect1);
+	// Read the Compound File Header
+	olehdr.readCFHeader(stream);
+	auto offset = olehdr.get_sector_offset(olehdr.DirSect1);
 
-  stream.seekg(offset);
-  root.readDirEntry(stream);
-  strmName = u"WordDocument";
+	// Read the Directory Entry
+	stream.seekg(offset);
+	root.readDirEntry(stream);
+	strmName = u"WordDocument";
 
-  wdocStart = root.find_stream_object(stream, olehdr, strmName);
-  stream.seekg(wdocStart);
-  fib.read_Fib(stream);
-  
-  if (fib.base.fWhichTblStm)
-  {
-	  strmName = u"1Table";
-  }
-  else
-  {
-	  strmName = u"0Table";
-  }
+	// Read the File Information Block
+	wdocStart = root.find_stream_object(stream, olehdr, strmName);
+	stream.seekg(wdocStart);
+	fib.read_Fib(stream);
 
-  tablStart = root.find_stream_object(stream, olehdr, strmName);
-  stream.seekg(tablStart);
+	// Find the Table Stream
+	if (fib.base.fWhichTblStm)
+	{
+		strmName = u"1Table";
+	}
+	else
+	{
+		strmName = u"0Table";
+	}
+	tablStart = root.find_stream_object(stream, olehdr, strmName);
+	stream.seekg(tablStart);
 
-  clxOffset = fib.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
-  stream.seekg(clxOffset, std::ios::cur);
-
-  clxobj.readToClx(stream);
+	// Read the Clx structure
+	clxOffset = fib.fibRgFcLcbBlob.fibRgFcLcb97.fcClx;
+	stream.seekg(clxOffset, std::ios::cur);
+	clxobj.readToClx(stream);
 }
 
+// Extracts text from the Word document stream object
 void DoccProcessor::collect_text(std::ifstream &filestrm)
 {	
+	// For decisions on encoding
+	constexpr int unicode = 0;
+	constexpr int ansi = 1;
+
 	const unsigned int numElem = clxobj.pcdt.plcPcd.pcdLength(clxobj);
 	int encoding{};
 	size_t index{};
-
 	while (index < numElem)
 	{
-		this->strmOffset = clxobj.pcdt.plcPcd.aPcd[index].defineOffset();
-		
+		strmOffset = clxobj.pcdt.plcPcd.aPcd[index].defineOffset();	
 		encoding = clxobj.pcdt.plcPcd.aPcd[index].defineEncoding();
-		if (encoding == ANSI)
+		if (encoding == ansi)
 		{
-			this->strmOffset /= 2;
-		}
-		
+			strmOffset /= 2;
+		}		
 		filestrm.seekg(wdocStart, std::ios::beg);
 		filestrm.seekg(strmOffset, std::ios::cur);
 
@@ -112,18 +118,16 @@ void DoccProcessor::collect_text(std::ifstream &filestrm)
 		int currentCP = clxobj.pcdt.plcPcd.getCharPos(index);
 		int nextCP = clxobj.pcdt.plcPcd.getCharPos(index + 1);
 		std::string temp;
-		if (encoding == UNICODE)
+		if (encoding == unicode)
 		{
-			this->wstringColl = transferUTFString(filestrm, currentCP, nextCP);
+			wstringColl = transferUTFString(filestrm, currentCP, nextCP);
 			temp = std::string(wstringColl.begin(), wstringColl.end());
 		}
-		else if (encoding == ANSI)
+		else if (encoding == ansi)
 		{
 			temp = transferAnsiString(filestrm, currentCP, nextCP);
 		}
-		
 		stringColl.append(temp);
-			
 		index++;
 	}
 }
@@ -137,7 +141,6 @@ inline std::wstring DoccProcessor::transferUTFString(std::ifstream &giv, int cur
 		wstr.push_back(utfChar);
 		cur++;
 	}
-
 	return wstr;
 }
 
@@ -150,7 +153,5 @@ inline std::string DoccProcessor::transferAnsiString(std::ifstream &giv, int cur
 		str.push_back(ansiChar);
 		cur++;
 	}
-
 	return str;
-
 }

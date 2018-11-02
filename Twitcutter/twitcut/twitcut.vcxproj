@@ -76,13 +76,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)src\dyn\;$(SolutionDir)src\dyn\txtdc\;$(SolutionDir)src\dyn\bndoc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>twitcurl.lib;bndoc.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>twitcurl.lib;bndoc.lib;txtdc.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
@@ -135,6 +135,9 @@
     <ProjectReference Include="..\bndoc\bndoc.vcxproj">
       <Project>{1da2e693-61c2-4a1e-87bd-c3051442be61}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\txtdc\txtdc.vcxproj">
+      <Project>{9e6c229c-54bc-4cc0-99ad-5b52e79d0a5c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\base\genproc.h" />
@@ -143,7 +146,6 @@
     <ClInclude Include="..\src\base\print.h" />
     <ClInclude Include="..\src\base\starters.h" />
     <ClInclude Include="..\src\base\streamprep.h" />
-    <ClInclude Include="..\src\base\txtproc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\base\cmdmain.cpp" />
@@ -153,7 +155,6 @@
     <ClCompile Include="..\src\base\print.cpp" />
     <ClCompile Include="..\src\base\starters.cpp" />
     <ClCompile Include="..\src\base\streamprep.cpp" />
-    <ClCompile Include="..\src\base\txtproc.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

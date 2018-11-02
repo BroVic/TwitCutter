@@ -19,22 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\base\cfh.h" />
-    <ClInclude Include="..\src\base\clx.h" />
-    <ClInclude Include="..\src\base\dllclnt.h" />
-    <ClInclude Include="..\src\base\doccproc.h" />
-    <ClInclude Include="..\src\base\fib.h" />
-    <ClInclude Include="..\src\base\stdafx.h" />
-    <ClInclude Include="..\src\base\targetver.h" />
+    <ClInclude Include="..\src\dyn\bndoc\cfh.h" />
+    <ClInclude Include="..\src\dyn\bndoc\clx.h" />
+    <ClInclude Include="..\src\dyn\bndoc\doccproc.h" />
+    <ClInclude Include="..\src\dyn\bndoc\fib.h" />
+    <ClInclude Include="..\src\dyn\dllclnt.h" />
+    <ClInclude Include="..\src\dyn\stdafx.h" />
+    <ClInclude Include="..\src\dyn\targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\base\cfh.cpp" />
-    <ClCompile Include="..\src\base\clx.cpp" />
-    <ClCompile Include="..\src\base\dllclnt.cpp" />
-    <ClCompile Include="..\src\base\dllmain.cpp" />
-    <ClCompile Include="..\src\base\doccproc.cpp" />
-    <ClCompile Include="..\src\base\fib.cpp" />
-    <ClCompile Include="..\src\base\stdafx.cpp" />
+    <ClCompile Include="..\src\dyn\bndoc\cfh.cpp" />
+    <ClCompile Include="..\src\dyn\bndoc\clx.cpp" />
+    <ClCompile Include="..\src\dyn\bndoc\doccproc.cpp" />
+    <ClCompile Include="..\src\dyn\bndoc\fib.cpp" />
+    <ClCompile Include="..\src\dyn\dllclnt.cpp" />
+    <ClCompile Include="..\src\dyn\dllmain.cpp" />
+    <ClCompile Include="..\src\dyn\stdafx.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -94,8 +94,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\dyn</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>

@@ -70,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\Debug</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -78,7 +78,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\base\;$(SolutionDir)src\dyn\;$(SolutionDir)src\dyn\bndoc\;$(SolutionDir)src\dyn\txtdc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>twitcurl.lib;bndoc.lib;txtdc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -129,6 +134,17 @@
   <ItemGroup>
     <ResourceCompile Include="..\src\win\abt.rc" />
     <ResourceCompile Include="..\src\win\menu.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libtwitcurl\twitcurl.vcxproj">
+      <Project>{00175d8c-ea44-48ae-ac59-b3b7be04e65c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\bndoc\bndoc.vcxproj">
+      <Project>{1da2e693-61c2-4a1e-87bd-c3051442be61}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\txtdc\txtdc.vcxproj">
+      <Project>{9e6c229c-54bc-4cc0-99ad-5b52e79d0a5c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
