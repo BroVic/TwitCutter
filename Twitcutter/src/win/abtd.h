@@ -6,6 +6,7 @@
 #define _ABTD_H_INCLUDED_
 
 #include <Windows.h>
+#include "resource.h"
 
-BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+BOOL CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 #endif // !_ABTD_H_INCLUDED_

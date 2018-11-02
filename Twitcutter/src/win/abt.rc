@@ -1,9 +1,9 @@
 // abt.rc
 
-#include "resource.h"
 #include <windows.h>
+#include "resource.h"
 
-IDD_ABOUTDIALOG DIALOG DISCARDABLE 0, 0, 239, 66
+IDD_ABOUT DIALOG DISCARDABLE 0, 0, 239, 66
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
 FONT 8, "MS Sans Serif"

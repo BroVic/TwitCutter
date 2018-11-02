@@ -6,11 +6,31 @@
 // Main Window Prodedure
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-
+	static HWND hEdit;
 	switch (message)
 	{
-		HWND hEdit;
+	case WM_CREATE:
+	{
+		hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "",
+			WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
+			0, 0, 100, 100, hwnd, (HMENU)IDC_MAIN_EDIT, GetModuleHandle(NULL), NULL);
+		if (hEdit == nullptr)
+		{
+			MessageBox(hwnd, "Could not create edit control.", "Error", MB_OK | MB_ICONERROR);
+		}
 
+		auto hfDefault = static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
+		SendMessage(hEdit, WM_SETFONT, reinterpret_cast<WPARAM>(hfDefault), MAKELPARAM(FALSE, 0));
+	}
+	break;
+	case WM_SIZE:
+	{
+		RECT rcClient;
+		GetClientRect(hwnd, &rcClient);
+		hEdit = GetDlgItem(hwnd, IDC_MAIN_EDIT);
+		SetWindowPos(hEdit, NULL, 0, 0, rcClient.right, rcClient.bottom, SWP_NOZORDER);
+	}
+	break;
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
@@ -18,63 +38,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PostMessage(hwnd, WM_CLOSE, 0, 0);
 			break;
 		case ID_FILE_OPEN:
-		{
-			OPENFILENAME ofn;
-			char szFileName[MAX_PATH] = "";
-			ZeroMemory(&ofn, sizeof(ofn));
-			ofn.lStructSize = sizeof(ofn);  // SEE NOTE BELOW
-			ofn.hwndOwner = hwnd;
-			ofn.lpstrFilter = "Test Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
-			ofn.lpstrFile = szFileName;
-			ofn.nMaxFile = MAX_PATH;
-			ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-			ofn.lpstrDefExt = "txt";
-
-			if (GetOpenFileName(&ofn))
-			{
-				hEdit = GetDlgItem(hwnd, IDC_MAIN_UI);
-				if (!LoadTextFileToEdit(hEdit, szFileName))
-				{
-					MessageBox(hwnd, "Could not read from text file.", "Error",
-						MB_OK | MB_ICONINFORMATION);
-				}
-			}
-		}
+			create_openfile_dlg(hwnd, hEdit);
+			break;
 		case ID_HELP_ABOUT:
-		{
-			int ret = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ABOUTDIALOG), hwnd, AboutDlgProc);
-			if (ret == -1)
-			{
-				MessageBox(hwnd, "Dialog failed!", "Error", MB_OK | MB_ICONINFORMATION);
-			}
-		}
-		break;
+			create_about_dialog(hwnd);
+			break;
 		default:
 			break;
 		}
-	case WM_CREATE:
-	{
-		// Create edit control
-		hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "",
-			WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOVSCROLL,
-			0, 0, 100, 100, hwnd, reinterpret_cast<HMENU>(IDC_MAIN_UI), GetModuleHandle(NULL), NULL);
-		if (hEdit == nullptr)
-		{
-			MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
-		}
-
-		HFONT hfDefault = static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
-		SendMessage(hwnd, WM_SETFONT, reinterpret_cast<WPARAM>(hfDefault), MAKELPARAM(false, 0));
-	}
-	break;
-	case WM_SIZE:
-	{
-		RECT rcClient;
-		GetClientRect(hwnd, &rcClient);
-		hEdit = GetDlgItem(hwnd, IDC_MAIN_UI);
-		SetWindowPos(hEdit, NULL, 0, 0, rcClient.right, rcClient.bottom, SWP_NOZORDER);
-	}
-	break;
+		break;
 	case WM_CLOSE:
 		DestroyWindow(hwnd);
 		break;
@@ -85,4 +57,75 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
 	return 0;
+}
+
+
+// Creates a common dialog box for opening files
+void create_openfile_dlg(HWND hwnd, HWND editHndl)
+{
+	char szFileName[MAX_PATH] = "";
+	
+	OPENFILENAME ofn;
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = hwnd;
+	ofn.lpstrFilter = "Test Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
+	ofn.lpstrFile = szFileName;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	ofn.lpstrDefExt = "txt";
+
+	if (GetOpenFileName(&ofn))
+	{
+		if (!LoadTextFileToEdit(editHndl, ofn))
+		{
+			MessageBox(hwnd, "Could not read from the opened file.", "Error",
+				MB_OK | MB_ICONINFORMATION);
+		}
+	}
+	else
+	{
+		MessageBox(hwnd, "Could not open the file.", "Error!",
+			MB_OK | MB_ICONINFORMATION);
+	}
+}
+
+// Reads the content of a text file
+BOOL LoadTextFileToEdit(const HWND hndl, const OPENFILENAME& obj)
+{
+	auto bSuccess = false;
+	auto hFile = CreateFile(obj.lpstrFile, GENERIC_READ, FILE_SHARE_READ,
+		NULL, OPEN_EXISTING, 0, NULL);
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		auto dwFileSize = GetFileSize(hFile, NULL);
+		if (dwFileSize != 0xFFFFFFFF)
+		{
+			auto pszFileText = static_cast<LPSTR>(GlobalAlloc(GPTR, dwFileSize + 1));
+			if (pszFileText != NULL)
+			{
+				DWORD dwRead{};
+				if (ReadFile(hFile, pszFileText, dwFileSize, &dwRead, NULL))
+				{
+					pszFileText[dwFileSize] = nullterminator;
+					if (SetWindowText(hndl, pszFileText))
+					{
+						bSuccess = true;
+					}
+				}
+				GlobalFree(pszFileText);
+			}
+		}
+		CloseHandle(hFile);
+	}
+	return bSuccess;
+}
+
+void create_about_dialog(HWND hwnd)
+{
+	auto ret = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ABOUT), hwnd, AboutDlgProc);
+	if (ret == -1)
+	{
+		MessageBox(hwnd, "Dialog failed!", "Error", MB_OK | MB_ICONINFORMATION);
+	}
 }

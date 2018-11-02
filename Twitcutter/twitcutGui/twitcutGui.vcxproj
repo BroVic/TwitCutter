@@ -118,13 +118,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\win\abtd.cpp" />
-    <ClCompile Include="..\src\win\opend.cpp" />
     <ClCompile Include="..\src\win\winMain.cpp" />
     <ClCompile Include="..\src\win\winprc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\win\abtd.h" />
-    <ClInclude Include="..\src\win\opend.h" />
     <ClInclude Include="..\src\win\resource.h" />
     <ClInclude Include="..\src\win\winprc.h" />
   </ItemGroup>
