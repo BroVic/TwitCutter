@@ -32,8 +32,9 @@
 #define ID_EDIT_REPLACE   2005
 #define ID_EDIT_CLEAR     2006
 
-// Connect menu
-#define ID_CONNECT_POST   3001
+// TwitCutter menu
+#define ID_TWITCUT_GEN    3001
+#define ID_TWITCUT_POST   3002
 
   // View menu
 #define ID_VIEW           4001

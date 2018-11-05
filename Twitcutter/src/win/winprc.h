@@ -4,6 +4,7 @@
 #define _WINPRC_H_INCLUDED_
 
 #include <Windows.h>
+#include <string>
 #include "resource.h"
 #include "abtd.h"
 #include "genproc.h"

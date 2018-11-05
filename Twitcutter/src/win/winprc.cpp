@@ -69,19 +69,24 @@ void create_openfile_dlg(HWND hwnd, HWND editHndl)
 	ZeroMemory(&ofn, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hwndOwner = hwnd;
-	ofn.lpstrFilter = "Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
+	ofn.lpstrFilter = "Word 97-2003 Documents (*.doc)\0*.doc\0All Files (*.*)\0*.*\0";
 	ofn.lpstrFile = szFileName;
 	ofn.nMaxFile = MAX_PATH;
 	ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-	ofn.lpstrDefExt = "txt";
+	ofn.lpstrDefExt = "doc";
 
 	if (GetOpenFileName(&ofn))
 	{
-		if (!LoadTextFileToEdit(editHndl, ofn))
+		Receiver jobIn{};
+		jobIn.startJob(ofn.lpstrFile);
+
+		MasterSelector sel{};
+		SetWindowText(editHndl, sel.enable_options(jobIn).c_str());
+		/*if (!LoadTextFileToEdit(editHndl, ofn))
 		{
 			MessageBox(hwnd, "Could not read from the opened file.", "Error",
 				MB_OK | MB_ICONINFORMATION);
-		}
+		}*/
 	}
 	else
 	{
