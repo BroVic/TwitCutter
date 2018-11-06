@@ -9,6 +9,8 @@
 #include "abtd.h"
 #include "genproc.h"
 
+
+
 constexpr char nullterminator = '\0';
 
 // The Main Window Procedure
