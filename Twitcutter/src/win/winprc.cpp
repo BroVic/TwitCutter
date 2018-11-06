@@ -2,7 +2,6 @@
 
 #include "winprc.h"
 
-
 // Main Window Prodedure
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -11,16 +10,34 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 	{
-		hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "",
-			WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
-			0, 0, 100, 100, hwnd, reinterpret_cast<HMENU>(IDC_MAIN_EDIT), GetModuleHandle(NULL), NULL);
+		hEdit = CreateWindowEx(
+			WS_EX_CLIENTEDGE,
+			editName.c_str(),
+			emptyString.c_str(),
+			WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL,
+			xPos,
+			yPos,
+			width,
+			height,
+			hwnd,
+			reinterpret_cast<HMENU>(IDC_MAIN_EDIT), 
+			GetModuleHandle(NULL), 
+			nullptr);
 		if (!hEdit)
 		{
-			MessageBox(hwnd, "Could not create edit control.", "Error", MB_OK | MB_ICONERROR);
+			MessageBox(
+				hwnd, 
+				"Could not create edit control.", 
+				"Error", 
+				MB_OK | MB_ICONERROR);
 		}
 
 		auto hfDefault = static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
-		SendMessage(hEdit, WM_SETFONT, reinterpret_cast<WPARAM>(hfDefault), MAKELPARAM(FALSE, 0));
+		SendMessage(
+			hEdit, 
+			WM_SETFONT, 
+			reinterpret_cast<WPARAM>(hfDefault), 
+			MAKELPARAM(FALSE, 0));
 	}
 	break;
 	case WM_SIZE:
@@ -28,7 +45,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		RECT rcClient{};
 		GetClientRect(hwnd, &rcClient);
 		hEdit = GetDlgItem(hwnd, IDC_MAIN_EDIT);
-		SetWindowPos(hEdit, NULL, 0, 0, rcClient.right, rcClient.bottom, SWP_NOZORDER);
+		SetWindowPos(
+			hEdit, 
+			NULL, 
+			xPos, 
+			yPos, 
+			rcClient.right, 
+			rcClient.bottom, 
+			SWP_NOZORDER);
 	}
 	break;
 	case WM_COMMAND:

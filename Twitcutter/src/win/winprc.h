@@ -10,8 +10,16 @@
 #include "genproc.h"
 
 
-
+// Character constants
 constexpr char nullterminator = '\0';
+const std::string emptyString{ "" };
+const std::string editName{ "EDIT" };
+
+// Default dimensions for main edit control
+constexpr unsigned int xPos   = 0;
+constexpr unsigned int yPos   = 0;
+constexpr unsigned int width  = 100;
+constexpr unsigned int height = 100;
 
 // The Main Window Procedure
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
