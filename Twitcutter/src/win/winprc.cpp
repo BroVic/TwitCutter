@@ -14,7 +14,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "",
 			WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
 			0, 0, 100, 100, hwnd, reinterpret_cast<HMENU>(IDC_MAIN_EDIT), GetModuleHandle(NULL), NULL);
-		if (hEdit == nullptr)
+		if (!hEdit)
 		{
 			MessageBox(hwnd, "Could not create edit control.", "Error", MB_OK | MB_ICONERROR);
 		}
@@ -25,7 +25,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_SIZE:
 	{
-		RECT rcClient;
+		RECT rcClient{};
 		GetClientRect(hwnd, &rcClient);
 		hEdit = GetDlgItem(hwnd, IDC_MAIN_EDIT);
 		SetWindowPos(hEdit, NULL, 0, 0, rcClient.right, rcClient.bottom, SWP_NOZORDER);
@@ -65,8 +65,7 @@ void create_openfile_dlg(HWND hwnd, HWND editHndl)
 {
 	char szFileName[MAX_PATH] = "";
 	
-	OPENFILENAME ofn;
-	ZeroMemory(&ofn, sizeof(ofn));
+	OPENFILENAME ofn{};
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hwndOwner = hwnd;
 	ofn.lpstrFilter = "Word 97-2003 Documents (*.doc)\0*.doc\0All Files (*.*)\0*.*\0";
@@ -88,19 +87,20 @@ void create_openfile_dlg(HWND hwnd, HWND editHndl)
 				MB_OK | MB_ICONINFORMATION);
 		}*/
 	}
-	else
-	{
-		MessageBox(hwnd, "Could not open the file.", "Error!",
-			MB_OK | MB_ICONINFORMATION);
-	}
 }
 
 // Reads the content of a text file
 BOOL LoadTextFileToEdit(const HWND hndl, const OPENFILENAME& obj)
 {
 	auto bSuccess = false;
-	auto hFile = CreateFile(obj.lpstrFile, GENERIC_READ, FILE_SHARE_READ,
-		NULL, OPEN_EXISTING, 0, NULL);
+	auto hFile = CreateFile(
+		obj.lpstrFile, 
+		GENERIC_READ, 
+		FILE_SHARE_READ,
+		NULL, 
+		OPEN_EXISTING, 
+		0, 
+		NULL);
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		auto dwFileSize = GetFileSize(hFile, NULL);
@@ -131,6 +131,9 @@ void create_about_dialog(HWND hwnd)
 	auto ret = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ABOUT), hwnd, AboutDlgProc);
 	if (ret == -1)
 	{
-		MessageBox(hwnd, "Dialog failed!", "Error", MB_OK | MB_ICONINFORMATION);
+		MessageBox(hwnd,
+			"Dialog failed!",
+			"Error", 
+			MB_OK | MB_ICONINFORMATION);
 	}
 }
