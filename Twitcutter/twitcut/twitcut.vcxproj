@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)src\dyn\;$(SolutionDir)src\dyn\txtdc\;$(SolutionDir)src\dyn\bndoc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\;$(SolutionDir)include\;$(SolutionDir)src\dyn\;$(SolutionDir)src\dyn\txtdc\;$(SolutionDir)src\dyn\bndoc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -140,21 +140,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\base\genproc.h" />
-    <ClInclude Include="..\src\base\keys.h" />
-    <ClInclude Include="..\src\base\post.h" />
-    <ClInclude Include="..\src\base\print.h" />
     <ClInclude Include="..\src\base\starters.h" />
-    <ClInclude Include="..\src\base\streamprep.h" />
+    <ClInclude Include="..\src\genproc.h" />
+    <ClInclude Include="..\src\keys.h" />
+    <ClInclude Include="..\src\post.h" />
+    <ClInclude Include="..\src\print.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\base\cmdmain.cpp" />
-    <ClCompile Include="..\src\base\genproc.cpp" />
-    <ClCompile Include="..\src\base\keys.cpp" />
-    <ClCompile Include="..\src\base\post.cpp" />
-    <ClCompile Include="..\src\base\print.cpp" />
     <ClCompile Include="..\src\base\starters.cpp" />
-    <ClCompile Include="..\src\base\streamprep.cpp" />
+    <ClCompile Include="..\src\genproc.cpp" />
+    <ClCompile Include="..\src\keys.cpp" />
+    <ClCompile Include="..\src\post.cpp" />
+    <ClCompile Include="..\src\print.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
