@@ -3,7 +3,14 @@
 #ifndef _RESOURCE_H_INCLUDED_
 #define _RESOURCE_H_INCLUDED_
 
+#include <Windows.h>
 #include <winres.h>
+
+/***
+TODO: Instead of using .rc files, build menu(s)
+at runtime and as such quit using these macros
+and instead use compile-time constants.
+*/
 
 // Resources
 #define IDR_APPMENU       101
@@ -49,4 +56,7 @@
 #define ID_HELP_UPDATE    6004
 #define ID_HELP_ABOUT     6005
 
+
+// Dialog Box(es)
+BOOL CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 #endif // !_RESOURCE_H_INCLUDED_

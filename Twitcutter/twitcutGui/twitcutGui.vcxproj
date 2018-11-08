@@ -126,14 +126,14 @@
     <ClCompile Include="..\src\print.cpp" />
     <ClCompile Include="..\src\win\abtd.cpp" />
     <ClCompile Include="..\src\win\winMain.cpp" />
-    <ClCompile Include="..\src\win\winprc.cpp" />
+    <ClCompile Include="..\src\win\appset.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\genproc.h" />
     <ClInclude Include="..\src\print.h" />
-    <ClInclude Include="..\src\win\abtd.h" />
     <ClInclude Include="..\src\win\resource.h" />
-    <ClInclude Include="..\src\win\winprc.h" />
+    <ClInclude Include="..\src\win\winMain.h" />
+    <ClInclude Include="..\src\win\appset.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\win\abt.rc" />

@@ -7,7 +7,6 @@
 #include <string>
 #include "resource.h"
 #include "appset.h"
-#include "abtd.h"
 #include "print.h"
 
 
