@@ -1,6 +1,6 @@
 // abtd.cpp
 
-#include "abtd.h"
+#include "resource.h"
 
 // 'About' Dialog Procedure
 BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
