@@ -76,15 +76,16 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Admn\Documents\5-Personal\Cpp\TwitCutter\Twitcutter\twitcut\include;C:\Users\Admn\Documents\5-Personal\Cpp\TwitCutter\Twitcutter\twitcut\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\;$(SolutionDir)include\;$(SolutionDir)src\dyn\;$(SolutionDir)src\dyn\txtdc\;$(SolutionDir)src\dyn\bndoc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\Users\Admn\Documents\5-Personal\Cpp\TwitCutter\Twitcutter\twitcut\lib\twitcurl.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Admn\Documents\5-Personal\Cpp\TwitCutter\Twitcutter\twitcut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>twitcurl.lib;bndoc.lib;txtdc.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
+      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -131,33 +132,27 @@
     <ProjectReference Include="..\..\libtwitcurl\twitcurl.vcxproj">
       <Project>{00175d8c-ea44-48ae-ac59-b3b7be04e65c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\bndoc\bndoc.vcxproj">
+      <Project>{1da2e693-61c2-4a1e-87bd-c3051442be61}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\txtdc\txtdc.vcxproj">
+      <Project>{9e6c229c-54bc-4cc0-99ad-5b52e79d0a5c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\base\cfh.h" />
-    <ClInclude Include="..\src\base\clx.h" />
-    <ClInclude Include="..\src\base\doccproc.h" />
-    <ClInclude Include="..\src\base\fib.h" />
-    <ClInclude Include="..\src\base\genproc.h" />
-    <ClInclude Include="..\src\base\keys.h" />
-    <ClInclude Include="..\src\base\post.h" />
-    <ClInclude Include="..\src\base\print.h" />
     <ClInclude Include="..\src\base\starters.h" />
-    <ClInclude Include="..\src\base\streamprep.h" />
-    <ClInclude Include="..\src\base\txtproc.h" />
+    <ClInclude Include="..\src\genproc.h" />
+    <ClInclude Include="..\src\keys.h" />
+    <ClInclude Include="..\src\post.h" />
+    <ClInclude Include="..\src\print.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\base\cfh.cpp" />
-    <ClCompile Include="..\src\base\clx.cpp" />
     <ClCompile Include="..\src\base\cmdmain.cpp" />
-    <ClCompile Include="..\src\base\doccproc.cpp" />
-    <ClCompile Include="..\src\base\fib.cpp" />
-    <ClCompile Include="..\src\base\genproc.cpp" />
-    <ClCompile Include="..\src\base\keys.cpp" />
-    <ClCompile Include="..\src\base\post.cpp" />
-    <ClCompile Include="..\src\base\print.cpp" />
     <ClCompile Include="..\src\base\starters.cpp" />
-    <ClCompile Include="..\src\base\streamprep.cpp" />
-    <ClCompile Include="..\src\base\txtproc.cpp" />
+    <ClCompile Include="..\src\genproc.cpp" />
+    <ClCompile Include="..\src\keys.cpp" />
+    <ClCompile Include="..\src\post.cpp" />
+    <ClCompile Include="..\src\print.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

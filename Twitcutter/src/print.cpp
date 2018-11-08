@@ -8,6 +8,8 @@
 
 // Methods for Class TwtPrinter (definitions)
 TwitPrinter::TwitPrinter()
+	: printer{},
+	lastMsg{ "--- All available tweets have been displayed. ---\n" }
 {
 }
 
@@ -17,9 +19,13 @@ TwitPrinter::~TwitPrinter()
 
 void TwitPrinter::publish()
 {
-	this->displayInConsole();
+	displayInConsole();
+	writeToDisk();
+}
 
-	this->writeToDisk();
+const std::string TwitPrinter::get_lastMsg() const
+{
+	return lastMsg;
 }
 
 template<class T>
@@ -38,7 +44,7 @@ inline void TwitPrinter::printChain(T &obj)
 
 	if (i == numb)
 	{
-		obj << "--- All available tweets have been displayed. ---\n";
+		obj << get_lastMsg();
 		printALine(obj);
 	}
 	else
@@ -68,16 +74,16 @@ void TwitPrinter::writeToDisk()
 		std::cin >> filename;
 		filename.append(".txt");
 
-		_printer.open(filename.c_str());
-		if (!_printer.is_open())
+		printer.open(filename.c_str());
+		if (!printer.is_open())
 		{
 			std::cerr << "Could not open '" << filename.c_str() << "'." << std::endl;
 			return;
 		}
 
-		printChain(_printer);
+		printChain(printer);
 
-		_printer.close();
+		printer.close();
 	}
 	else
 	{

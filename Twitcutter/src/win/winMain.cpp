@@ -5,59 +5,57 @@
 #include "winprc.h"
 
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+const char g_szClassName[] = "TwitCutterWindowClass";
+bool register_winclass(HINSTANCE);
+
+int WINAPI WinMain(
+	HINSTANCE hInstance,
+	HINSTANCE hPrevInstance,
+	LPSTR lpCmdLine,
+	int nCmdShow)
 {
-	const char g_szClassName[] = "twitcutterWindowClass";
+	constexpr int failWndReg = -1;
+	constexpr int failWndCreate = -2;
 
-	// Registering the Window Class
-	WNDCLASSEX wc;
-	
-	wc.cbSize = sizeof(WNDCLASSEX);
-	wc.style = 0;
-	wc.lpfnWndProc = WndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW);
-	wc.lpszMenuName = MAKEINTRESOURCE(IDR_APPMENU);
-	wc.lpszClassName = g_szClassName;
-	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-
-	if (!RegisterClassEx(&wc))
+	if (!register_winclass(hInstance))
 	{
-		MessageBox(NULL, "Window Registration Failed!", "Error", MB_ICONEXCLAMATION | MB_OK);
-		return -1;
+		MessageBox(
+			nullptr,
+			"Window Registration Failed!",
+			"Error",
+			MB_ICONEXCLAMATION | MB_OK);
+		return failWndReg;
 	}
 
 	// Create window
 	HWND hwnd = CreateWindowEx(
 		WS_EX_CLIENTEDGE,
-		g_szClassName, 
-		"TwitCutter", 
+		g_szClassName,
+		"TwitCutter",
 		WS_OVERLAPPEDWINDOW, 
-		CW_USEDEFAULT, 
-		CW_USEDEFAULT, 
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		300,
 		300, 
-		300, 
-		NULL, 
-		NULL, 
-		hInstance, 
-		NULL
-	);
-
-	if (hwnd == nullptr)
+		nullptr,
+		nullptr,
+		hInstance,
+		nullptr);
+	if (!hwnd)
 	{
-		MessageBox(NULL, "Window creation failed!", "Error!", MB_ICONEXCLAMATION | MB_OK);
-		return -2;
+		MessageBox(
+			nullptr,
+			"Window creation failed!", 
+			"Error!",
+			MB_ICONEXCLAMATION | MB_OK);
+		return failWndCreate;
 	}
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 
 	// Message loop
 	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0) > 0)
+	while (GetMessage(&msg, nullptr, 0, 0) > 0)
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -65,3 +63,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	return msg.wParam;
 }
 
+
+// Register window class
+bool register_winclass(HINSTANCE hInstance)
+{
+	// Note that we are using uniform initialization for the
+	// WNDCLASSEX instance. Thus, members 'style', 'cbClsExtra'
+	// and 'cbWndExtra' evaluate to 0.
+	WNDCLASSEX wc{};
+	wc.cbSize = sizeof(WNDCLASSEX);
+	wc.lpfnWndProc = WndProc;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW);
+	wc.lpszMenuName = MAKEINTRESOURCE(IDR_APPMENU);
+	wc.lpszClassName = g_szClassName;
+	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+
+	if (!RegisterClassEx(&wc))
+	{
+		return false;
+	}
+	return true;
+}

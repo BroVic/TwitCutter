@@ -2,15 +2,59 @@
 
 #include "winprc.h"
 
-
 // Main Window Prodedure
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-
+	static HWND hEdit;
 	switch (message)
 	{
-		HWND hEdit;
+	case WM_CREATE:
+	{
+		hEdit = CreateWindowEx(
+			WS_EX_CLIENTEDGE,
+			editName.c_str(),
+			emptyString.c_str(),
+			WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL,
+			xPos,
+			yPos,
+			width,
+			height,
+			hwnd,
+			reinterpret_cast<HMENU>(IDC_MAIN_EDIT), 
+			GetModuleHandle(NULL), 
+			nullptr);
+		if (!hEdit)
+		{
+			MessageBox(
+				hwnd, 
+				"Could not create edit control.", 
+				"Error", 
+				MB_OK | MB_ICONERROR);
+		}
 
+		auto hfDefault = static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
+		SendMessage(
+			hEdit, 
+			WM_SETFONT, 
+			reinterpret_cast<WPARAM>(hfDefault), 
+			MAKELPARAM(FALSE, 0));
+	}
+	break;
+	case WM_SIZE:
+	{
+		RECT rcClient{};
+		GetClientRect(hwnd, &rcClient);
+		hEdit = GetDlgItem(hwnd, IDC_MAIN_EDIT);
+		SetWindowPos(
+			hEdit, 
+			NULL, 
+			xPos, 
+			yPos, 
+			rcClient.right, 
+			rcClient.bottom, 
+			SWP_NOZORDER);
+	}
+	break;
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
@@ -18,63 +62,67 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PostMessage(hwnd, WM_CLOSE, 0, 0);
 			break;
 		case ID_FILE_OPEN:
+			create_openfile_dlg(hwnd, hEdit);   // TODO: Fix these arguments!
+			break;
+		case ID_TWITCUT_GEN:
 		{
-			OPENFILENAME ofn;
-			char szFileName[MAX_PATH] = "";
-			ZeroMemory(&ofn, sizeof(ofn));
-			ofn.lStructSize = sizeof(ofn);  // SEE NOTE BELOW
-			ofn.hwndOwner = hwnd;
-			ofn.lpstrFilter = "Test Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
-			ofn.lpstrFile = szFileName;
-			ofn.nMaxFile = MAX_PATH;
-			ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-			ofn.lpstrDefExt = "txt";
-
-			if (GetOpenFileName(&ofn))
+			TwitPrinter printer{};
+			std::string tmp{};
+			// collect text from the control
+			int txtLen = GetWindowTextLength(hEdit);
+			if (txtLen)
 			{
-				hEdit = GetDlgItem(hwnd, IDC_MAIN_UI);
-				if (!LoadTextFileToEdit(hEdit, szFileName))
+				char* buf = new (std::nothrow) char[txtLen];
+				if (buf)
 				{
-					MessageBox(hwnd, "Could not read from text file.", "Error",
-						MB_OK | MB_ICONINFORMATION);
+					if (GetWindowText(hEdit, buf, txtLen))
+					{
+						std::string tmp = buf;
+						if (!tmp.empty())
+						{
+							printer.setFulltxt(tmp);
+						}
+					}
+					// Check with GetLastError
 				}
+				delete[] buf;
 			}
-		}
-		case ID_HELP_ABOUT:
-		{
-			int ret = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ABOUTDIALOG), hwnd, AboutDlgProc);
-			if (ret == -1)
+			// process the text into tweets
+			printer.mkChain();
+			// send tweets to the control
+			tmp.clear();
+			for (auto twt : printer.chain)
 			{
-				MessageBox(hwnd, "Dialog failed!", "Error", MB_OK | MB_ICONINFORMATION);
+				tmp.append(twt);
+				tmp.append(separator);
+			}
+			
+			if (SetWindowText(hEdit, tmp.c_str()))
+			{
+				// Check with GetLastError, etc.
+				MessageBox(
+					hEdit,
+					"All tweets were displayed in the window",
+					"Success!",
+					MB_OK | MB_ICONINFORMATION);
+			}
+			else
+			{
+				MessageBox(
+					hEdit,
+					"Could not display tweets in the window",
+					"Error!",
+					MB_OK | MB_ICONERROR);
 			}
 		}
 		break;
+		case ID_HELP_ABOUT:
+			create_about_dialog(hwnd);
+			break;
 		default:
 			break;
 		}
-	case WM_CREATE:
-	{
-		// Create edit control
-		hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "",
-			WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOVSCROLL,
-			0, 0, 100, 100, hwnd, reinterpret_cast<HMENU>(IDC_MAIN_UI), GetModuleHandle(NULL), NULL);
-		if (hEdit == nullptr)
-		{
-			MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
-		}
-
-		HFONT hfDefault = static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
-		SendMessage(hwnd, WM_SETFONT, reinterpret_cast<WPARAM>(hfDefault), MAKELPARAM(false, 0));
-	}
-	break;
-	case WM_SIZE:
-	{
-		RECT rcClient;
-		GetClientRect(hwnd, &rcClient);
-		hEdit = GetDlgItem(hwnd, IDC_MAIN_UI);
-		SetWindowPos(hEdit, NULL, 0, 0, rcClient.right, rcClient.bottom, SWP_NOZORDER);
-	}
-	break;
+		break;
 	case WM_CLOSE:
 		DestroyWindow(hwnd);
 		break;
@@ -85,4 +133,83 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
 	return 0;
+}
+
+
+// Creates a common dialog box for opening files
+void create_openfile_dlg(HWND hwnd, HWND editHndl)
+{
+	char szFileName[MAX_PATH] = "";
+	
+	OPENFILENAME ofn{};
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = hwnd;
+	ofn.lpstrFilter = "Word 97-2003 Documents (*.doc)\0*.doc\0All Files (*.*)\0*.*\0";
+	ofn.lpstrFile = szFileName;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	ofn.lpstrDefExt = "doc";
+
+	if (GetOpenFileName(&ofn))
+	{
+		Receiver jobIn{};
+		jobIn.startJob(ofn.lpstrFile);
+
+		MasterSelector sel{};
+		SetWindowText(editHndl, sel.enable_options(jobIn).c_str());
+		/*if (!LoadTextFileToEdit(editHndl, ofn))
+		{
+			MessageBox(hwnd, "Could not read from the opened file.", "Error",
+				MB_OK | MB_ICONINFORMATION);
+		}*/
+	}
+}
+
+// Reads the content of a text file
+BOOL LoadTextFileToEdit(const HWND hndl, const OPENFILENAME& obj)
+{
+	auto bSuccess = false;
+	auto hFile = CreateFile(
+		obj.lpstrFile, 
+		GENERIC_READ, 
+		FILE_SHARE_READ,
+		NULL, 
+		OPEN_EXISTING, 
+		0, 
+		NULL);
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		auto dwFileSize = GetFileSize(hFile, NULL);
+		if (dwFileSize != 0xFFFFFFFF)
+		{
+			auto pszFileText = static_cast<LPSTR>(GlobalAlloc(GPTR, dwFileSize + 1));
+			if (pszFileText != NULL)
+			{
+				DWORD dwRead{};
+				if (ReadFile(hFile, pszFileText, dwFileSize, &dwRead, NULL))
+				{
+					pszFileText[dwFileSize] = nullterminator;
+					if (SetWindowText(hndl, pszFileText))
+					{
+						bSuccess = true;
+					}
+				}
+				GlobalFree(pszFileText);
+			}
+		}
+		CloseHandle(hFile);
+	}
+	return bSuccess;
+}
+
+void create_about_dialog(HWND hwnd)
+{
+	auto ret = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ABOUT), hwnd, AboutDlgProc);
+	if (ret == -1)
+	{
+		MessageBox(hwnd,
+			"Dialog failed!",
+			"Error", 
+			MB_OK | MB_ICONINFORMATION);
+	}
 }

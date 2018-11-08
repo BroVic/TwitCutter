@@ -1,3 +1,5 @@
+// menu.rc
+
 #include "resource.h"
 
 // IDI_APPICON ICON "my_icon.ico"
@@ -6,7 +8,7 @@ IDR_APPMENU MENU
 BEGIN
     POPUP "&File"
 	BEGIN
-	    // MENUITEM "&New", ID_FILE_NEW
+	    MENUITEM "New...", ID_FILE_NEW
 		MENUITEM "&Open...", ID_FILE_OPEN
 		MENUITEM "&Save", ID_FILE_SAVE
 		MENUITEM "Sa&ve As...", ID_FILE_SAVEAS
@@ -19,18 +21,27 @@ BEGIN
 		MENUITEM "&Paste", ID_EDIT_PASTE
 		MENUITEM "&Find...", ID_EDIT_FIND
 		MENUITEM "&Replace...", ID_EDIT_REPLACE
+		MENUITEM "C&lear", ID_EDIT_CLEAR
 	END
-	POPUP "&Connect"
+	POPUP "&TwitCutter"
 	BEGIN
-	    MENUITEM "&Post...", ID_CONNECT_POST
+	    MENUITEM "&Generate", ID_TWITCUT_GEN
+	    MENUITEM "&Post", ID_TWITCUT_POST
 	END
-	//POPUP "&View"
-	//POPUP "&Tools"
-	// BEGIN
-	    // MENUITEM "Optio&ns...", ID_TOOLS_OPTIONS
-	// END
+	POPUP "&View"
+	BEGIN
+	    MENUITEM "...", ID_VIEW
+	END
+	POPUP "Too&ls"
+	BEGIN
+	    MENUITEM "Optio&ns...", ID_TOOLS_OPTIONS
+	END
 	POPUP "&Help"
 	BEGIN
+	    MENUITEM "View &Help", ID_HELP_VIEW
+		MENUITEM "&Report a Problem", ID_HELP_REPORT
+		MENUITEM "&Privacy Statement...", ID_HELP_PRIVACY
+		MENUITEM "Check for &Updates", ID_HELP_UPDATE
 	    MENUITEM "&About", ID_HELP_ABOUT
 	END
 END

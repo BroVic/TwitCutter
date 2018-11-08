@@ -8,10 +8,10 @@
 
 class Keyring
 {
-	std::string _myConsumerKey;
-	std::string _myConsumerKeySecret;
-	std::string _myOAuthAccessTokenKey;
-	std::string _myOAuthAccessTokenSecret;
+	std::string myConsumerKey;
+	std::string myConsumerKeySecret;
+	std::string myOAuthAccessTokenKey;
+	std::string myOAuthAccessTokenSecret;
 
 public:
 	Keyring();

@@ -5,8 +5,12 @@ Please do not attempt to build with *CMake* at this stage. If wont to experiment
 
 Access to Twitter's REST API is accomplished with [BroVic's fork](https://github.com/BroVic/twitcurl) of [swatkat](https://github.com/swatkat)'s C++ library, **twitcurl**.
 
-At the moment there are 3 binaries being outputted by this repository:
+At the moment there are 7 binaries being outputted by this repository:
 
+* `bndoc.dll`
+* `bndoc.lib`
+* `txtdc.dll`
+* `txtdc.lib`
 * `twitcurl.lib`
 * `twitcut.exe`
 * `twitcutGui.exe`

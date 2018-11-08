@@ -8,14 +8,19 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg)
 	{
 	case WM_INITDIALOG:
-
 		return true;
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK)
+	{
+		switch (LOWORD(wParam))
 		{
+		case IDOK:
 			EndDialog(hwnd, IDOK);
+			break;
+		default:
+			break;
 		}
-		break;
+	}
+	break;
 	default:
 		return false;
 	}

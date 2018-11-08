@@ -15,13 +15,13 @@ Receiver::Receiver()
 
 Receiver::~Receiver()
 {
-	_docstream.close();
+	docstream.close();
 }
 
 void Receiver::startJob(const std::string &file)
 {
-	_fName.assign(file);
-	if (_fName.length() != file.length())
+	fName.assign(file);
+	if (fName.length() != file.length())
 	{
 		throw "There was a problem reading the filename.";
 	}
@@ -32,27 +32,27 @@ void Receiver::startJob(const std::string &file)
 void Receiver::activate_stream()
 {
 	// Enable exception before opening stream
-	_docstream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	docstream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	try
 	{
-		_docstream.open(_fName, std::ios::binary);
+		docstream.open(fName, std::ios::binary);
 	}
 	catch (std::ifstream::failure e)
 	{
 		std::cerr << "Exception opening file: " << std::strerror(errno) << "\n";
 	}
 	
-	if (_docstream.good())
+	if (docstream.good())
 	{
-		if (!_docstream.tellg() == ZERO_OFFSET)
-			_docstream.seekg(ZERO_OFFSET, std::ios::beg);
+		if (!docstream.tellg() == ZERO_OFFSET)
+			docstream.seekg(ZERO_OFFSET, std::ios::beg);
 	}
 }
 
 void Receiver::get_file_ext()
 {
-	std::string::size_type dot = _fName.rfind('.');
-	_exte = _fName.substr(dot);
+	std::string::size_type dot = fName.rfind('.');
+	exte = fName.substr(dot);
 }
 
 //--- Class MasterSelector(friend class of Receiver) ---//
@@ -88,7 +88,7 @@ int MasterSelector::check_extension(Receiver &obj)
 
 int MasterSelector::select_extension(Receiver &obj)
 {
-	std::string temp(obj._exte);
+	std::string temp(obj.exte);
 	int len = temp.length() + 1;
 	char *tempstr = new (std::nothrow) char[len];
 	// Ensure all are lower-case
@@ -125,16 +125,18 @@ std::string MasterSelector::enable_options(Receiver &obj)
 		break;
 	case DOC:
 	{
-		DoccProcessor doccPr;
-		doccPr.process_file(obj._docstream);
-		str = doccPr.getString();
+		DoccProcessor  doccPr;
+		IProcessorLib& ip = doccPr;
+		ip.process_file(obj.docstream);
+		str = ip.getString();
 	}
 	break;
 	case TXT:
 	{
 		TextProcessor textPr;
-		textPr.read_textfile(obj._docstream);
-		str = textPr.getString();
+		IProcessorLib& ip = textPr;
+		ip.read_file_data(obj.docstream);
+		str = ip.getString();
 	}
 	break;
 	}
@@ -163,7 +165,7 @@ TwtProcessor::~TwtProcessor()
 
 void TwtProcessor::estimTwtNum()
 {
-	unsigned int len = _fullText.length();
+	unsigned int len = fullText.length();
 	if (len > CHARACTER_LIMIT)
 	{
 		twtNumb = len / CHARACTER_LIMIT;
@@ -180,16 +182,16 @@ void TwtProcessor::spliceStr()
 	unsigned int cutoff{};
 	while(denom != twtNumb)
 	{
-		cutoff = _fullText.rfind(SPACE, CHARACTER_LIMIT);
-		_piece = _fullText.substr(0, cutoff);
-		_piece.push_back(SPACE);
-		_piece.push_back(OPEN_TAG);
-		_piece += std::to_string(++denom);
-		_piece.push_back(DIVISOR);
-		_piece += std::to_string(twtNumb);
-		_piece.push_back(CLOSE_TAG);
-		chain.push_back(_piece);
-		_fullText = _fullText.erase(0, cutoff);
+		cutoff = fullText.rfind(SPACE, CHARACTER_LIMIT);
+		piece = fullText.substr(0, cutoff);
+		piece.push_back(SPACE);
+		piece.push_back(OPEN_TAG);
+		piece += std::to_string(++denom);
+		piece.push_back(DIVISOR);
+		piece += std::to_string(twtNumb);
+		piece.push_back(CLOSE_TAG);
+		chain.push_back(piece);
+		fullText = fullText.erase(0, cutoff);
 	}
 }
 
@@ -202,6 +204,6 @@ void TwtProcessor::mkChain()
 
 void TwtProcessor::setFulltxt(std::string& s_in)
 {
-	_fullText.assign(s_in);
+	fullText.assign(s_in);
 }
          ////////////////// -oo- //////////////////////////
