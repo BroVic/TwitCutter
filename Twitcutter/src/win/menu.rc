@@ -38,6 +38,10 @@ BEGIN
 	END
 	POPUP "&Help"
 	BEGIN
+	    MENUITEM "View &Help", ID_HELP_VIEW
+		MENUITEM "&Report a Problem", ID_HELP_REPORT
+		MENUITEM "&Privacy Statement...", ID_HELP_PRIVACY
+		MENUITEM "Check for &Updates", ID_HELP_UPDATE
 	    MENUITEM "&About", ID_HELP_ABOUT
 	END
 END

@@ -43,6 +43,10 @@
 #define ID_TOOLS_OPTIONS  5001
 
   // Help menu
-#define ID_HELP_ABOUT     6001
+#define ID_HELP_VIEW      6001
+#define ID_HELP_REPORT    6002
+#define ID_HELP_PRIVACY   6003
+#define ID_HELP_UPDATE    6004
+#define ID_HELP_ABOUT     6005
 
 #endif // !_RESOURCE_H_INCLUDED_

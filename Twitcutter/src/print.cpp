@@ -8,6 +8,8 @@
 
 // Methods for Class TwtPrinter (definitions)
 TwitPrinter::TwitPrinter()
+	: printer{},
+	lastMsg{ "--- All available tweets have been displayed. ---\n" }
 {
 }
 
@@ -17,9 +19,13 @@ TwitPrinter::~TwitPrinter()
 
 void TwitPrinter::publish()
 {
-	this->displayInConsole();
+	displayInConsole();
+	writeToDisk();
+}
 
-	this->writeToDisk();
+const std::string TwitPrinter::get_lastMsg() const
+{
+	return lastMsg;
 }
 
 template<class T>
@@ -38,7 +44,7 @@ inline void TwitPrinter::printChain(T &obj)
 
 	if (i == numb)
 	{
-		obj << "--- All available tweets have been displayed. ---\n";
+		obj << get_lastMsg();
 		printALine(obj);
 	}
 	else

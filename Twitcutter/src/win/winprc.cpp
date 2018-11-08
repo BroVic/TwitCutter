@@ -62,8 +62,60 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PostMessage(hwnd, WM_CLOSE, 0, 0);
 			break;
 		case ID_FILE_OPEN:
-			create_openfile_dlg(hwnd, hEdit);
+			create_openfile_dlg(hwnd, hEdit);   // TODO: Fix these arguments!
 			break;
+		case ID_TWITCUT_GEN:
+		{
+			TwitPrinter printer{};
+			std::string tmp{};
+			// collect text from the control
+			int txtLen = GetWindowTextLength(hEdit);
+			if (txtLen)
+			{
+				char* buf = new (std::nothrow) char[txtLen];
+				if (buf)
+				{
+					if (GetWindowText(hEdit, buf, txtLen))
+					{
+						std::string tmp = buf;
+						if (!tmp.empty())
+						{
+							printer.setFulltxt(tmp);
+						}
+					}
+					// Check with GetLastError
+				}
+				delete[] buf;
+			}
+			// process the text into tweets
+			printer.mkChain();
+			// send tweets to the control
+			tmp.clear();
+			for (auto twt : printer.chain)
+			{
+				tmp.append(twt);
+				tmp.append(separator);
+			}
+			
+			if (SetWindowText(hEdit, tmp.c_str()))
+			{
+				// Check with GetLastError, etc.
+				MessageBox(
+					hEdit,
+					"All tweets were displayed in the window",
+					"Success!",
+					MB_OK | MB_ICONINFORMATION);
+			}
+			else
+			{
+				MessageBox(
+					hEdit,
+					"Could not display tweets in the window",
+					"Error!",
+					MB_OK | MB_ICONERROR);
+			}
+		}
+		break;
 		case ID_HELP_ABOUT:
 			create_about_dialog(hwnd);
 			break;

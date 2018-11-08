@@ -7,11 +7,12 @@
 #include <string>
 #include "resource.h"
 #include "abtd.h"
-#include "genproc.h"
+#include "print.h"
 
 
 // Character constants
 constexpr char nullterminator = '\0';
+const std::string separator{ "\r\n" };
 const std::string emptyString{ "" };
 const std::string editName{ "EDIT" };
 
