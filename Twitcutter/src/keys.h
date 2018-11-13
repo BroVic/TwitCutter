@@ -5,7 +5,7 @@
 #define _KEYS_H_INCLUDED
 
 #include <string>
-
+// Keyring class
 class Keyring
 {
 	std::string myConsumerKey;
