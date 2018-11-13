@@ -37,7 +37,7 @@ void TwitterClient::update_status(std::string& twt)
 }
 
 // Grabs a copy of the chain for the TwitterClient object.
-// Returns a bool to indicate whether this was succssfully done.
+// Returns a bool to indicate whether this was successfully done.
 bool TwitterClient::transferred_tweets(const std::vector<std::string>& chn)
 {
 	chainIn = chn;
