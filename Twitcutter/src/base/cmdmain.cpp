@@ -16,16 +16,9 @@
 #include "genproc.h"
 #include "starters.h"
 #include "print.h"
-#include "post.h"
+#include "twclient.h"
+#include "iodef.h"
 
-#if _WIN32
-#if _MSC_VER >= 1900
-// Redefine standard streams in newer compiler versions
-FILE _iob[] = { *stdin, *stdout, *stderr };
-extern "C" FILE* __cdecl __iob_func(void) { return _iob; }
-extern "C" void __imp__set_output_format(void) {};
-#endif
-#endif
 
 int main(int argc, char** argv)
 {
@@ -36,10 +29,10 @@ int main(int argc, char** argv)
   jobIn.startJob(path);
 
   MasterSelector sel;
-  std::string txt = sel.enable_options(jobIn);
+  std::string txt = sel.enable_options(jobIn); // This is stupid, walahi!
   
-  TwitPrinter twitPr;
-  twitPr.setFulltxt(txt);
+  TwitPrinter twitPr{};
+  twitPr.set_fulltxt(txt);
   twitPr.mkChain();
   twitPr.publish();
 
@@ -48,7 +41,7 @@ int main(int argc, char** argv)
   std::cin >> ans;
   if (tolower(ans) == 'y')
   {
-	  TwitterClient app;
+	  TwitterClient app{};
 	  app.setup_twitter_oauth();
 	  app.post_status(twitPr);
   }

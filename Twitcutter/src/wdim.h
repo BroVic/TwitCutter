@@ -1,20 +1,11 @@
-// appset.h
+// wdim.h
 
-// Header file for sundry app settings
+// Window Dimensions: A Derived Class of Class WindowSettings
 
-#ifndef _APPSET_H_INCLUDED
-#define _APPSET_H_INCLUDED
+#ifndef _WDIM_H_INCLUDED
+#define _WDIM_H_INCLUDED
 
-class WindowSettings
-{
-public:
-	WindowSettings();
-	static const char* get_appName();
-	static const char* get_mainWinClass();
-protected:
-	static const char* appName;
-	static const char* mainWinClass;
-};
+#include "wset.h"
 
 class WindowDimensions
 	: public WindowSettings
@@ -38,4 +29,5 @@ private:
 };
 
 using WDim = WindowDimensions;
-#endif // !_APPSET_H_INCLUDED
+#endif // !_WDIM_H_INCLUDED
+

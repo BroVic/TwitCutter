@@ -1,25 +1,8 @@
-// appset.cpp
+// wdim.cpp
 
-#include "appset.h"
+#include "wdim.h"
 
-const char* WindowSettings::appName = "Twitcutter";
-const char* WindowSettings::mainWinClass = "TwitCutterWindowClass";
-
-WindowSettings::WindowSettings()
-{
-}
-
-const char* WindowSettings::get_appName()
-{
-	return appName;
-}
-
-const char* WindowSettings::get_mainWinClass()
-{
-	return mainWinClass;
-}
-
-WindowDimensions::WindowDimensions() 
+WindowDimensions::WindowDimensions()
 	: xPos{ 0 },
 	yPos{ 0 },
 	width{ 100 },
@@ -66,4 +49,3 @@ unsigned int WindowDimensions::getHeight() const
 {
 	return height;
 }
-

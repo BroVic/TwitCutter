@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <string>
-#include "genproc.h"
+#include "twfact.h"
 
 
 class TwitPrinter
