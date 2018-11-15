@@ -16,7 +16,7 @@ The user will be prompted to provide the path to the file whose text is to be po
 ### From the GUI
 Using the application menu, open the file and view the text in the window--the displayed text is editable. When satisfied, navigate to the `TwitCutter` menu and click on `Generate` to create the chain of tweets from the text. This is also displayed in the window in an editable format. Then click on `TwitCutter` > `Post` to send the data to the Twitter feed.
 
-The application supports text transfers using the Windows Clipboard (i.e. Cut-Copy-Paste) - such text should be pasted directly into the main window before processing it into tweets.
+The application supports text transfers using the Windows Clipboard (i.e. *Cut-Copy-Paste*) - such text should be pasted directly into the main window before processing it into tweets.
 
 ## Credits
 Access to Twitter's REST API is accomplished with [BroVic's fork](https://github.com/BroVic/twitcurl) of [swatkat](https://github.com/swatkat)'s C++ library, **twitcurl**.
