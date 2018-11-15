@@ -2,6 +2,7 @@
 
 #include "twclient.h"
 
+// Posts entire chain
 void TwitterClient::post_all_tweets()
 {
 	// TODO: Input validation and error checking

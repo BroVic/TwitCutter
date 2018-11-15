@@ -3,9 +3,9 @@
 // Entry point for graphic user interface
 #include "winMain.h"
 
-static WDim appDefs{};      // file scope
-const auto appName = appDefs.get_appName();
-const auto className = appDefs.get_mainWinClass();
+static      WDim appDefs{}; // file scope
+const auto  appName = appDefs.get_appName();
+const auto  className = appDefs.get_mainWinClass();
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -87,8 +87,7 @@ bool register_winclass(HINSTANCE hInstance, const char* className)
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static HWND hEdit{};
-	static TwitPrinter printer{};
-	static TwitterClient tc{};
+
 	switch (message)
 	{
 	case WM_CREATE:
@@ -98,30 +97,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		size_edit_cntrl(hwnd, appDefs, hEdit);
 		break;
 	case WM_COMMAND:
-		switch (LOWORD(wParam))
-		{
-		case ID_FILE_EXIT:
-			PostMessage(hwnd, WM_CLOSE, 0, 0);
-			break;
-		case ID_FILE_OPEN:
-			create_openfile_dlg(hwnd, hEdit);   // TODO: Fix these arguments!
-			break;
-		case ID_TWITCUT_GEN:
-			generate_tweets(hEdit, printer);
-			break;
-		case ID_TWITCUT_POST:
-			if (tc.transferred_tweets(printer.get_chain()))
-			{
-				tc.post_all_tweets();
-				//post(hEdit, tc);   // TODO: Disable if nothing loaded in control
-			}
-			break;
-		case ID_HELP_ABOUT:
-			create_about_dialog(hwnd);
-			break;
-		default:
-			break;
-		}
+		use_command_options(hwnd, hEdit, wParam);
 		break;
 	case WM_CLOSE:
 		DestroyWindow(hwnd);
@@ -133,6 +109,38 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
 	return 0;
+}
+
+// Implementation of the WM_COMMAND message
+void use_command_options(const HWND hwnd, HWND hEdit, WPARAM wParam)
+{
+	static TwitPrinter printer{};
+	static TwitterClient tc{};
+
+	switch (LOWORD(wParam))
+	{
+	case ID_FILE_EXIT:
+		PostMessage(hwnd, WM_CLOSE, 0, 0);
+		break;
+	case ID_FILE_OPEN:
+		create_openfile_dlg(hwnd, hEdit);   // TODO: Fix these arguments!
+		break;
+	case ID_TWITCUT_GEN:
+		generate_tweets(hEdit, printer);
+		break;
+	case ID_TWITCUT_POST:
+		if (tc.transferred_tweets(printer.get_chain()))
+		{
+			tc.post_all_tweets();
+			//post(hEdit, tc);   // TODO: Disable if nothing loaded in control
+		}
+		break;
+	case ID_HELP_ABOUT:
+		create_about_dialog(hwnd);
+		break;
+	default:
+		break;
+	}
 }
 
 // Creates an edit control for the main app window
@@ -321,9 +329,3 @@ void display_text(const HWND hwnd, const char* str)
 			MB_OK | MB_ICONERROR);
 	}
 }
-
-// Posts the tweets
-//void post(const HWND hwnd, TwitterClient& obj)
-//{
-//	obj.post_all_tweets();
-//}

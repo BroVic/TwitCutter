@@ -29,6 +29,9 @@ bool register_winclass(HINSTANCE, const char*);
 // The Main Window Procedure
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
+// Implementation of the WM_COMMAND message
+void use_command_options(const HWND, HWND, WPARAM);
+
 // Creates an edit control for the main app window
 HWND init_edit_control(const HWND, const WDim&);
 
@@ -50,6 +53,4 @@ void generate_tweets(HWND, TwitPrinter&);
 // Displays test in the edit control
 void display_text(const HWND, const char*);
 
-// Posts the tweets
-//void post(const HWND, TwitterClient&);
 #endif // !_WINPRC_H_INCLUDED_

@@ -6,10 +6,10 @@
 #define _TWCLIENT_H_INCLUDED_
 
 #include <string>
-#include <twitcurl.h>       // header from twitcurl library
-#include <oauthlib.h>       // ditto
-#include "twfact.h"         // for 'TwtProcessor' class
-#include "keys.h"           // for login credentials
+#include <twitcurl.h>       // twitcurl library
+#include <oauthlib.h>       // -- ditto --
+#include "twfact.h"         // 'TwtProcessor' class
+#include "keys.h"           // login credentials
 #include "constants.h"
 
 // TwitterClient class
@@ -31,6 +31,6 @@ public:
 	void post_all_tweets();
 	bool transferred_tweets(const std::vector<std::string>&);
 	bool operator==(const std::vector<std::string>&);
-	bool operator!=(const std::vector<std::string>&);
+	inline bool operator!=(const std::vector<std::string>&);
 };
 #endif // !_TWCLIENT_H_INCLUDED_
