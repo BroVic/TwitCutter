@@ -5,23 +5,26 @@
 
 #include <string>
 #include <vector>
-#include "twclient.h"
+#include "dllclnt.h"
 #include "constants.h"
 
-class TwtProcessor
+class TWTCTAPI TwtProcessor
 {
+BEGIN_WARNINGS_ACTION
+DISABLE_WARNING_4251
 	std::string              fullText;
 	std::string              piece;
 	std::string::iterator    it;
+protected:
+	std::vector<std::string> chain;
+END_WARNINGS_ACTION
+private:
 	unsigned char            maxChainLen;
 	unsigned char            twtNumb;
 	unsigned char		     denom;
 
 	void estimTwtNum();
 	void spliceStr();
-
-protected:
-	std::vector<std::string> chain;
 public:
 	TwtProcessor();
 	~TwtProcessor();

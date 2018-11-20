@@ -16,11 +16,11 @@
 
 // Provide alternatively for export and import
 #ifdef _WIN32
-#ifdef TWTCT_BUILD_DLL
-#define TWTCTAPI __declspec(dllexport)
-#else
-#define TWTCTAPI __declspec(dllimport)
-#endif
+  #ifdef TWTCT_BUILD_DLL
+  #define TWTCTAPI __declspec(dllexport)
+  #else
+  #define TWTCTAPI __declspec(dllimport)
+  #endif
 #elif defined(_GNUC_) // && when using GNU shared library (TODO)
 #define TWTCTAPI __attribute__((visibility(*default*)))
 #else
@@ -39,7 +39,7 @@ public:
 	virtual void collect_text(std::ifstream&) = 0;
 };
 
-// Macros to suppress export warnings on STL object instances
+// Macros to suppress export warnings on STL object instances https://bit.ly/2CHM88w
 #define BEGIN_WARNINGS_ACTION __pragma(warning(push))
 #define DISABLE_WARNING_4251 __pragma(warning(disable:4251))
 #define END_WARNINGS_ACTION __pragma(warning(pop))

@@ -9,16 +9,19 @@
 
 #include <iostream>
 #include <string>
+#include "dllclnt.h"
 #include "twfact.h"
 
 
-class TwitPrinter
+class TWTCTAPI TwitPrinter
 	: public TwtProcessor
 {        // To provide various options for displaying the tweets
 private:
+BEGIN_WARNINGS_ACTION
+DISABLE_WARNING_4251
 	std::ofstream printer;
+END_WARNINGS_ACTION
 	const char* lastMsg;
-
 public:
 	TwitPrinter();
 	~TwitPrinter();

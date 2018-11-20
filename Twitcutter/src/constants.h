@@ -11,17 +11,17 @@ enum FileExtension
 	TXT
 };
 
-constexpr int ZERO_OFFSET = 0;
+constexpr int zeroOffset = 0;
 
 // For pagination
-constexpr char OPEN_TAG = '(';    // TODO: Make mutable; use struct.
-constexpr char DIVISOR = '/';
-constexpr char CLOSE_TAG = ')';
-constexpr char SPACE = ' ';
+constexpr char openingTag  = '(';    // TODO: Make mutable; use struct.
+constexpr char divisor     = '/';
+constexpr char closingTag  = ')';
+constexpr char spaceChar   = ' ';
 
 //
 // Character limits for text blocs
-constexpr unsigned int CHARACTER_MAX = 140;
-constexpr unsigned int CHARACTER_LIMIT = 120;
+constexpr unsigned int characterMax = 140;
+constexpr unsigned int characterLimit = 120;
 #endif // !_CONSTANTS_H_INCLUDED_
 

@@ -34,7 +34,7 @@ class TWTCTAPI DoccProcessor
     unsigned long               clxOffset;
 	unsigned long               strmOffset;
 BEGIN_WARNINGS_ACTION
-DISABLE_WARNING_4251   // on non-exported STL objects https://bit.ly/2CHM88w
+DISABLE_WARNING_4251
 	std::map<uint8_t, uint16_t> altAnsiExclude;
 	std::string                 stringColl;
 	std::wstring                wstringColl;

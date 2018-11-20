@@ -15,4 +15,3 @@ extern "C" void __imp__set_output_format(void) {};
 #endif
 
 #endif // !_IODEF_H_INCLUDED_
-

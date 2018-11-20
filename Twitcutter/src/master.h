@@ -12,7 +12,12 @@
 #include "txtproc.h"
 #include "dllclnt.h"
 
-class MasterSelector
+class TWTCTAPI Receiver;
+class TWTCTAPI IProcessorLib;
+class TWTCTAPI DoccProcessor;
+class TWTCTAPI TxtProcessor;
+
+class TWTCTAPI MasterSelector
 {
 private:
 	int fType;
@@ -24,6 +29,4 @@ private:
 	int check_extension(Receiver&);
 	int select_extension(Receiver&);
 };
-
 #endif // !_MASTER_H_INCLUDED_
-

@@ -37,8 +37,10 @@ void Receiver::activate_stream()
 
 	if (docstream.good())
 	{
-		if (!docstream.tellg() == ZERO_OFFSET)
-			docstream.seekg(ZERO_OFFSET, std::ios::beg);
+		if (!docstream.tellg() == zeroOffset)
+		{
+			docstream.seekg(zeroOffset, std::ios::beg);
+		}
 	}
 }
 

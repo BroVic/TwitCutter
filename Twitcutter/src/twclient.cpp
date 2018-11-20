@@ -1,6 +1,7 @@
 // post.cpp
 
 #include "twclient.h"
+#include "iodef.h"
 
 // Posts entire chain
 void TwitterClient::post_all_tweets()

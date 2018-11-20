@@ -16,10 +16,10 @@ TwtProcessor::~TwtProcessor()
 void TwtProcessor::estimTwtNum()
 {
 	unsigned int len = fullText.length();
-	if (len > CHARACTER_LIMIT)
+	if (len > characterLimit)
 	{
-		twtNumb = len / CHARACTER_LIMIT;
-		if (len % CHARACTER_LIMIT != 0)
+		twtNumb = len / characterLimit;
+		if (len % characterLimit != 0)
 		{
 			++twtNumb;
 		}
@@ -32,14 +32,14 @@ void TwtProcessor::spliceStr()
 	unsigned int cutoff{};
 	while (denom != twtNumb)
 	{
-		cutoff = fullText.rfind(SPACE, CHARACTER_LIMIT);
+		cutoff = fullText.rfind(spaceChar, characterLimit);
 		piece = fullText.substr(0, cutoff);
-		piece.push_back(SPACE);
-		piece.push_back(OPEN_TAG);
+		piece.push_back(spaceChar);
+		piece.push_back(openingTag);
 		piece += std::to_string(++denom);
-		piece.push_back(DIVISOR);
+		piece.push_back(divisor);
 		piece += std::to_string(twtNumb);
-		piece.push_back(CLOSE_TAG);
+		piece.push_back(closingTag);
 		chain.push_back(piece);
 		fullText = fullText.erase(0, cutoff);
 	}

@@ -2,6 +2,7 @@
 
 // Entry point for graphic user interface
 #include "winMain.h"
+#include "dllclnt.h"
 
 static      WDim appDefs{}; // file scope
 const auto  appName = appDefs.get_appName();
