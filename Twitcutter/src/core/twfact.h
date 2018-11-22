@@ -5,10 +5,10 @@
 
 #include <string>
 #include <vector>
-#include "dllclnt.h"
+#include "coredll.h"
 #include "constants.h"
 
-class TWTCTAPI TwtProcessor
+class TWITCUTAPI TwtProcessor
 {
 BEGIN_WARNINGS_ACTION
 DISABLE_WARNING_4251

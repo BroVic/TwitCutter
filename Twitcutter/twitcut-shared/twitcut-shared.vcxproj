@@ -18,6 +18,38 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\core\coredll.cpp" />
+    <ClCompile Include="..\src\core\keys.cpp" />
+    <ClCompile Include="..\src\core\master.cpp" />
+    <ClCompile Include="..\src\core\print.cpp" />
+    <ClCompile Include="..\src\core\rcv.cpp" />
+    <ClCompile Include="..\src\core\twclient.cpp" />
+    <ClCompile Include="..\src\core\twfact.cpp" />
+    <ClCompile Include="..\src\stdafx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\core\constants.h" />
+    <ClInclude Include="..\src\core\coredll.h" />
+    <ClInclude Include="..\src\core\iodef.h" />
+    <ClInclude Include="..\src\core\keys.h" />
+    <ClInclude Include="..\src\core\master.h" />
+    <ClInclude Include="..\src\core\print.h" />
+    <ClInclude Include="..\src\core\rcv.h" />
+    <ClInclude Include="..\src\core\twclient.h" />
+    <ClInclude Include="..\src\core\twfact.h" />
+    <ClInclude Include="..\src\warnings.h" />
+    <ClInclude Include="..\src\stdafx.h" />
+    <ClInclude Include="..\src\targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libtwitcurl\twitcurl.vcxproj">
+      <Project>{00175d8c-ea44-48ae-ac59-b3b7be04e65c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\txtretclass\txtretclass.vcxproj">
+      <Project>{dbcbd87c-2870-40d6-9013-f400efcde1c4}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{511C85FD-6C9A-4A86-8BFE-E821057E144D}</ProjectGuid>
@@ -81,11 +113,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)src\dyn\;$(SolutionDir)src\dyn\bndoc\;$(SolutionDir)src\dyn\txtdc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)src\;$(SolutionDir)src\manip\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;EXPORT_COREDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>twitcurl.lib;bndoc.lib;txtdc.lib;legacy_stdio_definitions.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>txtretclass.lib;twitcurl.lib;legacy_stdio_definitions.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -104,13 +137,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)src\dyn\;$(SolutionDir)src\dyn\bndoc\;$(SolutionDir)src\dyn\txtdc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)src\;$(SolutionDir)src\manip\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;EXPORT_COREDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>twitcurl.lib;bndoc.lib;txtdc.lib;legacy_stdio_definitions.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>txtretclass.lib;twitcurl.lib;legacy_stdio_definitions.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -127,41 +161,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\dyn\dllclnt.cpp" />
-    <ClCompile Include="..\src\dyn\dllmain.cpp" />
-    <ClCompile Include="..\src\dyn\stdafx.cpp" />
-    <ClCompile Include="..\src\keys.cpp" />
-    <ClCompile Include="..\src\master.cpp" />
-    <ClCompile Include="..\src\print.cpp" />
-    <ClCompile Include="..\src\rcv.cpp" />
-    <ClCompile Include="..\src\twclient.cpp" />
-    <ClCompile Include="..\src\twfact.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\constants.h" />
-    <ClInclude Include="..\src\dyn\dllclnt.h" />
-    <ClInclude Include="..\src\dyn\stdafx.h" />
-    <ClInclude Include="..\src\dyn\targetver.h" />
-    <ClInclude Include="..\src\iodef.h" />
-    <ClInclude Include="..\src\keys.h" />
-    <ClInclude Include="..\src\master.h" />
-    <ClInclude Include="..\src\print.h" />
-    <ClInclude Include="..\src\rcv.h" />
-    <ClInclude Include="..\src\twclient.h" />
-    <ClInclude Include="..\src\twfact.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\libtwitcurl\twitcurl.vcxproj">
-      <Project>{00175d8c-ea44-48ae-ac59-b3b7be04e65c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\bndoc\bndoc.vcxproj">
-      <Project>{1da2e693-61c2-4a1e-87bd-c3051442be61}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\txtdc\txtdc.vcxproj">
-      <Project>{9e6c229c-54bc-4cc0-99ad-5b52e79d0a5c}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

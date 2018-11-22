@@ -9,11 +9,12 @@
 
 #include <iostream>
 #include <string>
-#include "dllclnt.h"
+#include <fstream>
+#include "coredll.h"
 #include "twfact.h"
 
 
-class TWTCTAPI TwitPrinter
+class TWITCUTAPI TwitPrinter
 	: public TwtProcessor
 {        // To provide various options for displaying the tweets
 private:

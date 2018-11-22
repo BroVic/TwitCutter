@@ -10,14 +10,15 @@
 #include "constants.h"
 #include "doccproc.h"
 #include "txtproc.h"
-#include "dllclnt.h"
+#include "coredll.h"
 
-class TWTCTAPI Receiver;
-class TWTCTAPI IProcessorLib;
-class TWTCTAPI DoccProcessor;
-class TWTCTAPI TxtProcessor;
 
-class TWTCTAPI MasterSelector
+class TWITCUTAPI Receiver;
+class TWITCUTAPI IProcessorLib;
+class TWITCUTAPI DoccProcessor;
+class TWITCUTAPI TxtProcessor;
+
+class TWITCUTAPI MasterSelector
 {
 private:
 	int fType;

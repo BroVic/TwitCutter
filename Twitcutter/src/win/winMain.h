@@ -1,19 +1,15 @@
 // winprc.h
 
-#ifndef _WINPRC_H_INCLUDED_
-#define _WINPRC_H_INCLUDED_
+#ifndef _WINMAIN_H_INCLUDED_
+#define _WINMAIN_H_INCLUDED_
 
 #include <stdio.h>
 #include <Windows.h>
 #include <string>
 #include "resource.h"
-#include "rcv.h"
 #include "wdim.h"
-#include "print.h"
-#include "twclient.h"
-#include "twfact.h"
-#include "master.h"
 #include "iodef.h"
+#include "print.h"
 
 // Character constants
 constexpr char nullterminator = '\0';
@@ -53,4 +49,4 @@ void generate_tweets(HWND, TwitPrinter&);
 // Displays test in the edit control
 void display_text(const HWND, const char*);
 
-#endif // !_WINPRC_H_INCLUDED_
+#endif // !_WINMAIN_H_INCLUDED_

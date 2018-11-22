@@ -32,7 +32,6 @@
 #include <cmath>
 #include <Windows.h>
 #include <minwindef.h>
-#include "dllclnt.h"
 
 constexpr int SIGN_ELEMENTS   = 8;
 constexpr int DIFAT_LENGTH    = 109;

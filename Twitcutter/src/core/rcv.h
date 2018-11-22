@@ -6,14 +6,14 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include "dllclnt.h"
+#include "coredll.h"
 #include "constants.h"
 
 
 // Intial processing for file input
-class TWTCTAPI MasterSelector;
+class TWITCUTAPI MasterSelector;
 
-class TWTCTAPI Receiver
+class TWITCUTAPI Receiver
 {
 private:
 BEGIN_WARNINGS_ACTION

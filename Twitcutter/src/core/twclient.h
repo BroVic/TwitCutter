@@ -8,16 +8,16 @@
 #include <string>
 #include <twitcurl.h>       // twitcurl library
 #include <oauthlib.h>       // -- ditto --
-#include "dllclnt.h"
 #include "twfact.h"         // 'TwtProcessor' class
 #include "keys.h"           // login credentials
 #include "constants.h"
+#include "coredll.h"
 
-class TWTCTAPI Keyring;
-class TWTCTAPI twitCurl;
+class TWITCUTAPI Keyring;
+class TWITCUTAPI twitCurl;
 
 // TwitterClient class
-class TWTCTAPI TwitterClient
+class TWITCUTAPI TwitterClient
 {
 	Keyring keys;
 	twitCurl twitterObj;

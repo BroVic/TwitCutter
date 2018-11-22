@@ -1,8 +1,8 @@
-// dllmain.cpp
+// coredll.cpp
 
 // Entry point for the DLL application
 #include "stdafx.h"
-#include "dllclnt.h"
+#include "coredll.h"
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {

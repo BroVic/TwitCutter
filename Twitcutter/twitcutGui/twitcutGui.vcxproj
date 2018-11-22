@@ -78,11 +78,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\;$(SolutionDir)src\dyn\;$(SolutionDir)src\dyn\bndoc\;$(SolutionDir)src\dyn\txtdc\;$(SolutionDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)src\;$(SolutionDir)src\manip;$(SolutionDir)src\core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>twitcurl.lib;bndoc.lib;txtdc.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>twitcut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -101,10 +101,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)src\;$(SolutionDir)src\manip;$(SolutionDir)src\core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>twitcut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -122,15 +125,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\wdim.cpp" />
-    <ClCompile Include="..\src\wset.cpp" />
+    <ClCompile Include="..\src\win\wdim.cpp" />
+    <ClCompile Include="..\src\win\wset.cpp" />
     <ClCompile Include="..\src\win\abtd.cpp" />
     <ClCompile Include="..\src\win\winMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\iodef.h" />
-    <ClInclude Include="..\src\wset.h" />
-    <ClInclude Include="..\src\wdim.h" />
+    <ClInclude Include="..\src\win\wdim.h" />
+    <ClInclude Include="..\src\win\wset.h" />
     <ClInclude Include="..\src\win\resource.h" />
     <ClInclude Include="..\src\win\winMain.h" />
   </ItemGroup>
@@ -139,9 +141,6 @@
     <ResourceCompile Include="..\src\win\menu.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libtwitcurl\twitcurl.vcxproj">
-      <Project>{00175d8c-ea44-48ae-ac59-b3b7be04e65c}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\twitcut-shared\twitcut-shared.vcxproj">
       <Project>{511c85fd-6c9a-4a86-8bfe-e821057e144d}</Project>
     </ProjectReference>

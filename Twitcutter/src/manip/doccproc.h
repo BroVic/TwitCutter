@@ -4,22 +4,23 @@
 #define DOCCPROC_H_INCLUDED
 
 #include <fstream>
-#include "dllclnt.h"
-#include "cfh.h"
-#include "clx.h"
-#include "fib.h"
 #include <string>
 #include <map>
+#include "cfh.h"
+#include "fib.h"
+#include "clx.h"
+#include "iproc.h"
+#include "docapi.h"
 
 // Forward declaration of user-defined
 // member types such that our DLL macro
 // definition can be properly applied.
-struct TWTCTAPI CFHeader;
-struct TWTCTAPI Fib;
-struct TWTCTAPI DirEntry;
-struct TWTCTAPI Clx;
+struct DOCAPI CFHeader;
+struct DOCAPI Fib;
+struct DOCAPI DirEntry;
+struct DOCAPI Clx;
 
-class TWTCTAPI DoccProcessor 
+class DOCAPI DoccProcessor 
 	: public IProcessorLib
 {
 	CFHeader                    olehdr;

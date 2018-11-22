@@ -7,10 +7,10 @@
 #include <iostream>
 #include <fstream>
 #include <cassert>
-#include "dllclnt.h"
+#include "iproc.h"
+#include "docapi.h"
 
-
-class TWTCTAPI TextProcessor 
+class DOCAPI TextProcessor 
 	: public IProcessorLib
 {
 BEGIN_WARNINGS_ACTION
