@@ -8,7 +8,6 @@
 #include <iostream>
 #include <string>
 
-
 class Parser
 {
 public:
@@ -16,7 +15,6 @@ public:
 	~Parser();
 
 	std::string validate_args(int, const char*);
-
 private:
 	std::string path;
 };

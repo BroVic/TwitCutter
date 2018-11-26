@@ -27,10 +27,9 @@ DISABLE_WARNING_4251
 	std::vector<std::string> chainIn;
 	std::vector<std::string> chainMonitor;
 END_WARNINGS_ACTION
-
 	void setup_twitter_oauth();
 	void update_status(std::string&);
-	//inline std::vector<std::string> shrink_chain()
+	//std::vector<std::string> shrink_chain()
 	//{
 	//	// chainMonitor.insert();
 	//}

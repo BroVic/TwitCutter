@@ -13,44 +13,44 @@
 
 #include <string>
 #include <iostream>
-#include "genproc.h"
+#include "rcv.h"
+#include "master.h"
 #include "starters.h"
 #include "print.h"
 #include "twclient.h"
-#include "iodef.h"
+#include "twfact.h"
 
 
 int main(int argc, char** argv)
 {
-  Parser prs;
-  auto path = prs.validate_args(argc, argv[1]);
+	Parser prs{};
+	auto path = prs.validate_args(argc, argv[1]);
 
-  Receiver jobIn;
-  jobIn.startJob(path);
+	Receiver jobIn{};
+	jobIn.startJob(path);
 
-  MasterSelector sel;
-  std::string txt = sel.enable_options(jobIn); // This is stupid, walahi!
+	MasterSelector s{};
+	std::string txt = s.enable_options(jobIn); // This is stupid, walahi!
   
-  TwitPrinter twitPr{};
-  twitPr.set_fulltxt(txt);
-  twitPr.mkChain();
-  twitPr.publish();
+	TwitPrinter p{};
+	p.set_fulltxt(txt);
+	p.mkChain();
+	p.publish();
 
-  char ans{};
-  std::cout << "Post text as tweets... (Y/N) ";
-  std::cin >> ans;
-  if (tolower(ans) == 'y')
-  {
-	  TwitterClient app{};
-	  app.setup_twitter_oauth();
-	  app.post_status(twitPr);
-  }
-  else if (tolower(ans) == 'n')
-  {
-	  std::cout << "Text will not be posted online\n";
-  }
-  else
-  {
-	  std::cerr << "Invalid entry\n";
-  }
+	char ans{};
+	std::cout << "Post text as tweets... (Y/N) ";
+	std::cin >> ans;
+	if (tolower(ans) == 'y')
+	{
+		TwitterClient app{};
+		app.post_all_tweets();
+	}
+	else if (tolower(ans) == 'n')
+	{
+		std::cout << "Text will not be posted online\n";
+	}
+	else
+	{
+		std::cerr << "Invalid entry\n";
+	}
 }
