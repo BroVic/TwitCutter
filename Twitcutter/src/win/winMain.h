@@ -3,10 +3,10 @@
 #ifndef _WINMAIN_H_INCLUDED_
 #define _WINMAIN_H_INCLUDED_
 
+#include "resource.h"
 #include <stdio.h>
 #include <Windows.h>
 #include <string>
-#include "resource.h"
 #include "wdim.h"
 #include "iodef.h"
 #include "print.h"
@@ -24,6 +24,9 @@ bool register_winclass(HINSTANCE, const char*);
 
 // The Main Window Procedure
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+// Sets up the application menus
+void setup_main_menu(const HWND);
 
 // Implementation of the WM_COMMAND message
 void use_command_options(const HWND, HWND, WPARAM);

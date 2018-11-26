@@ -1,5 +1,6 @@
 // abtd.cpp
 
+#include <Windows.h>
 #include "resource.h"
 
 // 'About' Dialog Procedure

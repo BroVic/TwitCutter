@@ -8,9 +8,9 @@
 #include "master.h"
 #include "coredll.h"
 
-static      WDim appDefs{}; // file scope
-const auto  appName = appDefs.get_appName();
-const auto  className = appDefs.get_mainWinClass();
+static WDim appDefs{};         // file scope
+extern const auto  appName    = appDefs.get_appName();
+extern const auto  className  = appDefs.get_mainWinClass();
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -18,8 +18,8 @@ int WINAPI WinMain(
 	LPSTR lpCmdLine,
 	int nCmdShow)
 {
-	constexpr int failWndReg = -1;
-	constexpr int failWndCreate = -2;
+	constexpr int failWndReg     = -1;
+	constexpr int failWndCreate  = -2;
 
 	if (!register_winclass(hInstance, className))
 	{
@@ -77,7 +77,7 @@ bool register_winclass(HINSTANCE hInstance, const char* className)
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW);
-	wc.lpszMenuName = MAKEINTRESOURCE(IDR_APPMENU);
+	wc.lpszMenuName = MAKEINTRESOURCE(idR_AppMenu);
 	wc.lpszClassName = className;
 	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
@@ -88,6 +88,7 @@ bool register_winclass(HINSTANCE hInstance, const char* className)
 	return true;
 }
 
+
 // Main Window Prodedure
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -96,6 +97,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_CREATE:
+		setup_main_menu(hwnd);
 		hEdit = init_edit_control(hwnd, appDefs);
 		break;
 	case WM_SIZE:
@@ -116,6 +118,51 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+// Sets up the application menus
+void setup_main_menu(const HWND hwnd)
+{
+	HMENU hMenu = CreateMenu();
+
+	HMENU hSubMenu = CreatePopupMenu();
+	AppendMenu(hSubMenu, MF_STRING, idFileNew, "&New...");
+	AppendMenu(hSubMenu, MF_STRING, idFileOpen, "&Open...");
+	AppendMenu(hSubMenu, MF_STRING, idFileSave, "&Save");
+	AppendMenu(hSubMenu, MF_STRING, idFileSaveAs, "Save &As...");
+	AppendMenu(hSubMenu, MF_STRING, idFileExit, "E&xit");
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, reinterpret_cast<UINT>(hSubMenu), "&File");
+
+	hSubMenu = CreatePopupMenu();
+	AppendMenu(hSubMenu, MF_STRING, idEditClear, "C&lear");
+	AppendMenu(hSubMenu, MF_STRING, idEditCopy, "&Copy");
+	AppendMenu(hSubMenu, MF_STRING, idEditCut, "Cu&t");
+	AppendMenu(hSubMenu, MF_STRING, idEditPaste, "&Paste");
+	AppendMenu(hSubMenu, MF_STRING, idEditFind, "&Find...");
+	AppendMenu(hSubMenu, MF_STRING, idEditReplace, "&Replace...");
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, reinterpret_cast<UINT>(hSubMenu), "&Edit");
+
+	hSubMenu = CreatePopupMenu();
+	AppendMenu(hSubMenu, MF_STRING, idTwitcutGen, "&Generate");
+	AppendMenu(hSubMenu, MF_STRING, idTwitcutPost, "&Post");
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, reinterpret_cast<UINT>(hSubMenu), "Twit&Cutter");
+
+	hSubMenu = CreatePopupMenu();
+	AppendMenu(hSubMenu, MF_STRING, idView, "&View");
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, reinterpret_cast<UINT>(hSubMenu), "&View");
+
+	hSubMenu = CreatePopupMenu();
+	AppendMenu(hSubMenu, MF_STRING, idToolsOptions, "&Options...");
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, reinterpret_cast<UINT>(hSubMenu), "&Tools");
+
+	hSubMenu = CreatePopupMenu();
+	AppendMenu(hSubMenu, MF_STRING, idHelpView, "View &Help");
+	AppendMenu(hSubMenu, MF_STRING, idHelpReport, "&Report a problem...");
+	AppendMenu(hSubMenu, MF_STRING, idHelpPrivacy, "&Privacy Statement...");
+	AppendMenu(hSubMenu, MF_STRING, idHelpUpdate, "Check for &updates");
+	AppendMenu(hSubMenu, MF_STRING, idHelpAbout, "&About TwitCutter");
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, reinterpret_cast<UINT>(hSubMenu), "&Help");
+
+	SetMenu(hwnd, hMenu);
+}
 // Implementation of the WM_COMMAND message
 void use_command_options(const HWND hwnd, HWND hEdit, WPARAM wParam)
 {
@@ -124,23 +171,23 @@ void use_command_options(const HWND hwnd, HWND hEdit, WPARAM wParam)
 
 	switch (LOWORD(wParam))
 	{
-	case ID_FILE_EXIT:
+	case idFileExit:
 		PostMessage(hwnd, WM_CLOSE, 0, 0);
 		break;
-	case ID_FILE_OPEN:
+	case idFileOpen:
 		create_openfile_dlg(hwnd, hEdit);   // TODO: Fix these arguments!
 		break;
-	case ID_TWITCUT_GEN:
+	case idTwitcutGen:
 		generate_tweets(hEdit, printer);
 		break;
-	case ID_TWITCUT_POST:
+	case idTwitcutPost:
 		if (tc.transferred_tweets(printer.get_chain()))
 		{
 			tc.post_all_tweets();
-			//post(hEdit, tc);   // TODO: Disable if nothing loaded in control
+			// TODO: Disable if nothing loaded in control
 		}
 		break;
-	case ID_HELP_ABOUT:
+	case idHelpAbout:
 		create_about_dialog(hwnd);
 		break;
 	default:
@@ -161,7 +208,7 @@ HWND init_edit_control(const HWND hwnd, const WDim& dim)
 		dim.getWidth(),
 		dim.getHeight(),
 		hwnd,
-		reinterpret_cast<HMENU>(IDC_MAIN_EDIT),
+		reinterpret_cast<HMENU>(idC_MainEdit),
 		GetModuleHandle(NULL),
 		nullptr);
 	if (!editHndl)
@@ -187,7 +234,7 @@ void size_edit_cntrl(const HWND hwnd, const WDim& dim, HWND editHndl)
 {
 	RECT rcClient{};
 	GetClientRect(hwnd, &rcClient);
-	editHndl = GetDlgItem(hwnd, IDC_MAIN_EDIT);
+	editHndl = GetDlgItem(hwnd, idC_MainEdit);
 	SetWindowPos(
 		editHndl,
 		NULL,
@@ -266,7 +313,7 @@ BOOL LoadTextFileToEdit(const HWND hndl, const OPENFILENAME& obj)
 
 void create_about_dialog(HWND hwnd)
 {
-	auto ret = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ABOUT), hwnd, AboutDlgProc);
+	auto ret = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(idD_About), hwnd, AboutDlgProc);
 	if (ret == -1)
 	{
 		MessageBox(hwnd,

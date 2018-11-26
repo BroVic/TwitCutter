@@ -137,10 +137,6 @@
     <ClInclude Include="..\src\win\winMain.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\src\win\abt.rc" />
-    <ResourceCompile Include="..\src\win\menu.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\twitcut-shared\twitcut-shared.vcxproj">
       <Project>{511c85fd-6c9a-4a86-8bfe-e821057e144d}</Project>
     </ProjectReference>

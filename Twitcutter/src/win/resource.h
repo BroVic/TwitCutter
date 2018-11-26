@@ -4,7 +4,6 @@
 #define _RESOURCE_H_INCLUDED_
 
 #include <Windows.h>
-#include <winres.h>
 
 /***
 TODO: Instead of using .rc files, build menu(s)
@@ -12,49 +11,53 @@ at runtime and as such quit using these macros
 and instead use compile-time constants.
 */
 
+// Non-value
+constexpr int idC_Static      = -1;
+
 // Resources
-#define IDR_APPMENU       101
-#define IDC_MAIN_EDIT     102
-  // These values define individual
-  // dialog box resources.
-#define IDD_ABOUT         103
-#define IDD_ADDFILE       104
+constexpr int idR_AppMenu     = 101;
+constexpr int idC_MainEdit    = 102;
+
+// These values define individual
+// dialog box resources.
+constexpr int idD_About       = 103;
+// constexpr int idD_AddFile  = 104;
 
 // Icons
-#define IDI_APPICON       201
+constexpr int idAppIcon       = 201;
 
 // Menu commands
   // File menu
-#define ID_FILE_NEW       1001
-#define ID_FILE_OPEN      1002
-#define ID_FILE_SAVE      1003
-#define ID_FILE_SAVEAS    1004
-#define ID_FILE_EXIT      1009
+constexpr int idFileNew       = 1001;
+constexpr int idFileOpen      = 1002;
+constexpr int idFileSave      = 1003;
+constexpr int idFileSaveAs    = 1004;
+constexpr int idFileExit      = 1009;
   
   // Edit menu
-#define ID_EDIT_CUT       2001
-#define ID_EDIT_COPY      2002
-#define ID_EDIT_PASTE     2003
-#define ID_EDIT_FIND      2004
-#define ID_EDIT_REPLACE   2005
-#define ID_EDIT_CLEAR     2006
+constexpr int idEditCut       = 2001;
+constexpr int idEditCopy      = 2002;
+constexpr int idEditPaste     = 2003;
+constexpr int idEditFind      = 2004;
+constexpr int idEditReplace   = 2005;
+constexpr int idEditClear     = 2006;
 
-// TwitCutter menu
-#define ID_TWITCUT_GEN    3001
-#define ID_TWITCUT_POST   3002
+  // TwitCutter menu
+constexpr int idTwitcutGen    = 3001;
+constexpr int idTwitcutPost   = 3002;
 
   // View menu
-#define ID_VIEW           4001
+constexpr int idView          = 4001;
 
   // Tools menu
-#define ID_TOOLS_OPTIONS  5001
+constexpr int idToolsOptions  = 5001;
 
   // Help menu
-#define ID_HELP_VIEW      6001
-#define ID_HELP_REPORT    6002
-#define ID_HELP_PRIVACY   6003
-#define ID_HELP_UPDATE    6004
-#define ID_HELP_ABOUT     6005
+constexpr int idHelpView      = 6001;
+constexpr int idHelpReport    = 6002;
+constexpr int idHelpPrivacy   = 6003;
+constexpr int idHelpUpdate    = 6004;
+constexpr int idHelpAbout     = 6005;
 
 
 // Dialog Box(es)
