@@ -37,6 +37,9 @@ public:
 	void post_all_tweets();
 	bool transferred_tweets(const std::vector<std::string>&);
 	bool operator==(const std::vector<std::string>&);
-	inline bool operator!=(const std::vector<std::string>&);
+	bool operator!=(const std::vector<std::string>& yrVec)
+	{
+		return !(chainIn == yrVec);
+	}
 };
 #endif // !_TWCLIENT_H_INCLUDED_

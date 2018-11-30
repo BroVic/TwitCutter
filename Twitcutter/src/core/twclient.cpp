@@ -66,7 +66,3 @@ bool TwitterClient::operator==(const std::vector<std::string>& yrVec)
 	return true;
 }
 
-bool TwitterClient::operator!=(const std::vector<std::string>& yrVec)
-{
-	return !(chainIn == yrVec);
-}
